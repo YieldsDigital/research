@@ -1,19 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Institutional DeFi - Control Architecture v2 | yields.digital</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;color:#1a202c;font-size:13px;line-height:1.5}
-:root{
+body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey);color:var(--text);font-size:13px;line-height:1.5;transition:background-color 0.2s ease,color 0.2s ease}
+
+/* ── Light theme ── */
+[data-theme="light"]{
   --navy:#0B1F35;--navy-light:#1a3a5c;--gold:#B8922A;
   --green:#1a5c3a;--green-bg:#e8f5ee;--green-light:#2d8a5e;
   --red:#7B1818;--red-bg:#fff5f5;--amber:#7B4A10;--amber-bg:#fff8f0;
   --blue:#174E8C;--blue-bg:#f0f5fd;
   --risk:#5c1a6e;--risk-bg:#f8f0fd;
   --grey:#f5f7fa;--mid-grey:#e2e8f0;--dark-grey:#2d3748;--text:#1a202c;
+  --card-bg:#fff;--surface-bg:#fff;--surface-warm:#fffdf5;
+  --signing-bg:#e8eef5;--gold-band-bg:#f9f3e8;--gold-band-border:#e8d0a0;
+  --warn-bg:#fff5f5;--warn-border:#e8c0c0;
+  --info-tag-bg:#d0ead8;--navy-tag-bg:#e8eef5;
+  --flow-bg:#fff;--proto-bg:var(--grey);
+  --perm-meta-bg:rgba(0,0,0,0.04);--perm-meta-text:#777;
+  --gov-note-bg:#fff8f0;--gov-note-border:#e8d0b0;
+  --role-bg:rgba(255,255,255,0.08);--role-border:rgba(255,255,255,0.15);--role-hover:rgba(255,255,255,0.4);
+  --q-bg:rgba(255,255,255,0.06);--dora-bg:rgba(255,255,255,0.07);
+  --navy-text-primary:#e8f0f8;--navy-text-secondary:#c8daf0;--navy-text-muted:#9ab8d8;--navy-text-dim:#9ab0c8;--navy-text-dimmer:#5a7a9a;--navy-text-sub:#7a9bbf;
+  --navy-rule:rgba(255,255,255,0.12);
+  --q-text:#c8d8e8;--report-text:#b0c8e0;
+  --footer-text:#8a9ab0;
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"]{
+  --navy:#0f1a2e;--navy-light:#1e3352;--gold:#d4a832;
+  --green:#2d9a5e;--green-bg:rgba(45,154,94,0.12);--green-light:#3aaf6e;
+  --red:#c44040;--red-bg:rgba(196,64,64,0.1);--amber:#c07828;--amber-bg:rgba(192,120,40,0.1);
+  --blue:#3a7ac4;--blue-bg:rgba(58,122,196,0.1);
+  --risk:#8a4aa0;--risk-bg:rgba(138,74,160,0.1);
+  --grey:#0f1117;--mid-grey:#2a2d35;--dark-grey:#c0c8d4;--text:#e0ddd8;
+  --card-bg:#181a20;--surface-bg:#181a20;--surface-warm:#1a1c14;
+  --signing-bg:#141828;--gold-band-bg:#1a1810;--gold-band-border:#3a3420;
+  --warn-bg:rgba(196,64,64,0.08);--warn-border:rgba(196,64,64,0.25);
+  --info-tag-bg:rgba(45,154,94,0.2);--navy-tag-bg:rgba(30,51,82,0.4);
+  --flow-bg:#181a20;--proto-bg:#141618;
+  --perm-meta-bg:rgba(255,255,255,0.04);--perm-meta-text:#888;
+  --gov-note-bg:rgba(192,120,40,0.08);--gov-note-border:rgba(192,120,40,0.25);
+  --role-bg:rgba(255,255,255,0.05);--role-border:rgba(255,255,255,0.1);--role-hover:rgba(255,255,255,0.25);
+  --q-bg:rgba(255,255,255,0.04);--dora-bg:rgba(255,255,255,0.05);
+  --navy-text-primary:#c8d8e8;--navy-text-secondary:#a0b4cc;--navy-text-muted:#7a94b0;--navy-text-dim:#6a84a0;--navy-text-dimmer:#4a6a88;--navy-text-sub:#6a8aaa;
+  --navy-rule:rgba(255,255,255,0.08);
+  --q-text:#9ab0c8;--report-text:#8aa0b8;
+  --footer-text:#5a6a7a;
 }
 
 /* ── Layout ── */
@@ -26,7 +64,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 /* ── Bands ── */
 .band{border-radius:3px;padding:14px 18px;margin-bottom:12px}
 .band-navy{background:var(--navy)}
-.band-gold{background:#f9f3e8;border:1px solid #e8d0a0}
+.band-gold{background:var(--gold-band-bg);border:1px solid var(--gold-band-border)}
 .band-risk{background:var(--risk-bg);border:2px solid var(--risk)}
 
 /* ── Section heads ── */
@@ -35,7 +73,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 .sh-risk{background:var(--risk);color:#fff;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;margin-bottom:8px}
 
 /* ── Cards ── */
-.card{background:#fff;border-radius:2px;padding:11px 13px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.card{background:var(--card-bg);border-radius:2px;padding:11px 13px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,0.06);transition:background-color 0.2s ease}
 .card-left-red{border-left:3px solid var(--red)}
 .card-left-amber{border-left:3px solid var(--amber)}
 .card-left-blue{border-left:3px solid var(--blue)}
@@ -45,7 +83,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 .card-left-gold{border-left:3px solid var(--gold)}
 
 /* ── Tier boxes ── */
-.tier{background:#fff;border-radius:3px;margin-bottom:4px;padding:13px 15px}
+.tier{background:var(--card-bg);border-radius:3px;margin-bottom:4px;padding:13px 15px;transition:background-color 0.2s ease}
 .tier-border-gold{border:2px solid var(--gold)}
 .tier-border-navy{border:2px solid var(--navy-light)}
 .tier-border-grey{border:1px solid var(--mid-grey)}
@@ -54,8 +92,8 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 
 /* ── Role cards ── */
 .role-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:0}
-.role-card{padding:10px 11px;border-radius:2px;cursor:pointer;transition:all 0.15s;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08)}
-.role-card:hover{border-color:rgba(255,255,255,0.4)}
+.role-card{padding:10px 11px;border-radius:2px;cursor:pointer;transition:all 0.15s;border:2px solid var(--role-border);background:var(--role-bg)}
+.role-card:hover{border-color:var(--role-hover)}
 .role-card.active-red{background:var(--red-bg);border-color:var(--red)}
 .role-card.active-amber{background:var(--amber-bg);border-color:var(--amber)}
 .role-card.active-blue{background:var(--blue-bg);border-color:var(--blue)}
@@ -98,19 +136,19 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 .label-grey{color:var(--dark-grey);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .title-white{color:#fff;font-size:16px;font-weight:700;margin-top:3px}
 .title-navy{color:var(--navy);font-size:15px;font-weight:700;margin-top:3px}
-.sub-blue{color:#7a9bbf;font-size:11px;margin-top:3px}
+.sub-blue{color:var(--navy-text-sub);font-size:11px;margin-top:3px}
 .sub-grey{color:var(--dark-grey);font-size:12px;margin-top:3px;line-height:1.5}
-.sub-muted{color:#4a5a6a;font-size:11px;margin-top:2px;font-style:italic}
+.sub-muted{color:var(--navy-text-dimmer);font-size:11px;margin-top:2px;font-style:italic}
 
 /* ── Protocol categories ── */
 .proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .proto-cat{}
 .proto-cat-head{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dark-grey);margin-bottom:5px;padding-bottom:4px;border-bottom:2px solid var(--mid-grey)}
-.proto-item{background:var(--grey);border:1px solid var(--mid-grey);border-radius:2px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--dark-grey);margin-bottom:4px;text-align:center}
+.proto-item{background:var(--proto-bg);border:1px solid var(--mid-grey);border-radius:2px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--dark-grey);margin-bottom:4px;text-align:center}
 
 /* ── Workflow ── */
 .flow{display:flex;align-items:stretch;gap:0;margin:8px 0}
-.flow-step{flex:1;background:#fff;border:1px solid var(--mid-grey);padding:10px 10px;text-align:center;position:relative}
+.flow-step{flex:1;background:var(--flow-bg);border:1px solid var(--mid-grey);padding:10px 10px;text-align:center;position:relative;transition:background-color 0.2s ease}
 .flow-step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:16px;font-weight:700;z-index:1}
 .flow-step-title{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px}
 .flow-step-sub{font-size:12px;color:var(--dark-grey);line-height:1.5}
@@ -120,26 +158,66 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 .flow-step-approve{border-top:3px solid var(--risk)}
 
 /* ── Warning box ── */
-.warning{background:#fff5f5;border:1px solid #e8c0c0;border-left:4px solid var(--red);padding:8px 11px;border-radius:2px;margin-bottom:7px}
+.warning{background:var(--warn-bg);border:1px solid var(--warn-border);border-left:4px solid var(--red);padding:8px 11px;border-radius:2px;margin-bottom:7px}
 .warning-title{font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px}
 
 /* ── Info box ── */
 .info-box{background:var(--green-bg);border:1px solid var(--green-light);border-left:4px solid var(--green);padding:10px 12px;border-radius:2px;margin-bottom:8px}
 
 /* ── Signing layer ── */
-.signing-layer{background:#e8eef5;border:2px solid var(--navy-light);border-radius:3px;padding:12px 14px;margin-bottom:4px}
+.signing-layer{background:var(--signing-bg);border:2px solid var(--navy-light);border-radius:3px;padding:12px 14px;margin-bottom:4px;transition:background-color 0.2s ease}
 
 /* ── Questions grid ── */
 .q-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
-.q-card{background:rgba(255,255,255,0.06);padding:12px 13px;border-radius:2px;border-top:3px solid var(--gold)}
+.q-card{background:var(--q-bg);padding:12px 13px;border-radius:2px;border-top:3px solid var(--gold)}
 
 /* ── Dora band ── */
 .dora-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
-.dora-item{background:rgba(255,255,255,0.07);padding:10px 12px;border-radius:2px;border-left:3px solid var(--gold)}
+.dora-item{background:var(--dora-bg);padding:10px 12px;border-radius:2px;border-left:3px solid var(--gold)}
 
+/* ── Dark mode overrides for inline-styled elements ── */
+[data-theme="dark"] .wrap>div[style*="background:#fff"],
+[data-theme="dark"] .wrap>div>div[style*="background:#fff"]{background:var(--surface-bg)!important}
+[data-theme="dark"] div[style*="background:#fffdf5"]{background:var(--surface-warm)!important}
+[data-theme="dark"] div[style*="background:#fff8f0"]{background:var(--gov-note-bg)!important}
+[data-theme="dark"] div[style*="border:1px solid #e8d0b0"]{border-color:var(--gov-note-border)!important}
+[data-theme="dark"] div[style*="background:rgba(0,0,0,0.04)"]{background:var(--perm-meta-bg)!important}
+[data-theme="dark"] div[style*="color:#777"]{color:var(--perm-meta-text)!important}
+[data-theme="dark"] span[style*="background:#d0ead8"]{background:var(--info-tag-bg)!important}
+[data-theme="dark"] span[style*="background:#e8eef5"]{background:var(--navy-tag-bg)!important}
+[data-theme="dark"] div[style*="border-bottom:1px solid rgba(255,255,255,0.12)"]{border-color:var(--navy-rule)!important}
+[data-theme="dark"] .perm-panel[style*="background:var(--red-bg)"]{background:var(--red-bg)!important;border-color:var(--red)!important}
+[data-theme="dark"] .perm-panel[style*="background:var(--risk-bg)"]{background:var(--risk-bg)!important;border-color:var(--risk)!important}
+[data-theme="dark"] .perm-panel[style*="background:var(--blue-bg)"]{background:var(--blue-bg)!important;border-color:var(--blue)!important}
+[data-theme="dark"] .info-box{background:var(--green-bg);border-color:var(--green-light)}
+[data-theme="dark"] .tag-amber{background:var(--amber-bg)}
+[data-theme="dark"] .tag-grey{background:var(--proto-bg);color:var(--dark-grey)}
+[data-theme="dark"] .tag-green{background:var(--green-bg)}
+[data-theme="dark"] .tag-blue{background:var(--blue-bg)}
+[data-theme="dark"] .tag-red{background:var(--red-bg)}
+[data-theme="dark"] .tag-navy{background:var(--navy-tag-bg)}
+[data-theme="dark"] .tag-risk{background:var(--risk-bg)}
+[data-theme="dark"] .badge-green{background:var(--green-bg)}
+[data-theme="dark"] .badge-red{background:var(--red-bg)}
+[data-theme="dark"] .badge-risk{background:var(--risk-bg)}
+[data-theme="dark"] .badge-navy{background:var(--navy-tag-bg)}
+[data-theme="dark"] .badge-amber{background:var(--amber-bg)}
+[data-theme="dark"] .badge-new{background:var(--green-bg);border-color:var(--green-light)}
+[data-theme="dark"] .proto-cat-head{color:var(--dark-grey);border-color:var(--mid-grey)}
+
+/* ── Theme toggle ── */
+.theme-toggle{position:fixed;top:14px;right:14px;z-index:200;width:36px;height:36px;border-radius:6px;border:1px solid var(--mid-grey);background:var(--card-bg);color:var(--dark-grey);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(0,0,0,0.12)}
+.theme-toggle:hover{border-color:var(--gold);color:var(--gold)}
+[data-theme="dark"] .theme-icon-sun{display:inline}
+[data-theme="dark"] .theme-icon-moon{display:none}
+[data-theme="light"] .theme-icon-sun{display:none}
+[data-theme="light"] .theme-icon-moon{display:inline}
+
+@media print{.theme-toggle{display:none}}
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme"><span class="theme-icon-sun">&#9788;</span><span class="theme-icon-moon">&#9790;</span></button>
 <div class="wrap">
 
 <!-- ══════════════════════════════════════════════════════
@@ -671,13 +749,16 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;co
 
 <!-- FOOTER -->
 <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px">
-  <div style="font-size:10px;color:#8a9ab0">yields.digital · Institutional DeFi Risk Infrastructure · MiCA (EU) 2023/1114 + DORA (EU) 2022/2554 aligned · v2.3 (audit-verified 2026-04-20)</div>
-  <div style="font-size:10px;color:#8a9ab0">Click role cards to view smart-contract permissions</div>
+  <div style="font-size:10px;color:var(--footer-text)">yields.digital · Institutional DeFi Risk Infrastructure</div>
+  <div style="font-size:10px;color:var(--footer-text)">v2.3 · 20 April 2026 · Audit-verified (S52)</div>
 </div>
 
 </div><!-- /wrap -->
 
 <script>
+  function toggleTheme(){var h=document.documentElement,n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);try{localStorage.setItem('yd-theme',n)}catch(e){}}
+  (function(){try{var s=localStorage.getItem('yd-theme');if(s==='light'||s==='dark')document.documentElement.setAttribute('data-theme',s)}catch(e){}})();
+
   const roleMap = {
     owner: { activeClass: 'active-red', panel: 'perm-owner' },
     risk:  { activeClass: 'active-amber', panel: 'perm-risk' },
