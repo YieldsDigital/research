@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Three Lines of Defence - Compliance Manager | yields.digital</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;transition:background-color 0.2s ease,color 0.2s ease}
+
+[data-theme="light"]{
+  --bg:#f5f7fa;--surface:#ffffff;--text:#1a202c;--text-secondary:#57534e;--text-muted:#78716c;
+  --border:#e7e5e4;--border-light:#f5f5f4;
+  --accent:#c41e3a;--accent-light:rgba(196,30,58,0.06);
+  --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-border:#fcd34d;
+  --navy:#0B1F35;--navy-bg:#f0f5fd;
+  --card-bg:#fff;--card-shadow:0 1px 3px rgba(0,0,0,0.06);
+  --callout-bg:#f8fafc;--callout-border:#e2e8f0;
+  --quote-bg:#fef2f2;
+  --toggle-bg:#e2e8f0;--toggle-dot:#fff;
+}
+[data-theme="dark"]{
+  --bg:#0f1117;--surface:#181a20;--text:#e0ddd8;--text-secondary:#9ca3af;--text-muted:#6b7280;
+  --border:#2a2d35;--border-light:#1e2028;
+  --accent:#f87171;--accent-light:rgba(248,113,113,0.08);
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.1);--green-border:rgba(74,222,128,0.3);
+  --amber:#fbbf24;--amber-bg:rgba(251,191,36,0.08);--amber-border:rgba(251,191,36,0.3);
+  --navy:#60a5fa;--navy-bg:rgba(96,165,250,0.08);
+  --card-bg:#181a20;--card-shadow:0 1px 3px rgba(0,0,0,0.3);
+  --callout-bg:rgba(96,165,250,0.04);--callout-border:rgba(96,165,250,0.2);
+  --quote-bg:rgba(248,113,113,0.06);
+  --toggle-bg:#2a2d35;--toggle-dot:#e0ddd8;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px}
+
+/* Header bar */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:32px;font-size:11px;color:var(--text-muted);letter-spacing:0.5px}
+.topbar-title{font-weight:600}
+
+/* Theme toggle */
+.toggle-wrap{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-muted)}
+.toggle{width:40px;height:22px;background:var(--toggle-bg);border-radius:11px;cursor:pointer;position:relative;transition:background 0.2s}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--toggle-dot);border-radius:50%;transition:transform 0.2s}
+[data-theme="light"] .toggle::after{transform:translateX(18px)}
+
+/* Hero */
+.line-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.persona-title{font-size:42px;font-weight:700;color:var(--accent);margin-bottom:24px;line-height:1.1}
+
+/* Quote box */
+.quote{background:var(--quote-bg);border-left:4px solid var(--accent);padding:20px 24px;border-radius:0 4px 4px 0;margin-bottom:32px;font-style:italic;font-size:15px;line-height:1.7;color:var(--text)}
+
+/* Section */
+.section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.intro{color:var(--text-secondary);margin-bottom:24px;line-height:1.7}
+.intro strong{color:var(--text)}
+
+/* Legend */
+.legend{display:flex;gap:24px;margin-bottom:28px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:4px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}
+.dot-amber{background:var(--amber)}
+
+/* Cards */
+.obligation-card{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;margin-bottom:12px;box-shadow:var(--card-shadow);transition:background-color 0.2s ease}
+.obligation-header{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 20px 0}
+.obligation-art{font-size:13px;font-weight:700;color:var(--accent)}
+.badge{display:inline-block;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:0.5px;border-radius:3px;white-space:nowrap}
+.badge-live{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.badge-2026{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.badge-priority{background:var(--accent-light);color:var(--accent);border:1px solid var(--accent)}
+.obligation-title{padding:0 20px;font-size:12px;color:var(--text-secondary);margin-top:4px;margin-bottom:12px}
+.obligation-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--border)}
+.obligation-col{padding:16px 20px}
+.obligation-col:first-child{border-right:1px solid var(--border)}
+.col-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.col-text{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* Callout */
+.callout{background:var(--callout-bg);border:1px solid var(--callout-border);border-left:4px solid var(--navy);border-radius:0 4px 4px 0;padding:20px 24px;margin:32px 0}
+.callout-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:12px}
+.callout p{font-size:13px;color:var(--text-secondary);margin-bottom:8px;line-height:1.6}
+.callout p:last-child{margin-bottom:0}
+.callout .threshold{font-weight:600;color:var(--text);background:var(--navy-bg);padding:8px 12px;border-radius:3px;margin:12px 0;font-size:13px;font-family:'SF Mono','Fira Code',monospace}
+
+/* Footer */
+.footer{text-align:center;padding:32px 0 16px;border-top:1px solid var(--border);margin-top:40px;font-size:11px;color:var(--text-muted)}
+
+@media(max-width:640px){
+  .obligation-grid{grid-template-columns:1fr}
+  .obligation-col:first-child{border-right:none;border-bottom:1px solid var(--border)}
+  .legend{flex-direction:column;gap:8px}
+  .persona-title{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="topbar-title">Three Lines of Defence - yields.digital - LYRA Risk Framework - Q2 2026</span>
+    <div class="toggle-wrap">
+      <span>Dark</span>
+      <div class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'"></div>
+      <span>Light</span>
+    </div>
+  </div>
+
+  <div class="line-label">Your 3rd Line of Defence</div>
+  <div class="persona-title">Compliance Manager</div>
+
+  <div class="quote">
+    Because your regulator does not accept "we believe we were compliant." They accept evidence - structured, timestamped, article-level evidence. MiCA has made this a legal obligation, not a best practice.
+  </div>
+
+  <div class="section-label">What is yields.digital?</div>
+  <p class="intro">
+    yields.digital's <strong>LYRA (Layered Yields &amp; Risks Assessment)</strong> helps support MiCA compliance for European CASPs and regulated asset managers - with article-level monitoring, structured timestamped outputs, and reporting aligned to competent authority submission requirements. Not a general risk tool adapted for compliance. A system built around the specific obligations that regulators require with the correct logic applied to each article.
+  </p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-green"></div> Live in LYRA today</div>
+    <div class="legend-item"><div class="dot dot-amber"></div> 2026 Roadmap - in active development, delivering Q2-Q3 2026</div>
+  </div>
+
+  <!-- Art. 6 -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">Art. 6 - White paper content requirements</div>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <div class="obligation-title">Detailed, quantified disclosure of risks, mechanisms, and conflicts of interest for every crypto-asset offered (Art. 19 for asset-referenced tokens)</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">Narrative risk descriptions that are difficult to update, impossible to standardise across offerings, and hard to defend when market conditions change after issuance.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Quantified four-dimension risk scores providing structured, auditable evidence for MiCA white paper risk sections. Updated continuously - not a point-in-time assertion.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art. 12/25/26 -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">Art. 12 / Art. 25 - Ongoing white paper accuracy</div>
+      <span class="badge badge-live">Live</span>
+    </div>
+    <div class="obligation-title">Issuers must update white papers when material changes occur. Art. 26 establishes liability for inaccurate or misleading information throughout the life of the offering.</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">Point-in-time disclosures that become stale and create growing liability as conditions change. No system tracks whether the original disclosure remains accurate on any given day.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Continuous monitoring with timestamped records enabling issuers to demonstrate that disclosed risk parameters remain accurate every day after issuance - not just on day one.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art. 23 -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">Art. 23 - Significant threshold monitoring</div>
+      <span class="badge badge-2026">2026</span>
+    </div>
+    <div class="obligation-title">Both quarterly average daily transactions exceeding 1,000,000 AND quarterly average daily transaction value exceeding EUR 200,000,000 must be breached concurrently before the obligation to submit a compliance plan is triggered.</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">No dual-AND-threshold monitoring. OR logic produces false alerts. Single-metric monitoring misses genuine concurrent breaches. Either creates direct enforcement exposure.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Parallel monitoring of both thresholds with strict AND logic. Only concurrent breach of both quarterly averages generates a compliance alert, with regulatory-grade timestamp.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art. 38 -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">Art. 38 - Concentration risk (ART reserves)</div>
+      <span class="badge badge-2026">2026</span>
+    </div>
+    <div class="obligation-title">Systematic monitoring and management of concentration in assets backing asset-referenced token reserves. (Art. 54 applies equivalent requirements to e-money token reserves.)</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">Manual HHI calculation with inconsistent methodology and no continuous monitoring. Not defensible under regulatory examination. Impossible to scale across multiple reserve assets.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Automated HHI computation at reserve asset level, mapped directly to Art. 38 language, with configurable concentration thresholds and continuous breach alerting.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art. 40 -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">Art. 40 - Liquidity risk management</div>
+      <span class="badge badge-2026">2026</span>
+    </div>
+    <div class="obligation-title">Documented policies and systems for assessing, monitoring, and managing liquidity risk in reserve portfolios.</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">No documented, systematic liquidity risk management framework. This is a direct, identifiable compliance gap under examination by any competent authority.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Pool TVL monitoring, deployment capacity analysis, LP concentration assessment, and stress scenario outputs structured to align with Art. 40 requirements.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- iXBRL -->
+  <div class="obligation-card">
+    <div class="obligation-header">
+      <div class="obligation-art">iXBRL structured reporting</div>
+      <span class="badge badge-priority">2026 Q2 Priority</span>
+    </div>
+    <div class="obligation-title">Mandatory since 23 December 2025 (Regulation 2024/2984): crypto-asset white papers notified or submitted to competent authorities must be in machine-readable structured format.</div>
+    <div class="obligation-grid">
+      <div class="obligation-col">
+        <div class="col-label">The Risk Without LYRA</div>
+        <div class="col-text">Manual formatting, taxonomy misalignment, transcription errors. Time-consuming to prepare and error-prone to validate. Incorrect taxonomy produces rejected filings and resubmission delays.</div>
+      </div>
+      <div class="obligation-col">
+        <div class="col-label">What LYRA Supports</div>
+        <div class="col-text">Structured output pipeline producing iXBRL-ready compliance reports aligned to ESMA MiCA reporting taxonomy. No manual formatting, no transcription, no taxonomy errors.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Art. 23 Deep Dive -->
+  <div class="callout">
+    <div class="callout-title">Art. 23 - The compliance distinction that most monitoring systems get wrong:</div>
+    <p>Art. 23 applies strict AND logic. Both thresholds must be satisfied concurrently for the obligation to be triggered:</p>
+    <div class="threshold">Quarterly average daily transactions &gt; 1,000,000 &nbsp;AND&nbsp; quarterly average daily transaction value &gt; EUR 200,000,000</div>
+    <p>A system using OR logic generates false alerts - potential unnecessary cessation of issuance with material commercial consequences.</p>
+    <p>A system monitoring only one metric misses genuine dual-threshold breaches - a silent compliance violation.</p>
+    <p>LYRA monitors both metrics in parallel. Only concurrent breach of both quarterly averages generates a compliance alert with a regulatory-grade timestamp.</p>
+  </div>
+
+  <div class="footer">yields.digital - LYRA Risk Framework - Q2 2026</div>
+
+</div>
+</body>
+</html>
