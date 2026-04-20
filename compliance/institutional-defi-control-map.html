@@ -33,24 +33,24 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
 
 /* ── Dark theme ── */
 [data-theme="dark"]{
-  --navy:#0f1a2e;--navy-light:#1e3352;--gold:#d4a832;
-  --green:#2d9a5e;--green-bg:rgba(45,154,94,0.12);--green-light:#3aaf6e;
-  --red:#c44040;--red-bg:rgba(196,64,64,0.1);--amber:#c07828;--amber-bg:rgba(192,120,40,0.1);
-  --blue:#3a7ac4;--blue-bg:rgba(58,122,196,0.1);
-  --risk:#8a4aa0;--risk-bg:rgba(138,74,160,0.1);
+  --navy:#0f1a2e;--navy-light:#1e3352;--gold:#e8bf40;
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.1);--green-light:#5ae890;
+  --red:#f87171;--red-bg:rgba(248,113,113,0.08);--amber:#fbbf24;--amber-bg:rgba(251,191,36,0.08);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);
+  --risk:#c084fc;--risk-bg:rgba(192,132,252,0.08);
   --grey:#0f1117;--mid-grey:#2a2d35;--dark-grey:#c0c8d4;--text:#e0ddd8;
   --card-bg:#181a20;--surface-bg:#181a20;--surface-warm:#1a1c14;
   --signing-bg:#141828;--gold-band-bg:#1a1810;--gold-band-border:#3a3420;
-  --warn-bg:rgba(196,64,64,0.08);--warn-border:rgba(196,64,64,0.25);
-  --info-tag-bg:rgba(45,154,94,0.2);--navy-tag-bg:rgba(30,51,82,0.4);
+  --warn-bg:rgba(248,113,113,0.06);--warn-border:rgba(248,113,113,0.2);
+  --info-tag-bg:rgba(74,222,128,0.12);--navy-tag-bg:rgba(96,165,250,0.12);
   --flow-bg:#181a20;--proto-bg:#141618;
-  --perm-meta-bg:rgba(255,255,255,0.04);--perm-meta-text:#888;
-  --gov-note-bg:rgba(192,120,40,0.08);--gov-note-border:rgba(192,120,40,0.25);
+  --perm-meta-bg:rgba(255,255,255,0.04);--perm-meta-text:#999;
+  --gov-note-bg:rgba(251,191,36,0.06);--gov-note-border:rgba(251,191,36,0.2);
   --role-bg:rgba(255,255,255,0.05);--role-border:rgba(255,255,255,0.1);--role-hover:rgba(255,255,255,0.25);
   --q-bg:rgba(255,255,255,0.04);--dora-bg:rgba(255,255,255,0.05);
-  --navy-text-primary:#c8d8e8;--navy-text-secondary:#a0b4cc;--navy-text-muted:#7a94b0;--navy-text-dim:#6a84a0;--navy-text-dimmer:#4a6a88;--navy-text-sub:#6a8aaa;
+  --navy-text-primary:#c8d8e8;--navy-text-secondary:#a0b4cc;--navy-text-muted:#7a94b0;--navy-text-dim:#6a84a0;--navy-text-dimmer:#6a8aaa;--navy-text-sub:#8aa0bb;
   --navy-rule:rgba(255,255,255,0.08);
-  --q-text:#9ab0c8;--report-text:#8aa0b8;
+  --q-text:#b0c8e0;--report-text:#8aa0b8;
   --footer-text:#5a6a7a;
 }
 
@@ -204,6 +204,62 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
 [data-theme="dark"] .badge-amber{background:var(--amber-bg)}
 [data-theme="dark"] .badge-new{background:var(--green-bg);border-color:var(--green-light)}
 [data-theme="dark"] .proto-cat-head{color:var(--dark-grey);border-color:var(--mid-grey)}
+
+/* ── Dark mode: fix inline-styled tag/badge/label text contrast ── */
+[data-theme="dark"] span[style*="color:var(--navy)"]{color:#8ab4e0!important}
+[data-theme="dark"] div[style*="color:var(--navy)"]{color:#8ab4e0!important}
+[data-theme="dark"] .title-navy{color:#8ab4e0}
+[data-theme="dark"] .label-grey{color:var(--dark-grey)}
+[data-theme="dark"] span[style*="color:#9ab0c8"]{color:var(--navy-text-dim)!important}
+[data-theme="dark"] span[style*="color:#9ab8d8"]{color:var(--navy-text-muted)!important}
+[data-theme="dark"] div[style*="color:#9ab8d8"]{color:var(--navy-text-muted)!important}
+[data-theme="dark"] span[style*="color:#c8daf0"]{color:var(--navy-text-secondary)!important}
+[data-theme="dark"] div[style*="color:#c8daf0"]{color:var(--navy-text-secondary)!important}
+[data-theme="dark"] span[style*="color:#5a7a9a"]{color:var(--navy-text-dimmer)!important}
+[data-theme="dark"] div[style*="color:#c8d8e8"]{color:var(--q-text)!important}
+[data-theme="dark"] div[style*="color:#b0c8e0"]{color:var(--report-text)!important}
+[data-theme="dark"] div[style*="color:var(--dark-grey)"]{color:var(--dark-grey)!important}
+[data-theme="dark"] .flow-step-title{color:#8ab4e0}
+[data-theme="dark"] .warning-title{color:var(--red)}
+
+/* ── Dark mode: badges with navy bg need light text ── */
+[data-theme="dark"] .badge-navy{background:rgba(96,165,250,0.15);color:#8ab4e0}
+[data-theme="dark"] .badge-gold{background:var(--gold);color:#0f1117}
+[data-theme="dark"] .tag-navy{background:rgba(96,165,250,0.12);color:#8ab4e0}
+[data-theme="dark"] .tag-risk{background:rgba(192,132,252,0.12);color:#c084fc}
+[data-theme="dark"] .tag-amber{background:rgba(251,191,36,0.1);color:#fbbf24}
+[data-theme="dark"] .tag-red{background:rgba(248,113,113,0.1);color:#f87171}
+
+/* ── Dark mode: inline red warning text in Key Management ── */
+[data-theme="dark"] div[style*="color:#7B1818"]{color:#f87171!important}
+[data-theme="dark"] div[style*="color:var(--red)"]{color:var(--red)!important}
+
+/* ── Dark mode: header band inline text ── */
+[data-theme="dark"] div[style*="color:#5a7a9a"]{color:var(--navy-text-dimmer)!important}
+
+/* ── Dark mode: flow step arrows ── */
+[data-theme="dark"] .flow-step:not(:last-child)::after{color:var(--gold)}
+
+/* ── Dark mode: section header labels ── */
+[data-theme="dark"] .label-gold{color:var(--gold)}
+
+/* ── Dark mode: muted/italic sub-labels (Owner operations only, Signing layer, etc.) ── */
+[data-theme="dark"] .sub-muted{color:#8a9ab0}
+
+/* ── Dark mode: green section header - white text on bright green is unreadable, darken bg ── */
+[data-theme="dark"] .sh-green{background:#1a5c3a}
+
+/* ── Dark mode: Other Providers navy band - dim text on right side ── */
+[data-theme="dark"] span[style*="color:#9ab0c8"]{color:#a0b8d0!important}
+
+/* ── Dark mode: info-box green header text ── */
+[data-theme="dark"] .info-box div[style*="color:var(--green)"]{color:var(--green)!important}
+
+/* ── Dark mode: "INDEPENDENT RISK INTELLIGENCE INFRASTRUCTURE" label ── */
+[data-theme="dark"] div[style*="color:var(--green)"][style*="letter-spacing"]{color:var(--green)!important}
+
+/* ── Dark mode: custody/compliance/assurance section labels (CUSTODY, COMPLIANCE, ASSURANCE) ── */
+[data-theme="dark"] div[style*="color:var(--gold)"][style*="letter-spacing:1px"]{color:var(--gold)!important}
 
 /* ── Theme toggle ── */
 .theme-toggle{position:fixed;top:14px;right:14px;z-index:200;width:36px;height:36px;border-radius:6px;border:1px solid var(--mid-grey);background:var(--card-bg);color:var(--dark-grey);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.15s ease;box-shadow:0 2px 6px rgba(0,0,0,0.12)}
