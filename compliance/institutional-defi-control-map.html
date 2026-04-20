@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Institutional DeFi - Control Architecture v2 | yields.digital</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:#f5f7fa;color:#1a202c;font-size:13px;line-height:1.5}
+:root{
+  --navy:#0B1F35;--navy-light:#1a3a5c;--gold:#B8922A;
+  --green:#1a5c3a;--green-bg:#e8f5ee;--green-light:#2d8a5e;
+  --red:#7B1818;--red-bg:#fff5f5;--amber:#7B4A10;--amber-bg:#fff8f0;
+  --blue:#174E8C;--blue-bg:#f0f5fd;
+  --risk:#5c1a6e;--risk-bg:#f8f0fd;
+  --grey:#f5f7fa;--mid-grey:#e2e8f0;--dark-grey:#2d3748;--text:#1a202c;
+}
+
+/* ── Layout ── */
+.wrap{max-width:1400px;margin:0 auto;padding:20px}
+.full{width:100%;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:210px 1fr 270px;gap:12px;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.keymgmt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ── Bands ── */
+.band{border-radius:3px;padding:14px 18px;margin-bottom:12px}
+.band-navy{background:var(--navy)}
+.band-gold{background:#f9f3e8;border:1px solid #e8d0a0}
+.band-risk{background:var(--risk-bg);border:2px solid var(--risk)}
+
+/* ── Section heads ── */
+.sh{background:var(--navy);color:#fff;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;margin-bottom:8px}
+.sh-green{background:var(--green);color:#fff;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;margin-bottom:8px}
+.sh-risk{background:var(--risk);color:#fff;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;margin-bottom:8px}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:2px;padding:11px 13px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.card-left-red{border-left:3px solid var(--red)}
+.card-left-amber{border-left:3px solid var(--amber)}
+.card-left-blue{border-left:3px solid var(--blue)}
+.card-left-green{border-left:3px solid var(--green)}
+.card-left-risk{border-left:3px solid var(--risk)}
+.card-left-navy{border-left:3px solid var(--navy)}
+.card-left-gold{border-left:3px solid var(--gold)}
+
+/* ── Tier boxes ── */
+.tier{background:#fff;border-radius:3px;margin-bottom:4px;padding:13px 15px}
+.tier-border-gold{border:2px solid var(--gold)}
+.tier-border-navy{border:2px solid var(--navy-light)}
+.tier-border-grey{border:1px solid var(--mid-grey)}
+.tier-border-risk{border:2px solid var(--risk)}
+.tier-navy{background:var(--navy);border-radius:3px;margin-bottom:4px;padding:13px 15px}
+
+/* ── Role cards ── */
+.role-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:0}
+.role-card{padding:10px 11px;border-radius:2px;cursor:pointer;transition:all 0.15s;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08)}
+.role-card:hover{border-color:rgba(255,255,255,0.4)}
+.role-card.active-red{background:var(--red-bg);border-color:var(--red)}
+.role-card.active-amber{background:var(--amber-bg);border-color:var(--amber)}
+.role-card.active-blue{background:var(--blue-bg);border-color:var(--blue)}
+.role-card.active-red div,.role-card.active-amber div,.role-card.active-blue div{color:var(--text)!important}
+.role-card.active-red div:first-child{color:var(--red)!important}
+.role-card.active-amber div:first-child{color:var(--amber)!important}
+.role-card.active-blue div:first-child{color:var(--blue)!important}
+.perm-panel{border-radius:2px;padding:12px 14px;margin-top:10px}
+.perm-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.perm-row+.perm-row{border-top:1px solid rgba(0,0,0,0.06)}
+.perm-yes{color:var(--green);font-weight:700}
+.perm-no{color:var(--red);font-weight:700}
+.perm-part{color:var(--amber);font-weight:700}
+
+/* ── Arrows ── */
+.arrow{text-align:center;color:var(--navy-light);font-size:18px;line-height:1;margin:3px 0}
+
+/* ── Tags ── */
+.tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:2px;border:1px solid var(--mid-grey);font-weight:500;margin:2px 2px 2px 0}
+.tag-amber{background:#fff8e8;color:var(--amber)}
+.tag-grey{background:var(--grey);color:var(--dark-grey)}
+.tag-green{background:var(--green-bg);color:var(--green)}
+.tag-blue{background:var(--blue-bg);color:var(--blue)}
+.tag-red{background:var(--red-bg);color:var(--red)}
+.tag-navy{background:#e8eef5;color:var(--navy)}
+.tag-risk{background:var(--risk-bg);color:var(--risk)}
+
+/* ── Badge ── */
+.badge{display:inline-block;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:0.5px;border-radius:2px;white-space:nowrap}
+.badge-gold{background:var(--gold);color:#fff}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-risk{background:var(--risk-bg);color:var(--risk)}
+.badge-navy{background:#e8eef5;color:var(--navy)}
+.badge-amber{background:#fff0d0;color:var(--amber)}
+.badge-new{background:#e8f5ee;color:var(--green);border:1px solid var(--green-light)}
+
+/* ── Typography ── */
+.label-gold{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.label-grey{color:var(--dark-grey);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.title-white{color:#fff;font-size:16px;font-weight:700;margin-top:3px}
+.title-navy{color:var(--navy);font-size:15px;font-weight:700;margin-top:3px}
+.sub-blue{color:#7a9bbf;font-size:11px;margin-top:3px}
+.sub-grey{color:var(--dark-grey);font-size:12px;margin-top:3px;line-height:1.5}
+.sub-muted{color:#4a5a6a;font-size:11px;margin-top:2px;font-style:italic}
+
+/* ── Protocol categories ── */
+.proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.proto-cat{}
+.proto-cat-head{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dark-grey);margin-bottom:5px;padding-bottom:4px;border-bottom:2px solid var(--mid-grey)}
+.proto-item{background:var(--grey);border:1px solid var(--mid-grey);border-radius:2px;padding:5px 8px;font-size:11px;font-weight:600;color:var(--dark-grey);margin-bottom:4px;text-align:center}
+
+/* ── Workflow ── */
+.flow{display:flex;align-items:stretch;gap:0;margin:8px 0}
+.flow-step{flex:1;background:#fff;border:1px solid var(--mid-grey);padding:10px 10px;text-align:center;position:relative}
+.flow-step:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:16px;font-weight:700;z-index:1}
+.flow-step-title{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.flow-step-sub{font-size:12px;color:var(--dark-grey);line-height:1.5}
+.flow-step-gate{border-top:3px solid var(--red)}
+.flow-step-check{border-top:3px solid var(--amber)}
+.flow-step-exec{border-top:3px solid var(--green)}
+.flow-step-approve{border-top:3px solid var(--risk)}
+
+/* ── Warning box ── */
+.warning{background:#fff5f5;border:1px solid #e8c0c0;border-left:4px solid var(--red);padding:8px 11px;border-radius:2px;margin-bottom:7px}
+.warning-title{font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px}
+
+/* ── Info box ── */
+.info-box{background:var(--green-bg);border:1px solid var(--green-light);border-left:4px solid var(--green);padding:10px 12px;border-radius:2px;margin-bottom:8px}
+
+/* ── Signing layer ── */
+.signing-layer{background:#e8eef5;border:2px solid var(--navy-light);border-radius:3px;padding:12px 14px;margin-bottom:4px}
+
+/* ── Questions grid ── */
+.q-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.q-card{background:rgba(255,255,255,0.06);padding:12px 13px;border-radius:2px;border-top:3px solid var(--gold)}
+
+/* ── Dora band ── */
+.dora-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.dora-item{background:rgba(255,255,255,0.07);padding:10px 12px;border-radius:2px;border-left:3px solid var(--gold)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════ -->
+<div class="band band-navy full" style="display:flex;justify-content:space-between;align-items:center;padding:18px 24px">
+  <div>
+    <div class="label-gold" style="margin-bottom:4px">yields.digital</div>
+    <div style="color:#fff;font-size:20px;font-weight:700;line-height:1.2">Institutional DeFi - Control &amp; Role Architecture</div>
+    <div class="sub-blue">Consolidated design · Technology, InfoSec, Asset Management &amp; Risk Management frameworks applied</div>
+  </div>
+  <div style="text-align:right">
+    <span class="badge badge-gold" style="font-size:10px;padding:5px 14px;margin-bottom:6px;display:block">MiCA + DORA ALIGNED</span>
+    <div style="color:#5a7a9a;font-size:10px">Click role cards to view permissions</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     GOVERNANCE BAND (NEW)
+══════════════════════════════════════════════════════ -->
+<div style="background:#fff;border:2px solid var(--navy);border-radius:3px;padding:14px 18px;margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div class="label-grey">Governance &amp; Oversight Layer</div>
+    <span class="badge badge-navy">Applies to all tiers below</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">
+    <div class="card card-left-red" style="margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px">Owner - Board Level</div>
+      <div class="sub-grey">Geographically distributed signers. Independent of investment function. Multi-sig 3-of-5 + HSM.</div>
+      <div style="margin-top:6px"><span class="tag tag-red">Upgrade authority</span><span class="tag tag-red">Role assignment</span><span class="tag tag-red">Emergency pause</span></div>
+    </div>
+    <div class="card card-left-risk" style="margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:var(--risk);margin-bottom:4px">Independent Risk Committee</div>
+      <div class="sub-grey">Separate from investment team. Sets risk limits. Approves mandate changes. Art. 68 compliance (governance &amp; record-keeping) - reviewed quarterly.</div>
+      <div style="margin-top:6px"><span class="tag tag-risk">Sets limits</span><span class="tag tag-risk">Mandate approval</span><span class="tag tag-risk">Art. 68 review</span></div>
+    </div>
+    <div class="card card-left-amber" style="margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px">IAM / PAM Layer</div>
+      <div class="sub-grey">Privileged Access Management for all signing roles. Mandatory MFA. Quarterly access reviews. Joiners/Movers/Leavers enforced.</div>
+      <div style="margin-top:6px"><span class="tag tag-amber">PAM system</span><span class="tag tag-amber">Access reviews</span><span class="tag tag-amber">MFA required</span></div>
+    </div>
+    <div class="card card-left-navy" style="margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">DORA ICT Framework</div>
+      <div class="sub-grey">ICT risk management. 4-hour NCA incident notification. TLPT testing cadence. Third-party ICT risk register maintained.</div>
+      <div style="margin-top:6px"><span class="tag tag-navy">4hr notify</span><span class="tag tag-navy">TLPT</span><span class="tag tag-navy">ICT register</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     INVESTMENT WORKFLOW (NEW)
+══════════════════════════════════════════════════════ -->
+<div style="background:#fff;border:1px solid var(--mid-grey);border-radius:3px;padding:13px 16px;margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div class="label-grey">Investment Decision &amp; Execution Workflow</div>
+    <span class="badge badge-navy">Pre-trade → Execution → Post-trade</span>
+  </div>
+  <div class="flow">
+    <div class="flow-step flow-step-check">
+      <div class="flow-step-title">1. Investment Decision</div>
+      <div class="flow-step-sub">Portfolio Manager forms thesis. Mandate boundary check. Asset on approved list?</div>
+    </div>
+    <div class="flow-step flow-step-gate" style="margin-left:12px">
+      <div class="flow-step-title">2. Pre-Trade Risk Gate</div>
+      <div class="flow-step-sub">yields.digital risk scores validate: asset MiCA status, concentration limits, protocol risk score, and mandate boundary. Execution blocked if any threshold breached.</div>
+    </div>
+    <div class="flow-step flow-step-approve" style="margin-left:12px">
+      <div class="flow-step-title">3. Four-Eyes Approval</div>
+      <div class="flow-step-sub">Transactions above threshold require dual sign-off. Risk Manager independently confirms. MPC policy enforces.</div>
+    </div>
+    <div class="flow-step flow-step-exec" style="margin-left:12px">
+      <div class="flow-step-title">4. Signing Layer</div>
+      <div class="flow-step-sub">MPC custody policy executes. MEV protection via private mempool. Address verified on hardware.</div>
+    </div>
+    <div class="flow-step" style="border-top:3px solid var(--navy);margin-left:12px">
+      <div class="flow-step-title">5. On-Chain Execution</div>
+      <div class="flow-step-sub">Transaction broadcast via redundant RPC nodes. On-chain audit log updated.</div>
+    </div>
+    <div class="flow-step" style="border-top:3px solid var(--dark-grey);margin-left:12px">
+      <div class="flow-step-title">6. Post-Trade</div>
+      <div class="flow-step-sub">Reconciliation against on-chain state. NAV administrator updates share price independently. yields.digital evidence trail updated - Art. 68 record complete.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     KEY MANAGEMENT (full-width)
+══════════════════════════════════════════════════════ -->
+<div style="background:#fff;border:1px solid var(--mid-grey);border-radius:3px;padding:14px 18px;margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div class="label-grey">Key Management</div>
+    <div style="font-size:10px;color:#7B1818;max-width:600px;text-align:right">EOA (single private key) is not acceptable for any operational role managing client assets. All operational signing requires MPC minimum.</div>
+  </div>
+  <div class="keymgmt-grid">
+    <div>
+      <div style="margin-bottom:6px;font-size:10px;font-weight:700;color:var(--dark-grey);text-transform:uppercase;letter-spacing:1px">On-Chain Multi-sig</div>
+      <div class="card card-left-red">
+        <div style="font-size:12px;font-weight:700;color:var(--red)">Multi-sig Platform</div>
+        <div class="sub-grey">3-of-5 threshold. Signers geographically distributed. Each signer independent.</div>
+        <div class="sub-muted">Owner operations only</div>
+      </div>
+      <div class="card card-left-red">
+        <div style="font-size:12px;font-weight:700;color:var(--red)">HSM</div>
+        <div class="sub-grey">Hardware Security Module. HSM Provider. Air-gapped environment.</div>
+        <div class="sub-muted">High-value signing + key storage</div>
+      </div>
+    </div>
+    <div>
+      <div style="margin-bottom:6px;font-size:10px;font-weight:700;color:var(--dark-grey);text-transform:uppercase;letter-spacing:1px">Off-Chain MPC</div>
+      <div class="card card-left-amber">
+        <div style="font-size:12px;font-weight:700;color:var(--amber)">MPC Custody Provider</div>
+        <div class="sub-grey">Off-chain key split. Presents as single signer on-chain. Policy-enforced.</div>
+        <div class="sub-muted">Signing layer - Admin + Portfolio Mgr</div>
+      </div>
+      <div class="card card-left-amber">
+        <div style="font-size:12px;font-weight:700;color:var(--amber)">Secondary MPC Provider</div>
+        <div class="sub-grey">Secondary / failover MPC provider. Reduces concentration on single vendor.</div>
+        <div class="sub-muted">Backup signing + qualified custody</div>
+      </div>
+      <div class="card card-left-blue">
+        <div style="font-size:12px;font-weight:700;color:var(--blue)">Smart Account</div>
+        <div class="sub-grey">On-chain programmable policy. Enforces spend limits, whitelists, time delays at contract level.</div>
+        <div class="sub-muted">Automated parameter enforcement</div>
+      </div>
+    </div>
+    <div>
+      <div style="margin-bottom:6px;font-size:10px;font-weight:700;color:var(--dark-grey);text-transform:uppercase;letter-spacing:1px">Other Providers</div>
+      <div class="band band-navy" style="padding:10px 12px;border-radius:2px;margin-top:0">
+        <div style="margin-bottom:5px;font-size:10px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px">Custody</div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">Qualified Custodian</span><span style="color:#9ab0c8;font-size:11px">Qualified custody</span></div>
+        <div style="margin:8px 0 5px;font-size:10px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px">Compliance</div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">On-chain Analytics</span><span style="color:#9ab0c8;font-size:11px">On-chain analytics</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">Compliance Screening</span><span style="color:#9ab0c8;font-size:11px">Compliance screening</span></div>
+        <div style="margin:8px 0 5px;font-size:10px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:1px">Assurance</div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">Smart Contract Auditor A</span><span style="color:#9ab0c8;font-size:11px">Smart contract audit</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">Smart Contract Auditor B</span><span style="color:#9ab0c8;font-size:11px">Smart contract audit</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.12)"><span style="color:#e8f0f8;font-size:12px;font-weight:600">NAV Administrator</span><span style="color:#9ab0c8;font-size:11px">Independent NAV calc</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span style="color:#e8f0f8;font-size:12px;font-weight:600">Legal Counsel</span><span style="color:#9ab0c8;font-size:11px">MiCA auth. opinion</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TWO COLUMNS: CONTROL HIERARCHY + YIELDS.DIGITAL
+══════════════════════════════════════════════════════ -->
+<div class="grid2">
+
+  <!-- ── LEFT: CONTROL HIERARCHY ── -->
+  <div>
+    <div class="sh">Control Hierarchy</div>
+
+    <!-- Tier 1 - Allocator -->
+    <div class="tier tier-border-gold">
+      <div class="label-gold">Tier 1</div>
+      <div class="title-navy">Institutional Allocator</div>
+      <div class="sub-grey">Pension fund · Family office · Crypto hedge fund</div>
+      <div style="margin-top:8px">
+        <span class="tag tag-amber">Sets mandate</span>
+        <span class="tag tag-amber">Approves risk limits</span>
+        <span class="tag tag-amber">Receives independent NAV</span>
+        <span class="tag tag-amber">Conducts quarterly DD</span>
+        <span class="tag tag-amber">Direct yields.digital reporting</span>
+      </div>
+    </div>
+
+    <div class="arrow">⇅</div>
+
+    <!-- Tier 2 - Crypto Asset Manager CASP -->
+    <div class="tier-navy">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div class="label-gold">Tier 2 - CASP · Arts. 59, 66, 68, 81</div>
+          <div class="title-white">Crypto Asset Manager</div>
+        </div>
+        <span class="badge badge-gold">REGULATED</span>
+      </div>
+
+      <!-- Role cards -->
+      <div class="role-grid" id="roleGrid">
+        <div class="role-card" id="card-owner" onclick="toggleRole('owner')">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px">OWNER</div>
+          <div style="font-size:12px;color:#c8daf0;margin-top:3px">Board / Legal Entity</div>
+          <div style="font-size:11px;color:#9ab8d8;margin-top:2px;font-style:italic">Multi-sig 3-of-5 + HSM</div>
+          <div style="font-size:10px;color:#9ab8d8;font-weight:600;margin-top:6px;letter-spacing:0.5px">▼ PERMISSIONS</div>
+        </div>
+        <div class="role-card" id="card-risk" onclick="toggleRole('risk')">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px">RISK MANAGER</div>
+          <div style="font-size:12px;color:#c8daf0;margin-top:3px">Independent Risk Function</div>
+          <div style="font-size:11px;color:#9ab8d8;margin-top:2px;font-style:italic">MPC - observe, pause &amp; risk limits</div>
+          <div style="font-size:10px;color:#9ab8d8;font-weight:600;margin-top:6px;letter-spacing:0.5px">▼ PERMISSIONS</div>
+        </div>
+        <div class="role-card" id="card-pm" onclick="toggleRole('pm')">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px">PORTFOLIO MGR</div>
+          <div style="font-size:12px;color:#c8daf0;margin-top:3px">Investment Team</div>
+          <div style="font-size:11px;color:#9ab8d8;margin-top:2px;font-style:italic">MPC -2-of-N policy</div>
+          <div style="font-size:10px;color:#9ab8d8;font-weight:600;margin-top:6px;letter-spacing:0.5px">▼ PERMISSIONS</div>
+        </div>
+      </div>
+
+      <!-- Permission panels (hidden by default) -->
+      <div id="perm-owner" class="perm-panel" style="display:none;background:var(--red-bg);border:2px solid var(--red)">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">OWNER - Smart Contract Permissions</div>
+        <div class="perm-row"><span>Move assets?</span><span class="perm-yes">Yes - unrestricted</span></div>
+        <div class="perm-row"><span>Change risk parameters?</span><span class="perm-yes">Yes - full access</span></div>
+        <div class="perm-row"><span>Pause vault?</span><span class="perm-yes">Yes - immediate</span></div>
+        <div class="perm-row"><span>Upgrade contracts?</span><span class="perm-yes">Yes - exclusive + time-lock</span></div>
+        <div class="perm-row"><span>Execute trades?</span><span class="perm-part">In extremis only</span></div>
+        <div style="margin-top:8px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:2px;font-size:10px;color:#777">Key: Multi-sig (3-of-5) + HSM · Geographically distributed signers · Key ceremony documented</div>
+      </div>
+
+      <div id="perm-risk" class="perm-panel" style="display:none;background:var(--risk-bg);border:2px solid var(--risk)">
+        <div style="font-size:11px;font-weight:700;color:var(--risk);margin-bottom:8px">RISK MANAGER - Permissions (Independent Function)</div>
+        <div class="perm-row"><span>Move assets?</span><span class="perm-no">No - never</span></div>
+        <div class="perm-row"><span>Change investment parameters?</span><span class="perm-no">No - cannot interfere with execution</span></div>
+        <div class="perm-row"><span>Update risk limits?</span><span class="perm-yes">Yes - within board-approved ranges</span></div>
+        <div class="perm-row"><span>Pause vault?</span><span class="perm-yes">Yes - risk-triggered circuit breaker</span></div>
+        <div class="perm-row"><span>Upgrade contracts?</span><span class="perm-no">No</span></div>
+        <div class="perm-row"><span>Access all reporting?</span><span class="perm-yes">Yes - direct from yields.digital</span></div>
+        <div style="margin-top:8px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:2px;font-size:10px;color:var(--risk);font-weight:600">Reports to board, NOT to investment team. This separation is mandatory.</div>
+      </div>
+
+      <div id="perm-pm" class="perm-panel" style="display:none;background:var(--blue-bg);border:2px solid var(--blue)">
+        <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:8px">PORTFOLIO MANAGER - Permissions</div>
+        <div class="perm-row"><span>Move assets?</span><span class="perm-yes">Yes - within approved limits + 4-eyes above threshold</span></div>
+        <div class="perm-row"><span>Change risk parameters?</span><span class="perm-no">No - risk function only</span></div>
+        <div class="perm-row"><span>Pause vault?</span><span class="perm-no">No</span></div>
+        <div class="perm-row"><span>Upgrade contracts?</span><span class="perm-no">No</span></div>
+        <div class="perm-row"><span>Access client data?</span><span class="perm-part">Portfolio view only - no redemption data pre-execution</span></div>
+        <div style="margin-top:8px;padding:6px 10px;background:rgba(0,0,0,0.04);border-radius:2px;font-size:10px;color:#777">Key: MPC wallet · 2-of-N policy required above threshold · No EOA permitted</div>
+      </div>
+    </div>
+
+    <div class="arrow">⇅</div>
+
+    
+    <div class="signing-layer">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div class="label-grey">Signing &amp; Execution Layer</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-top:2px">MPC Custody Provider (Primary) · MPC Custody Provider (Failover)</div>
+        </div>
+        <span class="badge badge-navy">Sits between Manager &amp; Vault</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px">
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">MPC Policy Engine</div>
+          <div class="sub-grey">Velocity limits, whitelist enforcement, dual-approval above threshold</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">MEV Protection</div>
+          <div class="sub-grey">Private mempool provider. Prevents front-running of large vault transactions.</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Address Verification</div>
+          <div class="sub-grey">Hardware confirmation of destination address before broadcast. Prevents substitution attacks.</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Redundant RPC</div>
+          <div class="sub-grey">Self-hosted nodes with redundant provider failover. No single RPC dependency. DORA ICT resilience.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">⇅</div>
+
+    
+    <div class="tier tier-border-navy">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div class="label-grey">Tier 3 - Smart Contract Layer</div>
+          <div class="title-navy">Vault 7540 - Contract Components</div>
+        </div>
+        
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px">
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Vault 7540 - Core Contract</div>
+          <div class="sub-grey">Share issuance, redemption accounting, deposit and withdrawal interface</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Strategy Contracts</div>
+          <div class="sub-grey">Protocol interactions isolated per strategy. Separate audit surface per deployment.</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Fee Contract</div>
+          <div class="sub-grey">Independent fee calculation and extraction. Auditable. Prevents undocumented extraction.</div>
+        </div>
+        <div class="card card-left-navy" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--navy)">Withdrawal Queue</div>
+          <div class="sub-grey">Manages redemption sequencing for illiquid positions. Defines notice periods for allocator.</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        <span class="tag tag-grey">Upgrade proxy (UUPS)</span>
+        <span class="tag tag-red">72h time-lock minimum</span>
+        <span class="tag tag-grey">On-chain audit log</span>
+        <span class="tag tag-green">Audited: Independent Smart Contract Auditors</span>
+        <span class="tag tag-red">Board approval required pre-upgrade</span>
+      </div>
+    </div>
+
+    <div class="arrow">⇅</div>
+
+    
+    <div class="tier tier-border-grey" style="background:#fffdf5">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div class="label-grey">Oracle &amp; NAV Layer</div>
+          <div class="title-navy" style="font-size:13px">Price Feeds · NAV Calculation · Independent Verification</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px">
+        <div class="card card-left-gold" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--amber)">Primary Price Oracle</div>
+          <div class="sub-grey">Decentralised price feeds. Cross-validates against secondary feed. Deviation alert if &gt;0.5%.</div>
+        </div>
+        <div class="card card-left-gold" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--amber)">Secondary Price Oracle</div>
+          <div class="sub-grey">High-frequency institutional feeds. Independent of primary feed. Manipulation cross-check.</div>
+        </div>
+        <div class="card card-left-green" style="margin-bottom:0">
+          <div style="font-size:11px;font-weight:700;color:var(--green)">NAV Administrator (Independent)</div>
+          <div class="sub-grey">Calculates share price from verified feeds. Reports direct to allocator. Not via asset manager.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">⇅</div>
+
+    
+    <div class="tier tier-border-grey">
+      <div class="label-grey" style="margin-bottom:8px">Tier 4 - DeFi Protocol Layer</div>
+      <div class="proto-grid">
+        <div class="proto-cat">
+          <div class="proto-cat-head" style="border-color:#c0d8e8;color:var(--blue)">Lending</div>
+          <div class="proto-item">Aave</div>
+          <div class="proto-item">Compound</div>
+          <div class="proto-item">Morpho</div>
+          <div class="proto-item">Spark</div>
+          <div class="proto-item">Gearbox</div>
+        </div>
+        <div class="proto-cat">
+          <div class="proto-cat-head" style="border-color:#c0e8c8;color:var(--green)">AMM / DEX</div>
+          <div class="proto-item">Curve</div>
+          <div class="proto-item">Uniswap</div>
+          <div class="proto-item">Balancer</div>
+        </div>
+        <div class="proto-cat">
+          <div class="proto-cat-head" style="border-color:#e8d0c0;color:var(--amber)">Liquid Staking</div>
+          <div class="proto-item">Lido</div>
+          <div class="proto-item">Rocket Pool</div>
+        </div>
+        <div class="proto-cat">
+          <div class="proto-cat-head" style="border-color:#d8c0e8;color:var(--risk)">Yield / Structured</div>
+          <div class="proto-item">Pendle</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:7px 10px;background:#fff8f0;border:1px solid #e8d0b0;border-left:3px solid var(--amber);border-radius:2px;font-size:10px;color:var(--amber)">
+        <strong>Governance risk note:</strong> Each protocol has its own governance token and voting process. External governance decisions (e.g. AAVE parameter changes) can affect vault positions without asset manager action. Risk monitoring must track protocol governance activity.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: INDEPENDENT LAYERS ── -->
+  <div>
+    <div class="sh-green" style="margin-bottom:4px">yields.digital</div>
+    <div style="color:var(--green);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:0 1px">Independent Risk Intelligence Infrastructure</div>
+
+    <div class="info-box">
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px">ARCHITECTURALLY INDEPENDENT</div>
+      <p style="font-size:11px;color:var(--dark-grey);line-height:1.6;margin:0">yields.digital provides independent, time-series risk scoring and intelligence across crypto-assets, protocols, pools, and chains. Operating entirely outside the control chain - with no asset-movement, parameter-change, or key-holding capability - our scores and reports carry the independence regulators and institutional allocators require. All data is sourced directly from on-chain state, not via the asset manager, ensuring no intermediation of the evidence trail.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700">MiCA Art. 68</span>
+        <span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700">MiCA Art. 66</span>
+        <span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700">MiCA Art. 81</span>
+        <span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 7px;border-radius:2px;font-weight:700">DORA Art. 6</span>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Continuous Risk Scoring &amp; Art. 68 Evidence Trail</div>
+        <span class="badge badge-green" style="font-size:9px">REGULATORY</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores updated continuously across every asset, protocol, pool, and chain under management. Each score is timestamped and immutably logged, forming the auditable evidence trail Art. 68 demands. Available to NCA on request without requiring asset manager intermediation.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span></div>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Pre-Trade Risk Gate Intelligence</div>
+        <span class="badge badge-green" style="font-size:9px">RISK CONTROLS</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Real-time risk scores feed directly into the pre-trade compliance gate before any execution is permitted. Validates asset MiCA eligibility, protocol risk score, concentration limits, and mandate boundary - giving the Portfolio Manager and Risk Manager a single, evidenced risk signal at the point of decision.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span></div>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">MiCA Asset &amp; Protocol Eligibility</div>
+        <span class="badge badge-green" style="font-size:9px">COMPLIANCE</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Every asset and protocol in scope is assessed against MiCA Arts. 4–6 (white paper obligation and content) and Art. 16(1) (ART authorisation). Eligibility status is continuously monitored and updated - including when protocol governance changes affect compliance standing. Provides the documented asset-level matrix FIN-FSA and other NCAs request in supervisory reviews.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 4</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 5</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 6</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 16(1)</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span></div>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Real-Time Alerts &amp; Circuit Breaker</div>
+        <span class="badge badge-green" style="font-size:9px">RISK OVERSIGHT</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Threshold-based alerts trigger automatically on protocol risk events, liquidity deterioration, smart contract anomalies, or compliance breaches. Defined critical scenarios route directly to the vault circuit breaker via the Risk Manager role - with sub-block latency - without requiring human intervention. Protects client capital faster than any manual process.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 10</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 17</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Board / Owner</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span></div>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Protocol &amp; Chain Risk Intelligence</div>
+        <span class="badge badge-green" style="font-size:9px">RISK INTELLIGENCE</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores across every integrated protocol and chain - covering smart contract risk, liquidity depth, counterparty concentration, governance activity, and cross-chain bridge exposure. Scores are segmented by protocol category (lending, AMM, liquid staking, structured yield) reflecting the distinct risk profile of each. Enables the Risk Manager and Portfolio Manager to make and evidence decisions with a consistent, independent risk methodology.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 6</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span></div>
+      </div>
+    </div>
+
+    <div class="card card-left-green">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Institutional Reporting &amp; AUM Support</div>
+        <span class="badge badge-green" style="font-size:9px">AUM &amp; OVERSIGHT</span>
+      </div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Automatically generates the institutional-grade documentation allocators require during due diligence: documented risk methodology, asset-level scoring history, decision rationale, and continuous monitoring evidence. The Art. 81 portfolio management suitability record is built as a byproduct of normal operations - not as a separate compliance exercise. Supports AUM growth by demonstrating the governance standard institutional capital demands.</div>
+      <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
+        <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span></div>
+        <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Institutional Allocator</span></div>
+      </div>
+    </div>
+
+    <!-- Reporting flow -->
+    <div class="band band-navy" style="padding:11px 13px;border-radius:2px;margin-top:4px">
+      <div class="label-gold" style="margin-bottom:7px">Reporting Architecture</div>
+      <div style="font-size:11px;color:#b0c8e0;margin-bottom:10px">All lines direct - NOT via investment team</div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">yields.digital</span><span style="color:var(--gold);font-size:11px">→ Risk Manager</span></div>
+        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Art. 68 evidence trail + circuit breaker</div>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">yields.digital</span><span style="color:var(--gold);font-size:11px">→ Allocator</span></div>
+        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Independent portfolio monitoring</div>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">yields.digital</span><span style="color:var(--gold);font-size:11px">→ NCA / FIN-FSA</span></div>
+        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Regulatory submissions on request</div>
+      </div>
+      <div>
+        <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">NAV Administrator</span><span style="color:var(--gold);font-size:11px">→ Allocator</span></div>
+        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Independent share price - not via asset manager</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FOUR QUESTIONS
+══════════════════════════════════════════════════════ -->
+<div class="band band-navy full" style="padding:16px 20px">
+  <div class="label-gold" style="margin-bottom:12px">The Four Questions Serious Allocators Ask</div>
+  <div class="q-grid">
+    <div class="q-card">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">1 - Who can move assets?</div>
+      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Portfolio Manager role within Owner-set limits. MPC 2-of-N policy. Four-eyes approval above threshold. Every movement on-chain, timestamped, captured in Art. 68 evidence trail.</div>
+    </div>
+    <div class="q-card">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">2 - Who can change parameters?</div>
+      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Risk Manager role - independent of investment team, within board-approved ranges. Smart account policy enforces limits on-chain. Portfolio Manager cannot change risk parameters.</div>
+    </div>
+    <div class="q-card">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">3 - Who can pause activity?</div>
+      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Risk Manager (circuit breaker - automatic on defined triggers) and Owner (multi-sig). Portfolio Manager cannot pause. yields.digital critical alerts feed directly into circuit breaker.</div>
+    </div>
+    <div class="q-card">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">4 - Who can upgrade contracts?</div>
+      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Owner only. Multi-sig 3-of-5 with geographically distributed signers. 72-hour time-lock minimum. Fresh security audit required before execution. Board-level approval documented.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DORA / REGULATORY BAND
+══════════════════════════════════════════════════════ -->
+<div style="background:#fff;border:2px solid var(--navy);border-radius:3px;padding:14px 18px;margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div class="label-grey">DORA &amp; Regulatory Compliance Layer</div>
+    <span class="badge badge-gold">DORA (EU) 2022/2554 + MiCA (EU) 2023/1114</span>
+  </div>
+  <div class="dora-grid">
+    <div class="dora-item">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">ICT Incident Reporting</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Major ICT incidents: 4-hour initial notification to NCA (from classification). 24-hour initial report. 72-hour intermediate report. 1-month final report (from resolution). Pipeline pre-built, not ad hoc.</div>
+    </div>
+    <div class="dora-item">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">Threat-Led Pen Testing (TLPT)</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">DORA mandates TLPT for entities identified by competent authorities (Art. 26). Signing infrastructure, vault contracts, and RPC layer in scope. Minimum cadence: every 3 years.</div>
+    </div>
+    <div class="dora-item">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">ICT Third-Party Risk Register</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">All critical ICT providers documented. Concentration risk assessed. Exit plans for critical providers required.</div>
+    </div>
+    <div class="dora-item">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:5px">Business Continuity / DR</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">RTO and RPO defined for each system. Failover to secondary MPC provider if primary unavailable. Self-hosted RPC nodes as primary. Incident playbook documented.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px">
+  <div style="font-size:10px;color:#8a9ab0">yields.digital · Institutional DeFi Risk Infrastructure · MiCA (EU) 2023/1114 + DORA (EU) 2022/2554 aligned · v2.3 (audit-verified 2026-04-20)</div>
+  <div style="font-size:10px;color:#8a9ab0">Click role cards to view smart-contract permissions</div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+  const roleMap = {
+    owner: { activeClass: 'active-red', panel: 'perm-owner' },
+    risk:  { activeClass: 'active-amber', panel: 'perm-risk' },
+    pm:    { activeClass: 'active-blue',  panel: 'perm-pm'   },
+  };
+  let current = null;
+
+  function toggleRole(id) {
+    // Close current
+    if (current) {
+      document.getElementById('card-' + current).classList.remove(roleMap[current].activeClass);
+      document.getElementById('card-' + current).classList.remove('active-red','active-amber','active-blue');
+      document.getElementById(roleMap[current].panel).style.display = 'none';
+      const prevLabel = document.querySelector('#card-' + current + ' div:last-child');
+      if (prevLabel) prevLabel.textContent = '▼ PERMISSIONS';
+    }
+    if (current === id) { current = null; return; }
+    // Open new
+    current = id;
+    const card = document.getElementById('card-' + id);
+    card.classList.add(roleMap[id].activeClass);
+    document.getElementById(roleMap[id].panel).style.display = 'block';
+    const label = card.querySelector('div:last-child');
+    if (label) label.textContent = '▲ HIDE';
+    // Scroll into view
+    document.getElementById(roleMap[id].panel).scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+</script>
+</body>
+</html>
