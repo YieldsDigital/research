@@ -37,3 +37,7 @@ research/
 ## About
 
 All documents are self-contained single-file HTML with no external dependencies. Dark mode enabled by default with light mode toggle. Designed for sharing with partners, investors, and regulatory stakeholders.
+
+## Disclaimer
+
+The content in this repository is published for informational and educational purposes only. Nothing herein constitutes financial, investment, legal, or regulatory advice. Yields Digital makes no representations or warranties regarding the accuracy, completeness, or timeliness of the information presented. Regulatory references (MiCA, DORA, and others) reflect the authors' interpretation and should not be relied upon as authoritative legal guidance. Readers should consult qualified professionals before making decisions based on this content. Market data is point-in-time and may be materially outdated.
