@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>yields.digital - Full MiCA Article Coverage (Generic Reference)</title>
+  <style>
+    :root {
+      /* Status palette (shared) */
+      --green: #16a34a; --green-bg: #dcfce7; --green-fg: #15803d;
+      --amber: #d97706; --amber-bg: #fef3c7; --amber-fg: #b45309;
+      --blue:  #2563eb; --blue-bg:  #dbeafe; --blue-fg:  #1d4ed8;
+      --purple-bg: #f3e8ff; --purple-fg: #6b21a8;
+
+      /* Theme tokens (light defaults) */
+      --bg: #f0f4f8;
+      --fg: #1a1a2e;
+      --fg-strong: #0f172a;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --border-2: #f1f5f9;
+      --hero-bg: #0f172a;
+      --hero-fg: #ffffff;
+      --hero-eyebrow: #64748b;
+      --hero-subtitle: #94a3b8;
+      --refs-bg: #1e293b;
+      --thead-bg: #1e293b;
+      --thead-fg: #e2e8f0;
+      --row-hover: #f8fafc;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.07);
+      --shadow-md: 0 1px 4px rgba(0,0,0,0.07);
+      --legend-fg: #374151;
+      --how-cell-fg: #1e293b;
+      --how-highlight-fg: #0f172a;
+      --caveat-border: #e2e8f0;
+      --link-on-dark: #60a5fa;
+      --num-dark: #0f172a;
+      --num-purple: #6b21a8;
+
+      --toggle-bg: rgba(255,255,255,0.10);
+      --toggle-fg: #e2e8f0;
+      --toggle-border: rgba(255,255,255,0.20);
+      --toggle-bg-hover: rgba(255,255,255,0.18);
+    }
+
+    /* Dark theme: explicit toggle */
+    [data-theme="dark"] {
+      --bg: #0b1220;
+      --fg: #e2e8f0;
+      --fg-strong: #f8fafc;
+      --muted: #94a3b8;
+      --muted-2: #94a3b8;
+      --surface: #0f172a;
+      --surface-2: #131c2e;
+      --border: #334155;
+      --border-2: #1e293b;
+      --hero-bg: #131c2e;
+      --hero-fg: #ffffff;
+      --hero-eyebrow: #94a3b8;
+      --hero-subtitle: #cbd5e1;
+      --refs-bg: #131c2e;
+      --thead-bg: #1e293b;
+      --thead-fg: #e2e8f0;
+      --row-hover: rgba(148,163,184,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.40);
+      --shadow-md: 0 1px 4px rgba(0,0,0,0.40);
+      --legend-fg: #cbd5e1;
+      --how-cell-fg: #e2e8f0;
+      --how-highlight-fg: #f8fafc;
+      --caveat-border: #334155;
+      --num-dark: #f8fafc;
+      --num-purple: #c4b5fd;
+
+      --green-bg: rgba(22,163,74,0.18);
+      --green-fg: #86efac;
+      --amber-bg: rgba(217,119,6,0.20);
+      --amber-fg: #fcd34d;
+      --blue-bg:  rgba(37,99,235,0.20);
+      --blue-fg:  #93c5fd;
+      --purple-bg: rgba(124,58,237,0.22);
+      --purple-fg: #c4b5fd;
+    }
+
+    /* Dark theme: OS preference fallback (when user has not toggled) */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --bg: #0b1220;
+        --fg: #e2e8f0;
+        --fg-strong: #f8fafc;
+        --muted: #94a3b8;
+        --muted-2: #94a3b8;
+        --surface: #0f172a;
+        --surface-2: #131c2e;
+        --border: #334155;
+        --border-2: #1e293b;
+        --hero-bg: #131c2e;
+        --hero-eyebrow: #94a3b8;
+        --hero-subtitle: #cbd5e1;
+        --refs-bg: #131c2e;
+        --row-hover: rgba(148,163,184,0.08);
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.40);
+        --shadow-md: 0 1px 4px rgba(0,0,0,0.40);
+        --legend-fg: #cbd5e1;
+        --how-cell-fg: #e2e8f0;
+        --how-highlight-fg: #f8fafc;
+        --caveat-border: #334155;
+        --num-dark: #f8fafc;
+        --num-purple: #c4b5fd;
+
+        --green-bg: rgba(22,163,74,0.18);
+        --green-fg: #86efac;
+        --amber-bg: rgba(217,119,6,0.20);
+        --amber-fg: #fcd34d;
+        --blue-bg:  rgba(37,99,235,0.20);
+        --blue-fg:  #93c5fd;
+        --purple-bg: rgba(124,58,237,0.22);
+        --purple-fg: #c4b5fd;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      padding: 36px 32px;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--hero-bg);
+      border-radius: 10px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      color: var(--hero-fg);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    }
+    .header-text { flex: 1; min-width: 0; }
+    .header .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--hero-eyebrow);
+      margin-bottom: 6px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 13px;
+      color: var(--hero-subtitle);
+      line-height: 1.65;
+    }
+
+    .theme-toggle {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--toggle-bg); color: var(--toggle-fg);
+      border: 1px solid var(--toggle-border); border-radius: 6px;
+      padding: 6px 10px; font-size: 11px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.1s, border-color 0.1s;
+    }
+    .theme-toggle:hover { background: var(--toggle-bg-hover); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+    /* ── Summary bar ── */
+    .summary {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 14px 20px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      min-width: 110px;
+      border: 1px solid var(--border-2);
+    }
+    .stat .num { font-size: 30px; font-weight: 800; line-height: 1; color: var(--num-dark); }
+    .stat .lbl { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+    .c-green { color: var(--green); }
+    .c-amber { color: var(--amber); }
+    .c-blue  { color: var(--blue); }
+    .c-dark   { color: var(--num-dark); }
+    .c-purple { color: var(--num-purple); }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--legend-fg); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .d-direct  { background: var(--green); }
+    .d-partial { background: var(--amber); }
+    .d-support { background: var(--blue); }
+
+    /* ── Section group label ── */
+    .group-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #fff;
+      padding: 7px 14px;
+    }
+    .gl-casp   { background: #1e40af; }
+    .gl-art    { background: #1e3a5f; }
+    .gl-dora   { background: #3b1f5e; }
+    .gl-tfr    { background: #1f4a3b; }
+    .gl-esma   { background: #4a1f1f; }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 28px;
+      font-size: 13px;
+      border: 1px solid var(--border-2);
+    }
+    thead th {
+      background: var(--thead-bg);
+      color: var(--thead-fg);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 11px 14px;
+      text-align: left;
+    }
+    th:nth-child(1) { width: 16%; }
+    th:nth-child(2) { width: 10%; }
+    th:nth-child(3) { width: 74%; }
+
+    tbody tr { border-bottom: 1px solid var(--border-2); transition: background 0.1s; }
+    tbody tr:hover { background: var(--row-hover); }
+    td { padding: 13px 14px; vertical-align: top; line-height: 1.6; }
+
+    .art-cell .art-num { font-weight: 700; font-size: 13.5px; color: var(--fg-strong); }
+    .art-cell .art-title { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .art-cell .art-src {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .src-deck  { background: var(--blue-bg);   color: var(--blue-fg); }
+    .src-audit { background: var(--purple-bg); color: var(--purple-fg); }
+    .src-both  { background: var(--green-bg);  color: var(--green-fg); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .b-direct  { background: var(--green-bg); color: var(--green-fg); }
+    .b-partial { background: var(--amber-bg); color: var(--amber-fg); }
+    .b-support { background: var(--blue-bg);  color: var(--blue-fg); }
+
+    .how-cell { color: var(--how-cell-fg); font-size: 13px; }
+    .how-cell .highlight {
+      font-weight: 600;
+      color: var(--how-highlight-fg);
+    }
+    .how-cell .caveat {
+      display: block;
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: var(--muted);
+      font-style: italic;
+      border-top: 1px dashed var(--caveat-border);
+      padding-top: 5px;
+    }
+
+    .group-row td {
+      padding: 0;
+    }
+
+    /* References card (second .header card with custom bg) */
+    .refs-card {
+      background: var(--refs-bg);
+      border-radius: 10px;
+      padding: 18px 32px;
+      margin-top: 4px;
+      color: var(--hero-fg);
+    }
+    .refs-card a { color: var(--link-on-dark); }
+    .refs-card .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--hero-eyebrow); margin-bottom: 6px; }
+
+    footer {
+      font-size: 11px;
+      color: var(--muted-2);
+      margin-top: 8px;
+      padding: 12px 16px;
+      line-height: 1.6;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem('mica-theme');
+        if (stored === 'dark' || stored === 'light') {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      } catch (e) { /* localStorage unavailable - fall back to OS preference */ }
+    })();
+  </script>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-text">
+      <div class="eyebrow">yields.digital · Regulatory Coverage Reference · v1.0 · March 2026</div>
+      <h1>Full MiCA Article Coverage: What yields.digital Delivers</h1>
+      <p>Maps yields.digital's delivery mechanisms across two regulatory scopes: (1) CASP obligations under MiCA Title V (Arts. 66, 75, 81; DORA; TFR; ESMA reporting); and (2) ART/EMT issuer obligations under MiCA Title III (Arts. 16-47). Articles where yields.digital has no material contribution are excluded. Regulatory framework and article number are shown on the left; the specific delivery mechanism is on the right.</p>
+    </div>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+      <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+      <span class="theme-toggle-label">Dark</span>
+    </button>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="stat"><div class="num c-green">8</div><div class="lbl">Direct coverage</div></div>
+    <div class="stat"><div class="num c-amber">15</div><div class="lbl">Partial coverage</div></div>
+    <div class="stat"><div class="num c-blue">3</div><div class="lbl">Supporting layer only</div></div>
+    <div class="stat"><div class="num c-dark">26</div><div class="lbl">Total articles addressed</div></div>
+    <div class="stat"><div class="num c-purple">4</div><div class="lbl">Regulatory frameworks</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot d-direct"></div> <strong>Direct</strong> - yields.digital is the primary delivery mechanism</div>
+    <div class="legend-item"><div class="dot d-partial"></div> <strong>Partial</strong> - yields.digital provides substantive supporting infrastructure</div>
+    <div class="legend-item"><div class="dot d-support"></div> <strong>Supporting layer</strong> - yields.digital contributes one component; other obligations remain with the issuer or custodian</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Article</th>
+        <th>Coverage</th>
+        <th>How yields.digital delivers</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TITLE V - CASP OBLIGATIONS (from Deck)     -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <tr class="group-row"><td colspan="3"><div class="group-label gl-casp">MiCA Title V - CASP Obligations · Arts. 66, 75, 81</div></td></tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 66 / 66(2)</div>
+          <div class="art-title">CASP conduct: fair, clear &amp; not misleading communications</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          <span class="highlight">MiCA Classification Engine</span> automatically classifies stablecoins as ART, EMT, or other - preventing the CASP from inadvertently offering exposure to non-compliant or misclassified assets, which is the primary Art. 66(2) conduct risk. The <span class="highlight">NCA enforcement feed</span> monitors BaFin, ESMA, and other NCAs in real time, triggering alerts before enforcement action materializes (as demonstrated by the BaFin/Ethena €600K coercive penalty for non-compliance with supervisory measures). Every client-facing data point - APY, TVL, risk tier - is timestamped and verified, ensuring communications are factually defensible.
+          <span class="caveat">Deployed in Q2 roadmap (classification engine + NCA feed). Early warning system (Phase 1) live within weeks.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 75(8)</div>
+          <div class="art-title">CASP custody liability for loss of client crypto-assets</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          <span class="highlight">LYRA risk scores</span> - live today for 6 protocols - provide the independent, quantitative, timestamped evidence trail that constitutes an NCA-defensible record. Art. 75(8) holds the CASP liable for losses attributable to it; without documented, auditable risk assessment at the point of deployment, there is no evidential defense in an NCA investigation. LYRA covers market risk, fundamental risk, liquidity risk, and concentration risk per protocol. Every score is timestamped and immutable. This is the single most important regulatory defense yields.digital provides to a CASP and can be live in <strong>2-3 days</strong>.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 75</div>
+          <div class="art-title">Internal custody policy and safekeeping arrangements</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          <span class="highlight">Protocol-level risk metadata</span> (contract addresses, chain, version, LYRA risk tier) exports directly into a structured custody policy framework. For complex instruments like Curve liquidity pools - where the asset custody model is non-trivial - LYRA risk data provides the quantitative underpinning for the internal policy required under Art. 75. The Art. 75 policy document itself remains the CASP's responsibility.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 81</div>
+          <div class="art-title">Suitability assessment for portfolio management and investment advice</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          Art. 81 requires that every allocation decision for a managed portfolio be backed by a documented suitability assessment. <span class="highlight">yields.digital creates an auditable Art. 81 evidence trail from day one</span>: every pool selection is backed by timestamped APY data, LYRA risk scores, and documented risk-adjusted yield rationale. The single API delivering 159 pools across 6 protocols with risk-filtering means the Investment Manager's decisions are automatically documented against quantitative criteria - replacing the current state of spreadsheet reconciliation with no audit trail.
+        </td>
+      </tr>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- DORA                                        -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <tr class="group-row"><td colspan="3"><div class="group-label gl-dora">DORA (Digital Operational Resilience Act)</div></td></tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">DORA Art. 28(3)</div>
+          <div class="art-title">ICT third-party service provider register</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          yields.digital exports protocol metadata - name, contract addresses, chain, version, LYRA risk tier - as a <span class="highlight">structured DORA ICT register in JSON/CSV format</span>, covering all 6 live protocols today and extending to 15 protocols through Q2. The register is auto-generated and version-tracked, eliminating the current spreadsheet. Deployable in <strong>1-2 weeks</strong> (Phase 1). Full JSON/CSV register with version tracking ships in Q3.
+        </td>
+      </tr>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- ESMA REPORTING                              -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <tr class="group-row"><td colspan="3"><div class="group-label gl-esma">ESMA Machine-Readable Reporting</div></td></tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">ESMA JSON &amp; iXBRL</div>
+          <div class="art-title">Machine-readable reporting: iXBRL white papers (mandatory since Dec 2025) and JSON order book (NCAs requesting by mid-2026)</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          yields.digital's Q3 module delivers <span class="highlight">full ESMA JSON reporting and iXBRL white paper disclosure templates</span>, auto-generated from live platform data. The iXBRL white paper format became mandatory 23 December 2025 (Implementing Regulation 2024/2984). NCAs are expected to begin requesting JSON order book data by mid-2026 (6 months after ESMA's November 2025 publication). <strong>Critical path dependency</strong>: the Q3 ESMA reporting module depends on the Q2 classification engine (MiCA asset classification) and reporting modules being stable - meaning Q2 must begin immediately. iXBRL white paper disclosure templates are scoped for Q2.
+          <span class="caveat">Q2 classification engine is the critical path prerequisite. iXBRL compliance already required; JSON order book reporting expected mid-2026.</span>
+        </td>
+      </tr>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TFR / TRAVEL RULE                           -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <tr class="group-row"><td colspan="3"><div class="group-label gl-tfr">Transfer of Funds Regulation (TFR) / Travel Rule</div></td></tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">TFR - Travel Rule</div>
+          <div class="art-title">Originator/beneficiary data for crypto-asset transfers</div>
+          <span class="art-src src-deck">Deck</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          <span class="highlight">Travel Rule address registry</span> (Q2 roadmap) automates TFR compliance verification, integrated into async ERC-7540 vault flows. Currently manual tagging of DeFi interactions is the Compliance Manager's workload - this eliminates it entirely. The registry maps on-chain addresses to compliance records, ensuring every vault interaction meets the Travel Rule data requirement without manual intervention.
+        </td>
+      </tr>
+
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- TITLE III - ART ISSUER OBLIGATIONS (Audit)  -->
+      <!-- ═══════════════════════════════════════════ -->
+
+      <tr class="group-row"><td colspan="3"><div class="group-label gl-art">MiCA Title III - Asset-Referenced Token Issuer Obligations · Arts. 16-47</div></td></tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 17</div>
+          <div class="art-title">Requirements for credit institutions issuing ARTs</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Credit institutions issuing ARTs must attach an approved white paper including risk and reserve disclosures. yields.digital provides the <span class="highlight">risk model outputs and reserve composition data</span> that populate the mandatory Annex II risk and reserve sections of the white paper - the quantitative evidence behind the notification.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 20</div>
+          <div class="art-title">Assessment of the application for authorisation</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          The authorization application requires documented, operationalized risk management policies. yields.digital provides the <span class="highlight">live infrastructure that gives those policies operational substance</span> - risk dashboards, limit monitoring, automated alerts - demonstrating to the competent authority that risk management is not merely stated policy but active and running.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 19</div>
+          <div class="art-title">Content and form of the ART white paper</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Annex II mandates detailed disclosure of reserve composition, risk factors, and investment policy in the white paper. yields.digital provides the <span class="highlight">live reserve composition data, risk factor quantification (market, credit, liquidity), and investment policy parameters</span> that feed directly into the required Annex II sections.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 22</div>
+          <div class="art-title">Quarterly reporting on ARTs to competent authority</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Quarterly reports to the competent authority must cover: token holders, reserve value and composition, transaction volumes, and issuer exposure. yields.digital <span class="highlight">aggregates all underlying data fields</span> required for Art. 22 reporting. Full "Direct" coverage is conditional on confirmed implementation of the EBA-prescribed supervisory reporting template taxonomy.
+          <span class="caveat">Auditor note: The claim becomes Direct only when yields.digital outputs are confirmed to conform to EBA supervisory reporting template formats.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 23</div>
+          <div class="art-title">Restrictions on widely-used ARTs (transaction thresholds)</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          When estimated quarterly averages exceed 1 million daily transactions and €200M daily transaction value within a single currency area, the issuer must cease issuance and submit a plan to the competent authority to reduce usage below the thresholds. yields.digital's <span class="highlight">transaction volume monitoring</span> tracks rolling thresholds and provides automated alerts approaching the cap - enabling proactive regulatory notification before EBA intervention.
+          <span class="caveat">Conditional on confirmed on-chain transaction monitoring capability across all supported chains.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 25</div>
+          <div class="art-title">Notification of material white paper changes</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Issuers must submit a draft modified white paper to the competent authority for approval; the CA has 30 working days to approve or refuse. yields.digital's <span class="highlight">reserve composition and risk monitoring detects material deviations</span> in reserve profile or risk posture that would trigger the modification obligation - providing advance warning well before the approval process begins.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 26</div>
+          <div class="art-title">Issuer liability for white paper information</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-support">Supporting</span></td>
+        <td class="how-cell">
+          Civil liability under Art. 26 arises if reserve or risk disclosures are materially misleading. yields.digital's <span class="highlight">timestamped, auditable data lineage</span> provides evidentiary defense - every reserve value and risk metric in the white paper is backed by a verified, reproducible data trail.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 27</div>
+          <div class="art-title">Act honestly, fairly, in holders' best interest</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          A conduct obligation the issuer owns. yields.digital ensures that <span class="highlight">all holder-facing data - reserve values, risk metrics, performance - is current, verified, and not misleading</span> at the point of disclosure, reducing the risk of inadvertent conduct breaches from stale or inaccurate data.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 30</div>
+          <div class="art-title">Ongoing information disclosure (monthly updates + immediate material events)</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Issuers must publish monthly: tokens in circulation, total reserve value, and reserve composition by asset class. yields.digital <span class="highlight">aggregates and structures all three data points</span> into disclosure-ready outputs. Full automation to "Direct" is conditional on API-level custodian integration being confirmed.
+          <span class="caveat">Conditional on confirmed real-time custodian data integration. Without this, yields.digital processes data but does not fully automate the obligation.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 32</div>
+          <div class="art-title">Identification, prevention, management and disclosure of conflicts of interest</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-support">Supporting</span></td>
+        <td class="how-cell">
+          A governance and policy obligation. yields.digital's <span class="highlight">audit trail and data lineage infrastructure</span> supports the evidentiary record of reserve management decisions, investment transactions, and pricing sources - providing documentation that conflicts were identified and managed.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 34</div>
+          <div class="art-title">Governance arrangements, internal controls, and risk management</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Governance requires documented internal controls over risk management. yields.digital provides the <span class="highlight">real-time risk dashboards, threshold alerts, and limit breach monitoring</span> that governance bodies consume - giving boards and senior management live visibility into risk positions rather than periodic manual reports. <span class="highlight">Direct for quantitative risk dimensions</span>: LYRA provides continuous market risk, fundamental risk, liquidity risk, and concentration risk monitoring with stress testing and scenario analysis (mapping to MiCA's market risk, credit risk, and concentration risk categories). Partial overall because Art. 34 also mandates operational risk including ICT, cybersecurity, and business continuity - non-quantitative obligations that remain the issuer's internal responsibility and cannot be delegated to a risk modeling platform.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 35</div>
+          <div class="art-title">Own funds requirements</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          Own funds must equal the greater of €350k, 2% of average reserve assets, or 25% of prior year fixed overheads. The 2% calculation is a <span class="highlight">quantitative function that flows directly from reserve asset valuation</span> - a core yields.digital output. The platform monitors own funds adequacy against the regulatory floor continuously and flags any approach to breach ahead of time.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 36</div>
+          <div class="art-title">Reserve of assets - composition, management, and parity</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          yields.digital <span class="highlight">monitors reserve composition in real time against issued token value</span>, alerts when the reserve approaches a shortfall, and models forward-looking shortfall risk under stress. Full "Direct" is conditional on real-time custodian data integration. Note: legal segregation of reserve assets is a structural legal obligation the issuer must fulfill independently of technology.
+          <span class="caveat">Also: EBA/Commission RTS defining "highly liquid financial instruments" for reserve purposes was still contested as of March 2026 - the compliance target is evolving.</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 37</div>
+          <div class="art-title">Custody of reserve assets (independent custodian)</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-support">Supporting</span></td>
+        <td class="how-cell">
+          Art. 37 requires a legally independent, regulated custodian - a different legal entity from the issuer. yields.digital <span class="highlight">provides the reconciliation and audit trail layer that supports the independent custodian's audit process</span>: continuous position reconciliation across custodians, timestamped records, and discrepancy flagging. yields.digital does not fulfill, and does not claim to fulfill, the custody obligation itself.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 38</div>
+          <div class="art-title">Investment of reserve assets (low-risk, highly liquid)</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-direct">Direct</span></td>
+        <td class="how-cell">
+          Reserve funds must be invested in highly liquid, low-risk assets liquidatable with minimal market impact. yields.digital's <span class="highlight">portfolio compliance monitoring continuously checks reserve investments against these constraints</span> - providing real-time alerts when investments approach policy limits and documenting enforcement of the investment policy.
+          <span class="caveat">Conditional on EBA's definition of "highly liquid financial instruments" being finalized (RTS still in dispute as of March 2026).</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 40</div>
+          <div class="art-title">Prohibition of granting interest in relation to ARTs</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Issuers are prohibited from granting any interest-like benefit to ART holders based on holding duration. yields.digital's <span class="highlight">yield and transaction monitoring layer flags payments or distributions that structurally resemble prohibited interest</span> - an automated compliance check. Legal determination of what constitutes "interest" under MiCA remains the issuer's legal/compliance function.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 43</div>
+          <div class="art-title">Classification as significant ART</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          EBA classifies ARTs as significant based on customer base (>10 million holders), market capitalisation (>€5bn), and transaction volumes (>2.5 million daily transactions and >€500M daily value). yields.digital <span class="highlight">monitors all three threshold metrics continuously</span>, providing advance warning that a token is approaching significance criteria - enabling proactive regulatory engagement before formal classification.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 45</div>
+          <div class="art-title">Specific additional obligations for issuers of significant ARTs</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          Significant issuers face enhanced liquidity management, higher-frequency stress testing, interoperability requirements, and direct EBA supervisory data submissions. yields.digital's infrastructure provides the <span class="highlight">underlying data foundation - enhanced liquidity monitoring, daily stress testing cycles, and structured supervisory data outputs</span> - supporting significant-issuer compliance. Full "Direct" requires confirmed implementation of EBA ITS supervisory reporting formats.
+        </td>
+      </tr>
+
+      <tr>
+        <td class="art-cell">
+          <div class="art-num">Art. 46</div>
+          <div class="art-title">Recovery plan</div>
+          <span class="art-src src-audit">Audit</span>
+        </td>
+        <td><span class="badge b-partial">Partial</span></td>
+        <td class="how-cell">
+          EBA Recovery Plan Guidelines require a multi-section document covering governance escalation triggers, communication plans, legal/contractual arrangements, and quantitative financial resilience scenarios. yields.digital provides the <span class="highlight">stress scenario modeling and reserve drawdown analysis</span> that constitutes the financial resilience section of the recovery plan - the quantitative inputs - but not the full plan document, which also requires governance, legal, and communications components.
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <div class="refs-card">
+    <div class="eyebrow">Sources</div>
+    <p style="font-size:12px; line-height:1.8;">
+      <strong>MiCA</strong> - Regulation (EU) 2023/1114: <a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj/eng">EUR-Lex full text</a> · <a href="https://www.mica.wtf">mica.wtf article navigator</a><br/>
+      <strong>DORA</strong> - Regulation (EU) 2022/2554: <a href="https://eur-lex.europa.eu/eli/reg/2022/2554/oj/eng">EUR-Lex full text</a> · <a href="https://www.digital-operational-resilience-act.com/Article_28.html">Art. 28 reference</a><br/>
+      <strong>TFR</strong> - Regulation (EU) 2023/1113: <a href="https://eur-lex.europa.eu/eli/reg/2023/1113/oj/eng">EUR-Lex full text</a><br/>
+      <strong>ESMA iXBRL</strong> - Implementing Regulation (EU) 2024/2984: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=OJ:L_202402984">EUR-Lex full text</a><br/>
+      <strong>EBA Recovery Plan Guidelines</strong>: <a href="https://www.eba.europa.eu/regulation-and-policy/asset-referenced-and-e-money-tokens-mica">EBA MiCA policy page</a><br/>
+      <strong>BaFin/Ethena enforcement</strong>: <a href="https://www.bafin.de/SharedDocs/Veroeffentlichungen/EN/Verbrauchermitteilung/weitere/2025/meldung_2025_03_21_Ethena_GmbH_en.html">BaFin notice (Mar 2025)</a> · <a href="https://www.bafin.de/SharedDocs/Veroeffentlichungen/EN/Verbrauchermitteilung/weitere/2025/meldung_2025_04_15_Ethena_GmbH_en.html">BaFin notice (Apr 2025)</a>
+    </p>
+  </div>
+
+  <footer>
+    yields.digital · Full MiCA Coverage Reference · v1.0 · March 2026 · Assessed against MiCA Regulation (EU) 2023/1114, EBA/ESMA RTS/ITS, EBA Recovery Plan Guidelines, DORA Regulation (EU) 2022/2554, and TFR Regulation (EU) 2023/1113
+  </footer>
+
+<script>
+  (function() {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    var icon = btn.querySelector('.theme-toggle-icon');
+    var label = btn.querySelector('.theme-toggle-label');
+    var mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    function effectiveTheme() {
+      var explicit = document.documentElement.getAttribute('data-theme');
+      if (explicit) return explicit;
+      return mql && mql.matches ? 'dark' : 'light';
+    }
+
+    function syncButton() {
+      var current = effectiveTheme();
+      if (current === 'dark') {
+        icon.textContent = '☀';
+        label.textContent = 'Light';
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        icon.textContent = '🌙';
+        label.textContent = 'Dark';
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    btn.addEventListener('click', function() {
+      var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('mica-theme', next); } catch (e) { /* persistence unavailable */ }
+      syncButton();
+    });
+
+    if (mql && mql.addEventListener) {
+      mql.addEventListener('change', function() {
+        if (!document.documentElement.getAttribute('data-theme')) syncButton();
+      });
+    }
+
+    syncButton();
+  })();
+</script>
+
+</body>
+</html>
