@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<!--
+  yields.digital - How We Prove Our Numbers
+  An explainer on the engineering discipline behind the platform's figures:
+  provable correctness, independent verification, and continuous drift detection.
+  Single file, zero dependencies. Version 2.0.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yields.digital - How We Prove Our Numbers</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --pink: #DF2A4F; --pink-400: #f472b6; --purple: #A855F7; --green: #10b981;
+  --amber: #f59e0b; --blue: #3b82f6; --cyan: #39d2c0; --red: #ef4444;
+  --bg: #111827; --bg-alt: #1f2937; --text: #f9fafb; --text-sec: #e5e7eb;
+  --text-muted: #9ca3af; --border: #374151; --card: #1f2937;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+  --radius: 8px;
+}
+:root { --body-bg: #0a0a0f; --chrome-bg: #111118; --chrome-border: #2a2a35; --chrome-text: #e0e0e0; --chrome-muted: #888; --filter-bg: #1a1a24; --filter-hover: #222230; --sidebar-h3: #666; --legend-text: #999; --code-bg: #1a1a24; }
+.light { --bg: #ffffff; --bg-alt: #f9fafb; --text: #1f2937; --text-sec: #4b5563; --text-muted: #6b7280; --border: #e5e7eb; --card: #ffffff; --body-bg: #ffffff; --chrome-bg: #f9fafb; --chrome-border: #e5e7eb; --chrome-text: #1f2937; --chrome-muted: #6b7280; --filter-bg: #ffffff; --filter-hover: #f3f4f6; --sidebar-h3: #9ca3af; --legend-text: #6b7280; --code-bg: #f3f4f6; }
+
+body { font-family: var(--font); background: var(--body-bg); color: var(--chrome-text); height: 100vh; overflow: hidden; transition: background 0.3s, color 0.3s; }
+
+.shell { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: auto 1fr; height: 100vh; }
+
+.header {
+  grid-column: 1 / -1; background: var(--chrome-bg); border-bottom: 1px solid var(--chrome-border);
+  padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.3s, border-color 0.3s;
+}
+.header h1 { font-size: 14px; font-weight: 600; font-family: var(--mono); color: var(--chrome-text); }
+.header h1 .warn { color: var(--purple); margin-left: 8px; font-size: 11px; }
+.header-r { display: flex; gap: 12px; align-items: center; }
+.header-sub { font-size: 11px; color: var(--chrome-muted); font-family: var(--mono); }
+
+.tog { display: flex; border-radius: 6px; overflow: hidden; border: 1px solid var(--chrome-border); }
+.tog button { padding: 6px 14px; font-size: 11px; font-family: var(--mono); border: none; background: var(--filter-bg); color: var(--chrome-muted); cursor: pointer; transition: all 0.2s; }
+.tog button.active { background: #A855F7; color: white; }
+.tog button:hover:not(.active) { background: var(--filter-hover); color: var(--chrome-text); }
+
+/* Sidebar */
+.sidebar { background: var(--chrome-bg); border-right: 1px solid var(--chrome-border); overflow-y: auto; padding: 16px 12px; transition: background 0.3s, border-color 0.3s; }
+.sidebar h3 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--sidebar-h3); margin: 18px 6px 8px; }
+.sidebar h3:first-child { margin-top: 0; }
+.topic-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; margin-bottom: 2px; font-size: 12px; font-family: var(--mono); background: transparent; border: 1px solid transparent; border-left: 2px solid transparent; border-radius: 4px; color: var(--chrome-text); cursor: pointer; text-align: left; transition: all 0.15s; }
+.topic-item:hover { background: var(--filter-hover); }
+.topic-item.active { background: rgba(168,85,247,0.12); border-left-color: var(--purple); color: var(--purple); }
+.light .topic-item.active { color: #7e22ce; }
+.topic-item .ico { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.topic-child { display: block; width: calc(100% - 26px); margin-left: 26px; padding: 4px 8px; margin-bottom: 1px; font-size: 11px; font-family: var(--mono); background: transparent; border: none; border-left: 2px solid var(--chrome-border); border-radius: 0 4px 4px 0; color: var(--chrome-muted); cursor: pointer; text-align: left; transition: all 0.15s; }
+.topic-child:hover { color: var(--chrome-text); background: var(--filter-hover); }
+.topic-child.active { border-left-color: var(--pink); color: var(--pink-400); background: rgba(223,42,79,0.08); }
+.light .topic-child.active { color: var(--pink); }
+
+/* Main column */
+.main { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); transition: background 0.3s; }
+.crumbs { padding: 10px 28px; border-bottom: 1px solid var(--chrome-border); background: var(--chrome-bg); font-size: 11px; font-family: var(--mono); color: var(--chrome-muted); display: flex; gap: 6px; align-items: center; flex-shrink: 0; transition: background 0.3s, border-color 0.3s; }
+.crumbs a { color: var(--chrome-muted); text-decoration: none; cursor: pointer; }
+.crumbs a:hover { color: var(--purple); }
+.crumbs .sep { color: var(--chrome-border); }
+.crumbs .here { color: var(--chrome-text); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px 36px 40px; color: var(--text); }
+.content-inner { max-width: 860px; }
+.content h2 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.content .tagline { font-size: 13px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 20px; }
+.content p { font-size: 13.5px; line-height: 1.65; color: var(--text-sec); margin-bottom: 12px; }
+.content strong { color: var(--text); }
+.content code { font-family: var(--mono); font-size: 12px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: var(--cyan); }
+.light .content code { color: #0e7490; }
+.content ul, .content ol { margin: 0 0 12px 22px; }
+.content li { font-size: 13.5px; line-height: 1.6; color: var(--text-sec); margin-bottom: 5px; }
+a[data-nav] { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue); cursor: pointer; }
+a[data-nav]:hover { color: var(--purple); border-bottom-color: var(--purple); }
+.content a.ext { color: var(--text-muted); text-decoration: none; border-bottom: 1px dotted var(--text-muted); }
+.content a.ext:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* Stat cards */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 18px 0; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 12px; text-align: center; }
+.stat-card .num { font-size: 24px; font-weight: 700; font-family: var(--mono); color: var(--purple); }
+.stat-card .lbl { font-size: 10.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+
+/* Flow diagram */
+.flow { display: flex; align-items: stretch; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+.flow-step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; font-size: 11px; font-family: var(--mono); color: var(--text-sec); text-align: center; min-width: 86px; display: flex; flex-direction: column; justify-content: center; }
+.flow-step .fs-t { font-weight: 700; color: var(--text); font-size: 11.5px; margin-bottom: 2px; }
+.flow-step.hot { border-color: var(--purple); }
+.flow-step.hot .fs-t { color: var(--purple); }
+.flow-arrow { display: flex; align-items: center; padding: 0 6px; color: var(--text-muted); font-size: 14px; }
+
+/* Expandable cards */
+.expand-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; }
+.expand-header { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; user-select: none; transition: background 0.15s; }
+.expand-header:hover { background: var(--filter-hover); }
+.expand-header .ico { font-size: 14px; }
+.expand-header .t { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+.expand-header .chev { color: var(--text-muted); transition: transform 0.25s; font-size: 11px; }
+.expand-card.open .chev { transform: rotate(90deg); }
+.expand-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.expand-body-inner { padding: 2px 14px 13px 38px; font-size: 12.5px; line-height: 1.6; color: var(--text-sec); }
+.expand-body-inner p { font-size: 12.5px; margin-bottom: 8px; }
+
+/* Nav cards */
+.nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 18px 0; }
+.nav-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 14px; cursor: pointer; transition: all 0.15s; }
+.nav-card:hover { border-color: var(--purple); transform: translateY(-1px); }
+.nav-card .nc-t { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.nav-card .nc-d { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
+.nav-card .nc-t .ico { margin-right: 6px; }
+
+/* Badges */
+.badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 10px; font-family: var(--mono); font-weight: 600; vertical-align: 1px; }
+.badge-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
+.badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.4); }
+.badge-purple { background: rgba(168,85,247,0.13); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
+.badge-blue { background: rgba(59,130,246,0.13); color: var(--blue); border: 1px solid rgba(59,130,246,0.4); }
+.badge-grey { background: rgba(156,163,175,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* Compare table */
+.compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 12px; }
+.compare-table th { text-align: left; padding: 8px 10px; background: var(--bg-alt); color: var(--text-muted); font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text-sec); vertical-align: top; line-height: 1.5; }
+.compare-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* Mode cards */
+.mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 18px 0; }
+.mode-card { background: var(--card); border: 1px solid var(--border); border-top: 3px solid var(--purple); border-radius: var(--radius); padding: 14px; }
+.mode-card.m-green { border-top-color: var(--green); }
+.mode-card.m-red { border-top-color: var(--red); }
+.mode-card.m-blue { border-top-color: var(--blue); }
+.mode-card h4 { font-size: 12.5px; font-family: var(--mono); color: var(--text); margin-bottom: 8px; }
+.mode-card .mc-row { font-size: 11.5px; color: var(--text-sec); margin-bottom: 6px; line-height: 1.5; }
+.mode-card .mc-row b { color: var(--text-muted); font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+
+/* Callout */
+.callout { border-left: 3px solid var(--amber); background: var(--card); border-radius: 0 var(--radius) var(--radius) 0; padding: 11px 14px; margin: 14px 0; font-size: 12.5px; line-height: 1.6; color: var(--text-sec); }
+.callout.c-purple { border-left-color: var(--purple); }
+.callout.c-green { border-left-color: var(--green); }
+.callout b { color: var(--text); }
+
+.diagram-container { margin: 20px 0; max-width: 820px; }
+.diagram-container svg { width: 100%; height: auto; display: block; }
+.diagram-container svg text.svg-t { fill: var(--text); }
+
+/* FAQ panel */
+.faq-panel { flex-shrink: 0; height: 198px; border-top: 1px solid var(--chrome-border); background: var(--chrome-bg); display: flex; flex-direction: column; padding: 10px 28px 8px; transition: background 0.3s, border-color 0.3s; }
+.faq-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.faq-top .faq-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--sidebar-h3); }
+.faq-top input { flex: 1; max-width: 280px; background: var(--filter-bg); border: 1px solid var(--chrome-border); border-radius: 5px; padding: 5px 10px; font-size: 11px; font-family: var(--mono); color: var(--chrome-text); outline: none; }
+.faq-top input:focus { border-color: var(--purple); }
+.faq-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.faq-chip { background: var(--filter-bg); border: 1px solid var(--chrome-border); border-radius: 12px; padding: 3px 11px; font-size: 11px; font-family: var(--mono); color: var(--chrome-muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+.faq-chip:hover { border-color: var(--purple); color: var(--chrome-text); }
+.faq-chip.active { background: rgba(168,85,247,0.15); border-color: var(--purple); color: var(--purple); }
+.faq-answer { flex: 1; overflow-y: auto; font-size: 12px; line-height: 1.6; color: var(--text-sec); background: var(--filter-bg); border: 1px solid var(--chrome-border); border-radius: 6px; padding: 8px 12px; }
+.faq-answer .ph { color: var(--chrome-muted); font-style: italic; }
+
+/* Footer */
+.footer-bar { flex-shrink: 0; padding: 7px 28px; border-top: 1px solid var(--chrome-border); background: var(--chrome-bg); font-size: 10px; font-family: var(--mono); color: var(--chrome-muted); display: flex; justify-content: space-between; gap: 16px; transition: background 0.3s, border-color 0.3s; }
+.footer-bar .dot { color: var(--chrome-border); margin: 0 4px; }
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--chrome-border); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sidebar-h3); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="header">
+    <h1>yields.digital / how-we-prove-our-numbers<span class="warn">[v2.0]</span></h1>
+    <div class="header-r">
+      <span class="header-sub">catalog &middot; verify &middot; pin &middot; watch</span>
+      <div class="tog">
+        <button id="btn-l" onclick="setTheme('light')">Light</button>
+        <button id="btn-d" class="active" onclick="setTheme('dark')">Dark</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar"></div>
+
+  <div class="main">
+    <div class="crumbs" id="crumbs"></div>
+    <div class="content" id="content"><div class="content-inner"></div></div>
+    <div class="faq-panel">
+      <div class="faq-top">
+        <span class="faq-lbl">FAQ - this page</span>
+        <input id="faq-search" type="text" placeholder="search all questions... ( / )">
+      </div>
+      <div class="faq-chips" id="faq-chips"></div>
+      <div class="faq-answer" id="faq-answer"><span class="ph">Select a question above.</span></div>
+    </div>
+    <div class="footer-bar">
+      <span>yields.digital engineering<span class="dot">&bull;</span>provable correctness as a discipline</span>
+      <span>single file, zero dependencies</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ DATA: page tree ============
+const pages = {
+
+overview: {
+  id: 'overview', icon: '\u{1F9ED}', label: 'Overview', desc: 'What this is',
+  section: 'Start Here', tagline: 'Every number we show is a claim - and we built the machinery to prove each one and keep it proven.',
+  content: `
+    <p>A risk platform is only as trustworthy as its numbers. Behind every APY, every risk score, every projection on the yields.digital platform is a chain of computation - and at any link, what the platform <em>claims</em> could quietly diverge from what the code actually <em>does</em>. We decided that "trust us" was not good enough for the kind of clients we serve, so we built a discipline to make every claim <strong>provable</strong> and to keep it that way over time.</p>
+    <p>We call it the <strong>Inventory Program</strong>. The idea is simple: catalog every calculated value the platform shows, prove each one against the actual source code at a precise, reproducible point in time, fix anything that does not match, and then run automated checks that raise the alarm the moment reality starts to drift away from the catalog. People did the cataloging; automation now does the watching.</p>
+    <div class="flow">
+      <div class="flow-step"><span class="fs-t">Catalog</span>every calculated value</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Verify</span>against the source code</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Pin</span>to a reproducible point</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Re-check</span>independent second pass</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step hot"><span class="fs-t">Watch</span>automated drift detection</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num">Every</div><div class="lbl">cataloged value traced back to the code that computes it</div></div>
+      <div class="stat-card"><div class="num">7</div><div class="lbl">phases of systematic cataloging</div></div>
+      <div class="stat-card"><div class="num">2</div><div class="lbl">roles on every catalog: an author, then an independent verifier - every claim re-checked</div></div>
+      <div class="stat-card"><div class="num">Daily</div><div class="lbl">automated drift checks against the live platform, plus a check on every code change - no human trigger</div></div>
+    </div>
+    <p>This explainer reads two ways. For the story, follow the sidebar top to bottom. For the mechanics, jump to <a data-nav="provable">provable claims</a>, <a data-nav="verify">independent verification</a>, or <a data-nav="drift">continuous drift detection</a>. The short version: <strong>we treat the accuracy of our numbers as an engineering guarantee, not a marketing promise.</strong></p>
+  `,
+  expandables: [
+    { icon: '\u{1F3AF}', title: 'The one-sentence version', detail: '<p>We wrote down exactly what the platform computes, proved it against the code, fixed everything that did not match, and then built automation that raises a flag the instant it stops matching.</p>' },
+    { icon: '\u{1F4D0}', title: 'What counts as a "calculated value"?', detail: '<p>Anything a user sees that the platform derives rather than simply stores: yield averages, risk scores and their sub-components, income projections, portfolio totals, chart values, and data-quality indicators. Each one is traced from what you see on screen all the way back to the code that computes it.</p>' },
+    { icon: '\u{1F50D}', title: 'Why we published this', detail: '<p>Most platforms ask you to trust their outputs. We would rather show our work. This explainer describes the <em>discipline</em> - how we make claims provable and keep them honest - without exposing the proprietary models themselves. The rigor is the story; the formulas stay ours.</p>' }
+  ],
+},
+
+why: {
+  id: 'why', icon: '\u{1F3DB}️', label: 'Why it matters', desc: 'Numbers are claims',
+  section: 'Start Here', tagline: 'For an institutional client, an unverifiable number is not data - it is a liability.',
+  content: `
+    <p>For a retail dashboard, an occasionally-stale number is an annoyance. For an institutional risk platform - one positioning for regulated, professional clients - it is something else entirely. The numbers we show flow into investment decisions, internal risk reporting, and compliance documentation. <strong>Accuracy is not cosmetic; it is the product.</strong></p>
+    <p>The hard part is that accuracy decays silently. A value travels through many layers between computation and screen, and each layer is a place where the claim can quietly diverge from the computation. We named that divergence <em>drift</em>, and we treat preventing it as a first-class engineering problem rather than something to fix reactively when a client notices.</p>
+    <ul>
+      <li><strong>Claims must be reproducible.</strong> If we tell you a risk score means something specific, we can point to the exact code that produces it and show that it does - not approximately, exactly.</li>
+      <li><strong>Two things that should agree, must agree.</strong> When the same concept is computed in more than one place, those places have to stay in lockstep. We catalog them precisely so we can prove they match.</li>
+      <li><strong>Live data must actually be live.</strong> A number that looks dynamic but is secretly fixed is worse than no number. Our discipline distinguishes genuinely computed values from placeholders and holds the line between them.</li>
+    </ul>
+    <div class="callout c-purple"><b>Built to outlast any individual.</b> Early on, the discipline lived in one team's habits. That is fragile - if the people change, the rigor evaporates. So we moved the rules into checked-in standards every contributor follows, and into <a data-nav="drift">automation that needs no one watching</a>. The guarantee does not depend on who is on shift.</div>
+    <p>The payoff is concrete: our automated checks routinely catch subtle divergences <em>before</em> they ever reach a client - including gaps that careful human review had already passed over. That is the system working exactly as designed.</p>
+  `,
+  expandables: [
+    { icon: '\u{1F9EA}', title: 'Why not just write more tests?', detail: '<p>Conventional tests verify the behavior an author thought to check, at the layer that author owns. Drift happens <em>between</em> layers and <em>between</em> systems, where each side independently looks fine. Our approach builds a single cross-system source of truth and then checks across the boundaries that ordinary tests never span.</p>' },
+    { icon: '\u{1F4C9}', title: 'What "trust the numbers" really requires', detail: '<p>It requires being able to answer, for any value on screen: where does this come from, what exactly computes it, when was that last proven, and what would tell us if it changed? Most platforms cannot answer all four. The Inventory Program is our answer to all four, by construction.</p>' },
+    { icon: '⚖️', title: 'Why this matters for regulated clients', detail: '<p>As digital-asset regulation matures, the bar for claims accuracy rises: marketing, risk reporting, and compliance materials all cite platform figures, and all may be scrutinized. A documented, reproducible evidence chain from claim to code is exactly the kind of control a serious counterparty expects to see.</p>' }
+  ],
+},
+
+provable: {
+  id: 'provable', icon: '\u{1F4CC}', label: 'Provable claims', desc: 'Pinned to a point in time',
+  section: 'The Method', tagline: 'Every catalog entry says, in effect: this was proven true against the code at exactly this point - and here is how to check.',
+  content: `
+    <p>The foundation of the program is a deceptively strict idea: <strong>a claim without evidence is not a claim.</strong> Every entry in every catalog is tied to a precise, reproducible snapshot of the codebase, with a pointer to the exact place in the source that backs it up. Not "roughly current," not "as of last month" - a specific, frozen reference point.</p>
+    <p>This is what turns our documentation from notes into <em>evidence</em>. Anyone with the right access can take a catalog entry, go to the exact snapshot it names, look at the exact code it cites, and see the same thing the author saw. The claim is reproducible indefinitely. That property is what lets us stand behind our numbers to an auditor, a partner, or a regulator with more than an assurance.</p>
+    <div class="mode-grid">
+      <div class="mode-card m-blue">
+        <h4>\u{1F9CA} Frozen reference points</h4>
+        <div class="mc-row"><b>What it is</b> A catalog whose snapshot is locked at the moment it was proven, and never quietly moved.</div>
+        <div class="mc-row"><b>Why</b> It serves as a stable baseline. Automation can compare today's code against it precisely <em>because</em> it does not shift.</div>
+        <div class="mc-row"><b>How change is handled</b> Movement since the snapshot is layered on top as dated notes - the original proof stays intact as the reference.</div>
+      </div>
+      <div class="mode-card m-green">
+        <h4>\u{1F3C3} Living references</h4>
+        <div class="mc-row"><b>What it is</b> A catalog that is re-proven and re-pinned whenever the underlying code moves, always reflecting the current state.</div>
+        <div class="mc-row"><b>Why</b> Some surfaces change often; for those, currency is more useful than a fixed historical baseline.</div>
+        <div class="mc-row"><b>How change is handled</b> The catalog is regenerated against the new snapshot and re-verified - it is always "true as of right now."</div>
+      </div>
+    </div>
+    <div class="callout"><b>A "stale-looking" catalog is usually doing its job.</b> A frozen reference that has not changed in weeks is not neglected - it is a deliberate point-in-time record, cited by everything that depends on it. Currency lives in the dated notes layered on top and in the <a data-nav="drift">automated watch</a> - not in rewriting the original proof.</div>
+  `,
+  expandables: [
+    { icon: '⚖️', title: 'Two disciplines, both correct', detail: '<p>When a calculation changes, a frozen-reference catalog records the change as a dated note while preserving its baseline, and a living-reference catalog regenerates and re-proves itself against the new code. Same change, opposite mechanics - each chosen so the catalog keeps doing its specific job. The choice is never ad hoc; it is governed by an explicit, written standard.</p>' },
+    { icon: '\u{1F4DC}', title: 'Why reproducibility beats a timestamp', detail: '<p>"Verified in May" is ambiguous - across branches and deployments, which May? A pinned, reproducible reference point removes the ambiguity entirely: it names one exact state of the code, and anyone can return to that exact state and re-check. Precision is the whole point.</p>' }
+  ],
+},
+
+verify: {
+  id: 'verify', icon: '\u{1F50D}', label: 'Independent verification', desc: 'Author, then adversarial re-check',
+  section: 'The Method', tagline: 'Nothing ships on its author’s word. Every catalog survives a second, skeptical pass first.',
+  content: `
+    <p>A catalog is only worth its verification, so we separate two roles and never let one person play both for the same work:</p>
+    <ul>
+      <li><strong>Authoring</strong> means building the catalog by reading the actual source code, line by line, at the pinned snapshot. Guessing from similar code, from documentation, or from memory is explicitly disallowed - it produces plausible-looking detail that is subtly wrong.</li>
+      <li><strong>Verification</strong> is a separate, independent, skeptical pass that re-checks every single claim against the same code, files corrections, and only then clears the catalog to ship. Verifiers are rewarded for finding problems, not for agreeing.</li>
+    </ul>
+    <p>This is adversarial on purpose. A verification pass that simply nods along adds nothing; ours are designed to try to break the author's work. They have reclassified entire patterns, downgraded overstated concerns, and upgraded understated ones - the grade follows the evidence, not the first impression.</p>
+    <div class="callout"><b>We keep our failures as evidence.</b> One early draft was rejected outright by its verifier for exactly the prohibited shortcut - describing code that had not actually been read closely enough. Rather than quietly redo it, we preserved the rejected draft as a permanent teaching example, referenced by the standards that now govern all this work. A discipline that hides its near-misses cannot learn from them.</div>
+    <p>The same skepticism applies to fixes. Before we change anything, we re-verify the problem still exists in the current code and is what we think it is. Findings age; code moves. More than once, a planned fix changed shape entirely once we looked again with fresh eyes - which is precisely why we look.</p>
+  `,
+  expandables: [
+    { icon: '\u{1F4CB}', title: 'What a verification pass actually checks', detail: '<p>For each claim: does the cited code still exist at the snapshot, does it actually say what the entry says, are the counts right, and - a lesson learned the hard way - are there higher-level rules that a narrow reading would miss? That last check has overturned more than one finding, replacing an alarming first impression with the accurate, calmer truth.</p>' },
+    { icon: '\u{1F9F0}', title: 'Honest uncertainty, written down', detail: '<p>When an author cannot fully trace something, they mark it as an open question rather than papering over it. Verifiers then resolve those questions and record the outcome in the catalog itself. Explicit "we have not confirmed this yet" beats confident fabrication every time - and it tells every later reader exactly where the edges of the evidence are.</p>' }
+  ],
+},
+
+drift: {
+  id: 'drift', icon: '\u{1F916}', label: 'Continuous drift detection', desc: 'Automation takes over the watching',
+  section: 'The Method', tagline: 'Once a catalog is proven, software - not a person - keeps it honest, around the clock.',
+  content: `
+    <p>Cataloging and verifying gets you a true picture <em>today</em>. Keeping it true tomorrow is a different problem, and the answer cannot be "remember to re-check everything by hand" - that does not scale and does not survive a busy week. So the proven catalogs become <strong>baselines</strong>, and automated checks continuously compare the live system against them.</p>
+    <p>There are two natural moments to check, and we cover both:</p>
+    <div class="mode-grid">
+      <div class="mode-card m-blue">
+        <h4>At change time</h4>
+        <div class="mc-row"><b>When</b> Every proposed change to the code is checked before it can be accepted.</div>
+        <div class="mc-row"><b>Catches</b> A change that would break a documented guarantee is stopped at the door - the change itself is what introduces the risk, so that is where we block it.</div>
+      </div>
+      <div class="mode-card m-green">
+        <h4>On a schedule</h4>
+        <div class="mc-row"><b>When</b> Automated checks run continuously against the running platform, with no human trigger.</div>
+        <div class="mc-row"><b>Catches</b> Drift that appears <em>without</em> any code change - the kind only a clock can catch - by comparing what the live system does against the proven baseline.</div>
+      </div>
+    </div>
+    <p>When a check finds drift, it does not send a fleeting alert that scrolls away. It opens a durable, trackable record - automatically, and intelligently deduplicated so a persistent condition does not generate noise - which stays open until the issue is genuinely resolved. The philosophy is deliberate: <strong>detect loudly, fix carefully.</strong></p>
+    <div class="callout c-green"><b>It earned its keep immediately.</b> On its very first live run, the automated watch caught a subtle configuration gap that every prior human review had passed over - found, recorded, and fixed the same day. That is the entire point: software does not get tired, distracted, or overconfident, and it never assumes "this part is probably fine."</div>
+  `,
+  expandables: [
+    { icon: '\u{1F6E1}️', title: 'Why automation, not just discipline', detail: '<p>Written standards tell people what to do; automation does not depend on anyone remembering. We layer both - clear standards <em>and</em> automated enforcement - so the guarantee holds whether or not any particular person is paying attention on any particular day. Defense in depth for correctness.</p>' },
+    { icon: '\u{1F4E3}', title: 'Why a durable record beats an alert', detail: '<p>A fleeting notification is easy to miss and impossible to audit later. A tracked, assignable record is durable, has an owner, and leaves a permanent trail of what drifted, when, and how it was resolved - which is exactly the kind of evidence a serious risk process is supposed to produce.</p>' },
+    { icon: '\u{1F9F2}', title: 'Built to feed a live dashboard next', detail: '<p>Each automated run does not just decide pass-or-fail; it records a complete, structured snapshot of the platform’s current state of alignment. That design choice means the next step - a live dashboard where the team can see the whole picture at a glance - is a matter of displaying what is already captured, not rebuilding it.</p>' }
+  ],
+},
+
+lifecycle: {
+  id: 'lifecycle', icon: '\u{1F501}', label: 'How a claim stays true', desc: 'The full loop, start to finish',
+  section: 'The Outcome', tagline: 'From a number on screen to a guarantee that survives every future change.',
+  content: `
+    <p>Put the pieces together and you get a closed loop - the journey of a single number from "shown on screen" to "provably correct, and kept that way":</p>
+    <div class="flow">
+      <div class="flow-step"><span class="fs-t">Trace</span>screen back to source</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Prove</span>against pinned code</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Re-check</span>independent pass</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Baseline</span>catalog becomes reference</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step hot"><span class="fs-t">Watch</span>automation guards it</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><span class="fs-t">Cascade</span>any change updates the catalog</div>
+    </div>
+    <p>The last step is what keeps the whole thing from rotting: <strong>when the code behind a cataloged number changes, updating the catalog rides along with that change as a matter of standard practice</strong> - not as an afterthought weeks later. The catalog never silently falls behind the code, because falling behind is precisely the failure mode the program exists to prevent.</p>
+    <p>And when a surface genuinely reaches end of life, we do not erase its record. We mark it clearly as retired while preserving the history of what it was and how every question about it was resolved. The evidence chain is append-only by design - you can always trace back to what was true, and when.</p>
+    <div class="callout"><b>Nothing load-bearing gets deleted.</b> A catalog that looks obsolete is often doing critical work: serving as an automation baseline, preserving the record of a retired feature, or standing as a cited point-in-time proof. We treat the evidence chain the way a careful auditor would - you do not improve a ledger by tearing pages out of it.</div>
+  `,
+  expandables: [
+    { icon: '\u{1F4D1}', title: 'A reusable pattern, not a one-off', detail: '<p>The program produced a repeatable recipe for any systemic correctness problem: catalog every instance, fix them in a disciplined sequence, write down the canonical correct shape, and then enforce that shape automatically forever after. We have applied it across the platform, and we treat the pattern itself as one of the program’s most valuable outputs.</p>' },
+    { icon: '\u{1F4CA}', title: 'The trajectory: people, then machines', detail: '<p>The arc, compressed: people cataloged the platform, automation now watches it continuously, and the next step is a dashboard so the team only has to look when something is actually drifting. Each step removed a dependency on a human remembering to check - which is the only way a correctness guarantee scales.</p>' }
+  ],
+},
+
+trust: {
+  id: 'trust', icon: '\u{1F91D}', label: 'What this means for you', desc: 'The bottom line',
+  section: 'The Outcome', tagline: 'You should not have to take our numbers on faith - and with this discipline, you do not have to.',
+  content: `
+    <p>If you are evaluating yields.digital as a partner, a client, or a counterparty, here is what the Inventory Program means in practice:</p>
+    <ul>
+      <li><strong>Every number is backed by code we can point to.</strong> Ask what a figure means and how it is computed, and there is a precise, reproducible answer - not a hand-wave.</li>
+      <li><strong>Nothing we publish skipped review.</strong> Each catalog passed an independent, adversarial verification before it shipped. We assume our own first drafts can be wrong, and we check.</li>
+      <li><strong>Accuracy is defended automatically.</strong> Software watches for drift around the clock and raises a durable flag the moment something diverges - so correctness does not depend on anyone remembering to look.</li>
+      <li><strong>The discipline survives turnover.</strong> The rules are written down and enforced by automation, not held in any individual's head. The guarantee is institutional, not personal.</li>
+    </ul>
+    <div class="callout c-purple"><b>The short version.</b> Most platforms ask you to trust their outputs. We built the machinery to <em>prove</em> ours - and to keep proving them, automatically, as the platform evolves. For clients whose own obligations ride on the accuracy of what we report, that machinery is not a nice-to-have. It is the foundation.</div>
+    <p>We published this explainer because we think the discipline is worth seeing. The proprietary models that compute our risk scores remain ours - but the rigor with which we hold them accountable is something we are glad to show. <strong>Provable, not promised.</strong></p>
+  `,
+  expandables: [
+    { icon: '\u{1F4AC}', title: 'Want to go deeper?', detail: '<p>We are happy to walk qualified partners and clients through the methodology in more detail under the appropriate arrangements. The public version here is intentionally about the <em>discipline</em> rather than the internals - enough to judge the rigor, by design.</p>' }
+  ],
+},
+
+};
+
+// ============ DATA: sidebar order ============
+const topicOrder = [
+  { id: 'overview', section: 'Start Here' },
+  { id: 'why', section: 'Start Here' },
+  { id: 'provable', section: 'The Method' },
+  { id: 'verify', section: 'The Method' },
+  { id: 'drift', section: 'The Method' },
+  { id: 'lifecycle', section: 'The Outcome' },
+  { id: 'trust', section: 'The Outcome' },
+];
+
+// ============ DATA: FAQs (deepest path wins) ============
+const faqs = {
+'overview': [
+  { q: 'Who is this explainer for?', a: 'Anyone evaluating the rigor behind yields.digital’s numbers: prospective clients and partners get the story from the sidebar; technically-minded readers can drill into the method pages for how the discipline actually works.' },
+  { q: 'Does this reveal your risk models?', a: 'No. This explains the discipline that keeps our numbers provable and honest - the catalog, verification, and drift-detection machinery. The proprietary models that compute the scores themselves are not described here.' },
+  { q: 'How big an effort was this?', a: 'A months-long, multi-phase program covering the calculated values a user sees across the platform’s surfaces, followed by a phase of automation that now defends the catalogs continuously. It is a standing discipline, not a one-time audit.' },
+],
+'why': [
+  { q: 'What exactly is "drift"?', a: 'Any divergence between what the code actually computes and what a document, contract, screen, or second code path claims it computes. It accumulates silently, because no single layer is wrong enough on its own to fail an ordinary test.' },
+  { q: 'Why does accuracy matter so much here?', a: 'Our numbers feed institutional investment decisions, internal risk reporting, and compliance materials. For that audience, an unverifiable figure is a liability, not a feature - so we treat provable accuracy as the core of the product.' },
+  { q: 'Why "survives turnover"?', a: 'The discipline used to live in one team’s habits, which is fragile. It is now codified in written standards every contributor follows and enforced by automation that runs with nobody watching - so it does not depend on any individual.' },
+],
+'provable': [
+  { q: 'Why pin to a point in code instead of a date?', a: 'A precise code snapshot is reproducible - anyone can return to that exact state and re-check every claim. A date is ambiguous across branches and deployments. Reproducibility is the whole point of calling something evidence.' },
+  { q: 'What happens when the code moves past a frozen reference?', a: 'The catalog gains dated notes describing what changed, while the original proof stays intact as a stable baseline. It is deliberately re-proven in full only on a considered re-verification pass.' },
+  { q: 'Is a "stale" catalog a problem?', a: 'Usually the opposite. A frozen reference is a point-in-time proof by design; everything that depends on it cites that exact point. Currency lives in the notes layered on top and in the automated watch - not in rewriting the original.' },
+],
+'verify': [
+  { q: 'What does "independent verification" mean?', a: 'A second reviewer re-checks every claim against the actual code, separately from whoever authored it, and is expected to find problems rather than agree. Nothing ships on the author’s word alone.' },
+  { q: 'You mention keeping a rejected draft - why?', a: 'One early catalog was rejected for describing code that had not been read closely enough. We preserved it as a permanent teaching example that the governing standards now cite. A discipline that hides its near-misses cannot learn from them.' },
+  { q: 'Do you re-verify before fixing something?', a: 'Always. Findings age and code moves, so before changing anything we confirm the problem still exists and is what we think it is. More than once, a planned fix changed shape entirely once we looked again.' },
+],
+'drift': [
+  { q: 'Why automate instead of relying on careful people?', a: 'People get tired, busy, and overconfident; software does not. Written standards tell people what to do, but automation enforces it whether or not anyone remembers - so the guarantee holds every day, not just on good days.' },
+  { q: 'What was the first thing the automation caught?', a: 'On its first live run, the drift watch found a subtle configuration gap that every prior human review had passed over - detected, recorded, and fixed the same day. Exactly the kind of silent issue the system exists to surface.' },
+  { q: 'What happens when drift is found?', a: 'It opens a durable, trackable, intelligently deduplicated record that stays open until genuinely resolved - not a fleeting alert. Detect loudly, fix carefully, and leave an auditable trail.' },
+],
+'lifecycle': [
+  { q: 'How do catalogs avoid going stale?', a: 'When the code behind a cataloged number changes, updating the catalog rides along with that change as standard practice - not as a separate task done weeks later. Falling behind the code is the exact failure the program prevents.' },
+  { q: 'What happens to retired features?', a: 'They are marked clearly as retired with their history preserved - never erased. The evidence chain is append-only, so you can always trace what was true and when.' },
+  { q: 'Is this reusable beyond one problem?', a: 'Yes - it became a repeatable recipe: catalog every instance of a problem, fix them in sequence, write down the canonical correct shape, then enforce that shape automatically. We treat the pattern itself as a key output.' },
+],
+'trust': [
+  { q: 'What is the bottom line for a client?', a: 'Every number is backed by code we can point to, nothing shipped without independent review, accuracy is defended automatically around the clock, and the discipline survives staff turnover. Provable, not promised.' },
+  { q: 'Can we see more detail?', a: 'We are glad to walk qualified partners and clients through the methodology in more depth under appropriate arrangements. The public version is intentionally about the discipline rather than the internals.' },
+  { q: 'Does this replace independent audits?', a: 'No - it complements them. A reproducible, continuously-defended evidence chain from claim to code is exactly the kind of internal control that makes external review faster and more credible.' },
+],
+};
+
+// ============ ENGINE ============
+const $ = (s) => document.querySelector(s);
+let currentPath = 'overview';
+
+function parseHash() {
+  const h = location.hash.replace(/^#\/?/, '');
+  return h || 'overview';
+}
+function resolve(path) {
+  const [top, child] = path.split('/');
+  const page = pages[top];
+  if (!page) return { page: pages.overview, child: null, path: 'overview' };
+  if (child) {
+    const c = (page.children || []).find(x => x.id === path);
+    if (c) return { page, child: c, path };
+  }
+  return { page, child: null, path: top };
+}
+
+function renderSidebar() {
+  const sb = $('#sidebar');
+  let html = '', lastSection = null;
+  const activeTop = currentPath.split('/')[0];
+  topicOrder.forEach(t => {
+    const p = pages[t.id];
+    if (t.section !== lastSection) { html += '<h3>' + t.section + '</h3>'; lastSection = t.section; }
+    const act = activeTop === t.id ? ' active' : '';
+    html += '<button class="topic-item' + act + '" data-go="' + t.id + '"><span class="ico">' + p.icon + '</span><span>' + p.label + '</span></button>';
+    if (p.children && activeTop === t.id) {
+      p.children.forEach(c => {
+        const cact = currentPath === c.id ? ' active' : '';
+        html += '<button class="topic-child' + cact + '" data-go="' + c.id + '">' + c.label + '</button>';
+      });
+    }
+  });
+  sb.innerHTML = html;
+}
+
+function renderCrumbs(page, child) {
+  let html = '<a data-go="overview">how-we-prove-our-numbers</a>';
+  html += '<span class="sep">/</span>';
+  if (child) {
+    html += '<a data-go="' + page.id + '">' + page.label + '</a><span class="sep">/</span><span class="here">' + child.label + '</span>';
+  } else {
+    html += '<span class="here">' + page.label + '</span>';
+  }
+  $('#crumbs').innerHTML = html;
+}
+
+function renderContent(page, child) {
+  let html = '';
+  if (child) {
+    html += '<h2>' + page.icon + ' ' + child.label + '</h2>';
+    html += '<div class="tagline">' + page.label + ' &rsaquo; detail page</div>';
+    html += child.content;
+  } else {
+    html += '<h2>' + page.icon + ' ' + page.label + '</h2>';
+    html += '<div class="tagline">' + page.tagline + '</div>';
+    html += page.content;
+    if (page.children && !page.content.includes('data-nav-card')) {
+      html += '<div class="nav-grid">' + page.children.map(c =>
+        '<div class="nav-card" data-nav-card="' + c.id + '"><div class="nc-t">' + c.label + '</div><div class="nc-d">Drill into the detail.</div></div>'
+      ).join('') + '</div>';
+    }
+    if (page.expandables) {
+      html += page.expandables.map((e, i) =>
+        '<div class="expand-card" id="ex-' + i + '"><div class="expand-header" data-ex="' + i + '"><span class="ico">' + e.icon + '</span><span class="t">' + e.title + '</span><span class="chev">&#9654;</span></div><div class="expand-body"><div class="expand-body-inner">' + e.detail + '</div></div></div>'
+      ).join('');
+    }
+  }
+  $('#content').innerHTML = '<div class="content-inner">' + html + '</div>';
+  $('#content').scrollTop = 0;
+}
+
+function faqsFor(path) {
+  if (faqs[path]) return faqs[path];
+  const top = path.split('/')[0];
+  return faqs[top] || [];
+}
+function renderFaq(path) {
+  const list = faqsFor(path);
+  $('#faq-chips').innerHTML = list.map((f, i) =>
+    '<button class="faq-chip" data-faq="' + i + '" title="' + f.q.replace(/"/g, '&quot;') + '">' + f.q + '</button>'
+  ).join('') || '<span class="ph" style="font-size:11px;color:var(--chrome-muted)">No questions for this page.</span>';
+  $('#faq-answer').innerHTML = '<span class="ph">Select a question above.</span>';
+}
+function showFaqAnswer(i, list) {
+  const f = (list || faqsFor(currentPath))[i];
+  if (!f) return;
+  document.querySelectorAll('.faq-chip').forEach((c, j) => c.classList.toggle('active', j === Number(i)));
+  $('#faq-answer').innerHTML = '<strong>' + f.q + '</strong><br>' + f.a;
+}
+let searchResults = null;
+function faqSearch(term) {
+  term = term.trim().toLowerCase();
+  if (!term) { searchResults = null; renderFaq(currentPath); return; }
+  searchResults = [];
+  Object.keys(faqs).forEach(k => faqs[k].forEach(f => {
+    if (f.q.toLowerCase().includes(term) || f.a.toLowerCase().includes(term)) {
+      const top = k.split('/')[0];
+      searchResults.push({ q: (pages[top] ? pages[top].label + ': ' : '') + f.q, a: f.a });
+    }
+  }));
+  $('#faq-chips').innerHTML = searchResults.slice(0, 8).map((f, i) =>
+    '<button class="faq-chip" data-faq="' + i + '" title="' + f.q.replace(/"/g, '&quot;') + '">' + f.q + '</button>'
+  ).join('') || '<span class="ph" style="font-size:11px;color:var(--chrome-muted)">No matches.</span>';
+  $('#faq-answer').innerHTML = '<span class="ph">' + searchResults.length + ' match(es) across all pages.</span>';
+}
+
+function render() {
+  const { page, child, path } = resolve(parseHash());
+  currentPath = path;
+  renderSidebar();
+  renderCrumbs(page, child);
+  renderContent(page, child);
+  if (!searchResults) renderFaq(path);
+}
+
+// Navigation + interaction delegation
+document.addEventListener('click', (e) => {
+  const nav = e.target.closest('[data-nav]');
+  if (nav) { e.preventDefault(); location.hash = '#/' + nav.getAttribute('data-nav'); return; }
+  const card = e.target.closest('[data-nav-card]');
+  if (card) { location.hash = '#/' + card.getAttribute('data-nav-card'); return; }
+  const go = e.target.closest('[data-go]');
+  if (go) { location.hash = '#/' + go.getAttribute('data-go'); return; }
+  const exh = e.target.closest('.expand-header');
+  if (exh) {
+    const cardEl = exh.parentElement;
+    const body = cardEl.querySelector('.expand-body');
+    const open = cardEl.classList.toggle('open');
+    body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+    return;
+  }
+  const chip = e.target.closest('.faq-chip');
+  if (chip) { showFaqAnswer(chip.getAttribute('data-faq'), searchResults); return; }
+});
+
+$('#faq-search').addEventListener('input', (e) => faqSearch(e.target.value));
+
+document.addEventListener('keydown', (e) => {
+  const inInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+  if (e.key === '/' && !inInput) { e.preventDefault(); $('#faq-search').focus(); }
+  if (e.key === 'Backspace' && !inInput) { e.preventDefault(); history.back(); }
+});
+
+function setTheme(mode) {
+  document.body.classList.toggle('light', mode === 'light');
+  document.getElementById('btn-l').classList.toggle('active', mode === 'light');
+  document.getElementById('btn-d').classList.toggle('active', mode === 'dark');
+}
+
+window.addEventListener('hashchange', () => { searchResults = null; $('#faq-search').value = ''; render(); });
+render();
+</script>
+</body>
+</html>

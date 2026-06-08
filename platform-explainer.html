@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yields Digital - Platform Overview</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--dim:#8b949e;--muted:#6e7681;--accent:#58a6ff;--green:#3fb950;--orange:#d29922;--red:#f85149;--purple:#bc8cff;--cyan:#39d2c0;--pink:#f778ba;--radius:10px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6}
+body{display:flex;flex-direction:column;overflow:hidden}
+
+/* Header */
+.header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.header h1{font-size:17px;font-weight:600}
+.header h1 span{color:var(--dim);font-weight:400}
+.header .subtitle{font-size:12px;color:var(--muted);margin-left:auto}
+.footer{display:flex;align-items:center;justify-content:space-between;padding:6px 24px;border-top:1px solid var(--border);background:var(--surface);font-size:11px;color:var(--muted);flex-shrink:0;letter-spacing:.2px}
+.footer .version{font-weight:600;color:var(--dim)}
+.footer .updated{color:var(--muted)}
+
+/* Main layout */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+.sidebar{width:280px;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;background:var(--surface);overflow-y:auto}
+.sidebar-section{padding:14px 16px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.topic-item{padding:10px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:background .12s;border-left:3px solid transparent}
+.topic-item:hover{background:var(--surface2)}
+.topic-item.active{background:var(--surface2);border-left-color:var(--accent)}
+.topic-item .icon{font-size:18px;flex-shrink:0;width:24px;text-align:center;line-height:1.4}
+.topic-item .label{font-size:13px;font-weight:500}
+.topic-item .desc{font-size:11px;color:var(--muted);margin-top:2px}
+.topic-child{padding:7px 16px 7px 50px;cursor:pointer;font-size:12px;color:var(--dim);transition:all .12s;border-left:3px solid transparent}
+.topic-child:hover{background:var(--surface2);color:var(--text)}
+.topic-child.active{color:var(--accent);border-left-color:var(--accent);background:var(--surface2)}
+
+/* Content area */
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Breadcrumbs */
+.breadcrumbs{padding:10px 40px;border-bottom:1px solid var(--border);font-size:13px;color:var(--dim);flex-shrink:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.breadcrumbs a{color:var(--accent);text-decoration:none;cursor:pointer}
+.breadcrumbs a:hover{text-decoration:underline}
+.breadcrumbs .sep{color:var(--muted);font-size:11px}
+
+/* Visual panel */
+.visual-panel{flex:1;overflow-y:auto;padding:32px 40px}
+.visual-panel h2{font-size:22px;font-weight:600;margin-bottom:6px}
+.visual-panel .tagline{font-size:14px;color:var(--dim);margin-bottom:24px}
+.visual-panel h3{font-size:16px;font-weight:600;margin:24px 0 10px;color:var(--accent)}
+.visual-panel p{color:var(--dim);margin-bottom:14px;max-width:720px}
+.visual-panel ul{padding-left:20px;margin-bottom:14px;color:var(--dim)}
+.visual-panel li{margin-bottom:6px}
+.visual-panel li strong{color:var(--text)}
+
+/* Cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0 20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.card .card-icon{font-size:24px;margin-bottom:8px}
+.card .card-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.card .card-desc{font-size:12px;color:var(--dim);line-height:1.5}
+
+/* Expandable cards */
+.expand-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:8px 0;transition:border-color .15s}
+.expand-card:hover{border-color:var(--accent)}
+.expand-header{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.expand-header .chevron{color:var(--muted);font-size:12px;transition:transform .2s;flex-shrink:0}
+.expand-card.expanded .expand-header .chevron{transform:rotate(90deg)}
+.expand-header .card-icon{font-size:20px;flex-shrink:0}
+.expand-header .card-title{font-size:14px;font-weight:600;flex:1}
+.expand-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.expand-card.expanded .expand-body{max-height:2000px}
+.expand-body-inner{padding:0 16px 16px 42px;font-size:13px;color:var(--dim);line-height:1.7}
+.expand-body-inner strong{color:var(--text)}
+.expand-body-inner p{margin-bottom:8px}
+
+/* Navigable cards */
+.nav-card{cursor:pointer;position:relative}
+.nav-card::after{content:'→';position:absolute;top:14px;right:14px;color:var(--accent);font-size:14px;opacity:0;transition:opacity .15s}
+.nav-card:hover::after{opacity:1}
+
+/* Cross-links */
+a[data-nav]{color:var(--accent);text-decoration:none;cursor:pointer;border-bottom:1px dotted var(--accent)}
+a[data-nav]:hover{border-bottom-style:solid}
+a[data-nav]::after{content:' →';font-size:11px}
+
+/* Flow diagram */
+.flow{display:flex;align-items:center;gap:8px;margin:20px 0;flex-wrap:wrap}
+.flow-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;font-size:13px;font-weight:500;text-align:center;min-width:120px}
+.flow-arrow{color:var(--muted);font-size:18px}
+
+/* Score bar */
+.score-bar{display:flex;align-items:stretch;height:32px;border-radius:6px;overflow:hidden;margin:12px 0 6px;max-width:500px}
+.score-segment{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff}
+.score-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);max-width:500px;margin-bottom:16px}
+
+/* Risk table */
+.risk-table{width:100%;max-width:600px;border-collapse:collapse;margin:12px 0 20px;font-size:13px}
+.risk-table th{text-align:left;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+.risk-table td{padding:8px 12px;border:1px solid var(--border)}
+
+/* Comparison table */
+.compare-table{width:100%;max-width:700px;border-collapse:collapse;margin:12px 0 20px;font-size:13px}
+.compare-table th{text-align:left;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);font-size:12px;color:var(--muted)}
+.compare-table td{padding:8px 12px;border:1px solid var(--border);text-align:center}
+.compare-table td:first-child{text-align:left}
+.compare-table .yes{color:var(--green)}
+.compare-table .no{color:var(--red)}
+.compare-table .partial{color:var(--orange)}
+
+/* FAQ section */
+.faq-panel{border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;flex-direction:column;height:280px;min-height:180px}
+.faq-header{padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.faq-header h3{font-size:13px;font-weight:600}
+.faq-header .hint{font-size:11px;color:var(--muted);margin-left:auto}
+.faq-body{flex:1;overflow-y:auto;padding:12px 20px}
+.faq-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.faq-chip{padding:6px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--dim);cursor:pointer;transition:all .15s;background:var(--surface2)}
+.faq-chip:hover{border-color:var(--accent);color:var(--accent)}
+.faq-answer{background:var(--surface2);border-radius:var(--radius);padding:14px 18px;margin-top:10px;font-size:13px;color:var(--dim);line-height:1.6;display:none}
+.faq-answer.visible{display:block}
+.faq-answer strong{color:var(--text)}
+.faq-input-row{display:flex;gap:8px;padding:10px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.faq-input{flex:1;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none}
+.faq-input:focus{border-color:var(--accent)}
+.faq-input::placeholder{color:var(--muted)}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(63,185,80,.15);color:var(--green)}
+.badge-orange{background:rgba(210,153,34,.15);color:var(--orange)}
+.badge-blue{background:rgba(88,166,255,.15);color:var(--accent)}
+.badge-purple{background:rgba(188,140,255,.15);color:var(--purple)}
+.badge-red{background:rgba(248,81,73,.15);color:var(--red)}
+
+/* Chain tags */
+.chain-row{display:flex;gap:16px;margin:12px 0 20px;flex-wrap:wrap}
+.chain-tag{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+.resize-handle{height:4px;cursor:ns-resize;flex-shrink:0}.resize-handle:hover{background:var(--accent)}
+
+/* Diagram styles */
+.diagram-container{margin:24px 0;max-width:720px}
+.diagram-container svg{width:100%;height:auto;display:block}
+.diagram-label{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+
+/* Architecture pipeline */
+.arch-pipeline{display:flex;align-items:center;gap:0;margin:24px 0;flex-wrap:wrap;max-width:720px}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;text-align:center;flex:1;min-width:120px;transition:border-color .2s,transform .2s}
+.arch-block:hover{border-color:var(--accent);transform:translateY(-2px)}
+.arch-block svg{width:40px;height:40px;margin:0 auto 8px;display:block}
+.arch-block .arch-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.arch-block .arch-desc{font-size:11px;color:var(--dim)}
+.arch-arrow{color:var(--muted);font-size:24px;padding:0 4px;flex-shrink:0}
+
+/* Weight bar chart */
+.weight-bar{display:flex;height:36px;border-radius:6px;overflow:hidden;margin:12px 0;max-width:600px}
+.weight-bar-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;transition:opacity .2s}
+.weight-bar-seg:hover{opacity:.85}
+.weight-legend{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 16px;font-size:12px}
+.weight-legend-item{display:flex;align-items:center;gap:6px}
+.weight-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Gauge */
+.gauge-container{position:relative;max-width:320px;margin:16px 0 24px}
+.gauge-value{position:absolute;bottom:12%;left:50%;transform:translateX(-50%);font-size:28px;font-weight:700;color:var(--text)}
+.gauge-value span{font-size:12px;color:var(--dim);display:block;text-align:center;font-weight:400}
+
+/* Before/after blocks */
+.ba-container{display:flex;gap:24px;margin:16px 0 24px;flex-wrap:wrap;max-width:600px}
+.ba-card{flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.ba-card h4{font-size:13px;font-weight:600;margin-bottom:10px}
+.ba-score{font-size:20px;font-weight:700;margin-top:8px}
+
+/* Drawdown bars */
+.drawdown-bars{max-width:500px;margin:16px 0 20px}
+.drawdown-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.drawdown-label{width:60px;font-size:12px;font-weight:600;text-align:right;flex-shrink:0}
+.drawdown-track{flex:1;height:24px;background:var(--surface2);border-radius:4px;overflow:hidden;position:relative}
+.drawdown-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;overflow:visible;transition:width .5s ease}
+.drawdown-severity{font-size:11px;font-weight:500;min-width:60px;text-align:right}
+
+/* Scan pipeline SVG */
+.scan-pipeline{margin:16px 0 24px;max-width:720px}
+
+/* Radar chart */
+.radar-container{max-width:400px;margin:20px 0}
+.radar-legend{display:flex;gap:16px;margin-top:8px;font-size:12px}
+.radar-legend-item{display:flex;align-items:center;gap:6px}
+.radar-legend-swatch{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+
+/* Donut chart */
+.donut-container{position:relative;width:180px;height:180px;margin:16px 0 24px}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .pct{font-size:28px;font-weight:700;color:var(--green)}
+.donut-center .pct-label{font-size:11px;color:var(--dim)}
+.donut-legend{display:flex;gap:16px;margin-top:8px;font-size:12px}
+.donut-legend-item{display:flex;align-items:center;gap:6px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Yields Digital <span>/ Platform Overview</span></h1>
+  <div class="subtitle">Interactive platform guide - click topics and cards to explore</div>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="content">
+    <div class="breadcrumbs" id="breadcrumbs"></div>
+    <div class="visual-panel" id="visualPanel"></div>
+    <div class="resize-handle" id="resizeHandle"></div>
+    <div class="faq-panel" id="faqPanel">
+      <div class="faq-header">
+        <h3>Questions</h3>
+        <span class="hint">Click a question or type your own &middot; Press / to search</span>
+      </div>
+      <div class="faq-body" id="faqBody">
+        <div class="faq-chips" id="faqChips"></div>
+        <div class="faq-answer" id="faqAnswer"></div>
+      </div>
+      <div class="faq-input-row">
+        <input class="faq-input" id="faqInput" placeholder="Ask a question about the platform..." autocomplete="off">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span><span class="version">v1.1.1</span> &middot; Platform Guide</span>
+  <span class="updated">Last updated <time datetime="2026-06-08">2026-06-08</time></span>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────
+// DATA: Content tree - CLIENT-FACING VERSION
+// Proprietary methodology details have been removed.
+// ─────────────────────────────────────────────────
+const pages = {
+  overview: {
+    id: 'overview', icon: '🏠', label: 'What is Yields Digital?', desc: 'The big picture', section: 'Start Here',
+    tagline: 'Optimize Returns, Minimize Risks - Digital assets risk-adjusted yields for institutions.',
+    content: `
+      <p>Yields Digital is the onchain risk-grading, tracking, and reporting platform for <strong>professional investors</strong> - a TradFi mindset for portfolio risk, yield, and operational processes. Think of it as a <strong>Bloomberg terminal for onchain risk</strong>, built on four pillars: <strong>clarity, discipline, transparency, and automation</strong>. Designed for institutional, professional, and <strong>agentic</strong> users.</p>
+
+      <div class="arch-pipeline">
+        <div class="arch-block" data-nav="scan">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#58a6ff" stroke-width="2"/><path d="M14 20h12M20 14v12" stroke="#58a6ff" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="arch-title">Scan</div>
+          <div class="arch-desc">Multi-chain wallet analysis</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" data-nav="lyra">
+          <svg viewBox="0 0 40 40"><rect x="6" y="12" width="6" height="20" rx="1" fill="#3fb950"/><rect x="17" y="6" width="6" height="26" rx="1" fill="#d29922"/><rect x="28" y="16" width="6" height="16" rx="1" fill="#f85149"/></svg>
+          <div class="arch-title">Score</div>
+          <div class="arch-desc">LYRA risk engine</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" data-nav="strategies">
+          <svg viewBox="0 0 40 40"><path d="M8 28L16 18L24 22L32 10" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="10" r="3" fill="#3fb950"/></svg>
+          <div class="arch-title">Optimize</div>
+          <div class="arch-desc">Yield opportunities</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" data-nav="reports">
+          <svg viewBox="0 0 40 40"><rect x="10" y="6" width="20" height="28" rx="2" fill="none" stroke="#bc8cff" stroke-width="2"/><line x1="14" y1="14" x2="26" y2="14" stroke="#bc8cff" stroke-width="1.5"/><line x1="14" y1="19" x2="26" y2="19" stroke="#bc8cff" stroke-width="1.5"/><line x1="14" y1="24" x2="22" y2="24" stroke="#bc8cff" stroke-width="1.5"/></svg>
+          <div class="arch-title">Report</div>
+          <div class="arch-desc">Institutional output</div>
+        </div>
+      </div>
+
+      <h3>How It Works (30 Seconds)</h3>
+      <div class="flow">
+        <div class="flow-step">Paste wallet<br>address</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Platform scans<br>all positions</div><span class="flow-arrow">→</span>
+        <div class="flow-step"><a data-nav="lyra">LYRA</a> scores<br>every position</div><span class="flow-arrow">→</span>
+        <div class="flow-step">View report &<br>opportunities</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Execute or<br>export</div>
+      </div>
+      <p>The platform is <strong>non-custodial</strong> - it never holds your funds. Your crypto stays in your wallet at all times.</p>
+    `,
+    expandables: [
+      { icon: '🔍', title: 'Scan', detail: 'Enter any wallet address to see all holdings, positions, and DeFi allocations across multiple blockchains. Supports ENS names, covers Ethereum, Polygon, Arbitrum, and Base. No wallet connection needed for read-only scanning. <a data-nav="scan">Learn more →</a>' },
+      { icon: '📊', title: 'Score', detail: 'Every position gets a proprietary risk score from the <a data-nav="lyra">LYRA engine</a>, covering multiple risk dimensions. Scores update daily and reflect real market conditions.' },
+      { icon: '💡', title: 'Optimize', detail: 'Find higher-yielding opportunities that match your risk tolerance, with side-by-side comparisons. Two modes: automatic optimization or build-your-own. <a data-nav="strategies">Explore strategies →</a>' },
+      { icon: '📄', title: 'Report', detail: 'Generate institutional-grade portfolio reports with risk breakdowns, performance history, and optimization recommendations. Export as HTML, Excel, CSV, or JSON. <a data-nav="reports">See report details →</a>' },
+    ],
+  },
+
+  problem: {
+    id: 'problem', icon: '⚠️', label: 'The Problem We Solve', desc: 'Why this exists', section: 'Start Here',
+    tagline: 'DeFi shows you APY. Nobody shows you risk.',
+    content: `
+      <h3>The Gap</h3>
+      <p>Every DeFi platform advertises yield: "Earn 8% APY on USDC!" or "12% on ETH staking!" But none of them answer the critical questions:</p>
+      <ul>
+        <li><strong>How likely is that 8% to drop to 2% next month?</strong></li>
+        <li><strong>What happens if the protocol gets hacked?</strong></li>
+        <li><strong>Is 8% at Protocol A safer than 6% at Protocol B?</strong></li>
+        <li><strong>How would my portfolio perform in a market crash?</strong></li>
+      </ul>
+      <h3>Our Answer</h3>
+      <p>Yields Digital adds the missing layer: <strong>risk-adjusted yield analysis</strong>. Instead of just "8% APY," you see "8% APY at <a data-nav="lyra">LYRA risk score</a> 2.3" - and you can compare that against "6% APY at risk score 1.4" to make an informed decision.</p>
+    `,
+    expandables: [
+      { icon: '🏛️', title: 'Regulated Asset Managers & CASPs', detail: 'Want onchain exposure but need risk frameworks their compliance teams and regulators recognize - documented methodology, MiCA-aligned vocabulary, and audit-grade records. Need <a data-nav="reports">regulator-grade reports</a> and a defensible risk history before deploying capital.' },
+      { icon: '📦', title: 'ETP & Structured-Product Issuers', detail: 'Need per-product risk dossiers, live NAV reconciliation against on-chain truth, and concentration mapping across underlying protocols to defend a wrapper to a prospectus committee with quantitative evidence.' },
+      { icon: '🏦', title: 'Funds & Treasuries', detail: 'Crypto-native hedge funds, DAO and stablecoin treasuries managing onchain capital without a systematic, API-driven risk edge or institutional-grade reporting. Need <a data-nav="lyra">risk scoring</a> and <a data-nav="strategies">risk-adjusted optimization</a> against a stated mandate.' },
+    ],
+  },
+
+  who: {
+    id: 'who', icon: '👥', label: 'Who Is It For?', desc: 'Target users', section: 'Start Here',
+    tagline: 'Built for professional onchain allocators.',
+    content: '',
+    children: [
+      { id: 'who/asset-managers', label: 'Regulated Asset Managers (MiCA CASPs)', content: `
+        <div class="card" style="border-color:var(--accent);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">🏛️</div>
+          <div class="card-title">Regulated Asset Managers, incl. EU MiCA CASPs</div>
+          <div class="card-desc">Risk frameworks in the vocabulary compliance and regulators already speak</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>MiCA-aligned risk frameworks</strong> - built around Articles 19, 23, 36/38, 43 and 68 (white-paper content, transaction thresholds, reserves, significance criteria, CASP governance)</li>
+          <li><strong>Independent portfolio-level risk view</strong> across every strategy in the book - not just protocol headlines</li>
+          <li><strong>Intra-day NAV reconciliation</strong> and portfolio oversight against on-chain truth</li>
+          <li><strong>Pre-trade due diligence and a post-trade "why we held this" record</strong> - an audit-grade record that defends you in an audit</li>
+          <li><strong>iXBRL- and XML-ready reporting</strong> for ESMA submissions (iXBRL Q3 2026), plus PDF / HTML / JSON</li>
+        </ul>
+      `},
+      { id: 'who/etp-issuers', label: 'ETP & Structured-Product Issuers', content: `
+        <div class="card" style="border-color:var(--green);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">📦</div>
+          <div class="card-title">ETP & Structured Crypto Product Issuers</div>
+          <div class="card-desc">Defend every wrapper to your prospectus committee with quantitative evidence</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>Per-product risk dossiers</strong> for every wrapper - graded by multi-factor models your CRO recognizes</li>
+          <li><strong>Live NAV reconciliation</strong> against on-chain truth</li>
+          <li><strong>Concentration mapping</strong> across underlying protocols - defend a single-protocol ETP with evidence</li>
+          <li><strong>Stablecoin exposure mapping</strong> - surface USDe / USDC / USDT holdings before your investors do</li>
+          <li><strong>Historical risk track records</strong> that drop straight into a prospectus update</li>
+        </ul>
+      `},
+      { id: 'who/tradfi', label: 'TradFi Allocators Entering DeFi', content: `
+        <div class="card" style="border-color:var(--purple);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">🏦</div>
+          <div class="card-title">TradFi Allocators Entering DeFi</div>
+          <div class="card-desc">Risk language your investment committee and CRO understand</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>MiCA-framed risk language</strong> - familiar to the investment committee and Chief Risk Officer</li>
+          <li><strong>Pre-trade due diligence</strong> grounded in proprietary quantitative grading, not intuition</li>
+          <li><strong>Structured portfolio, category and asset risk reports</strong> for risk, compliance and investor needs</li>
+          <li><strong>Post-trade, auditable "why we held this" record</strong> for every position</li>
+        </ul>
+      `},
+      { id: 'who/hedge-funds', label: 'Crypto-Native Hedge Funds', content: `
+        <div class="card" style="border-color:var(--accent);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Crypto-Native Hedge Funds</div>
+          <div class="card-desc">A systematic risk edge across your full DeFi universe</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>Real-time LYRA scores</strong> on every wallet, position and protocol in the book - in the UI and via the <a data-nav="developers">API</a></li>
+          <li><strong>Risk-adjusted yield optimization</strong> across your full DeFi universe</li>
+          <li><strong>On-demand reporting</strong> that stands up to internal and external scrutiny</li>
+        </ul>
+      `},
+      { id: 'who/treasuries', label: 'Treasuries & DAOs', content: `
+        <div class="card" style="border-color:var(--green);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">🏦</div>
+          <div class="card-title">Crypto, DAO & Stablecoin Treasuries</div>
+          <div class="card-desc">Institutional robustness for onchain holdings</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>Live risk-scoring</strong> on every asset, pool and protocol in the treasury</li>
+          <li><strong>Stablecoin concentration mapping</strong></li>
+          <li><strong>Yield optimization</strong> on treasury holdings against your risk mandate</li>
+          <li><strong>Investor reporting</strong> with institutional-grade robustness</li>
+        </ul>
+      `},
+      { id: 'who/agentic', label: 'Agentic & API Consumers', content: `
+        <div class="card" style="border-color:var(--purple);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">Agentic & API Consumers</div>
+          <div class="card-desc">API-first, so autonomous agents and downstream systems consume LYRA directly</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>Programmatic LYRA scores</strong> via the <a data-nav="developers">Developer API</a> - risk-adjusted data for agents, dashboards and automation</li>
+          <li><strong>Push-driven events</strong> (webhooks planned Q3 2026) so systems react the moment a position changes risk classification</li>
+        </ul>
+      `},
+    ],
+  },
+
+  scan: {
+    id: 'scan', icon: '🔍', label: 'Wallet Scanning', desc: 'Connect and analyze', section: 'Core Features',
+    tagline: 'Paste an address. See everything.',
+    content: `
+      <div class="flow">
+        <div class="flow-step">Enter wallet<br>or ENS name</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Scan 4 chains<br>simultaneously</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Identify all<br>positions</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Display<br>dashboard</div>
+      </div>
+      <p><strong>No wallet connection required</strong> for read-only scanning. Just paste an Ethereum address or ENS name (like "vitalik.eth"). The scan covers Ethereum, Polygon, Arbitrum, and Base.</p>
+    `,
+    children: [
+      { id: 'scan/how-it-works', label: 'How Scanning Works', content: `
+        <h3>Step-by-Step Scan Flow</h3>
+        <div class="scan-pipeline">
+          <svg viewBox="0 0 720 120">
+            <circle cx="50" cy="50" r="22" fill="none" stroke="#8b949e" stroke-width="1.5"/>
+            <text x="50" y="48" fill="#e6edf3" font-size="18" text-anchor="middle">⟠</text>
+            <text x="50" y="90" fill="#8b949e" font-size="9" text-anchor="middle">Ethereum</text>
+
+            <circle cx="120" cy="50" r="22" fill="none" stroke="#8247e5" stroke-width="1.5"/>
+            <text x="120" y="48" fill="#8247e5" font-size="14" text-anchor="middle" font-weight="700">P</text>
+            <text x="120" y="90" fill="#8b949e" font-size="9" text-anchor="middle">Polygon</text>
+
+            <circle cx="190" cy="50" r="22" fill="none" stroke="#28a0f0" stroke-width="1.5"/>
+            <text x="190" y="48" fill="#28a0f0" font-size="14" text-anchor="middle" font-weight="700">A</text>
+            <text x="190" y="90" fill="#8b949e" font-size="9" text-anchor="middle">Arbitrum</text>
+
+            <circle cx="260" cy="50" r="22" fill="none" stroke="#0052ff" stroke-width="1.5"/>
+            <text x="260" y="48" fill="#0052ff" font-size="14" text-anchor="middle" font-weight="700">B</text>
+            <text x="260" y="90" fill="#8b949e" font-size="9" text-anchor="middle">Base</text>
+
+            <line x1="75" y1="50" x2="330" y2="50" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+            <line x1="145" y1="50" x2="330" y2="50" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+            <line x1="215" y1="50" x2="330" y2="50" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+            <line x1="285" y1="50" x2="330" y2="50" stroke="#30363d" stroke-width="1" stroke-dasharray="4,3"/>
+
+            <rect x="330" y="20" width="160" height="60" rx="8" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+            <text x="410" y="45" fill="#58a6ff" font-size="12" text-anchor="middle" font-weight="600">LYRA Engine</text>
+            <text x="410" y="62" fill="#8b949e" font-size="9" text-anchor="middle">Risk Analysis</text>
+
+            <line x1="490" y1="50" x2="550" y2="50" stroke="#58a6ff" stroke-width="2" marker-end="url(#arrowBlue)"/>
+            <defs><marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#58a6ff"/></marker></defs>
+
+            <rect x="555" y="20" width="140" height="60" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+            <text x="625" y="45" fill="#3fb950" font-size="12" text-anchor="middle" font-weight="600">Dashboard</text>
+            <text x="625" y="62" fill="#8b949e" font-size="9" text-anchor="middle">Scored Portfolio</text>
+          </svg>
+        </div>
+        <p>The scan automatically identifies token balances, DeFi protocol deposits, liquidity positions, and staking across all supported chains. Each position is then passed through the LYRA engine for risk scoring.</p>
+      `},
+      { id: 'scan/portfolio-summary', label: 'Portfolio Summary', content: `
+        <p>After scanning, the dashboard displays a comprehensive portfolio overview including total value, DeFi-deployed value, blended yield rate, and composite risk score.</p>
+        `,
+        expandables: [
+          { icon: '💰', title: 'Total Portfolio Value', detail: 'Sum of all token balances and DeFi positions across all scanned chains, converted to USD at current market prices.' },
+          { icon: '📊', title: 'DeFi Value', detail: 'Subset of total value that is actively deployed in DeFi protocols (lending, LPing, staking). Excludes idle tokens sitting in the wallet.' },
+          { icon: '📈', title: 'Weighted Average APY', detail: 'The portfolio\'s blended yield rate, calculated as the value-weighted average of all position APYs.' },
+          { icon: '⚖️', title: 'Composite Risk Score', detail: 'Portfolio-level <a data-nav="lyra">LYRA score</a> calculated as the value-weighted average of individual position scores across the four position-level dimensions (Asset, Pool, Protocol, Chain), then adjusted for concentration risk (penalty when one position exceeds 25% of the portfolio) and diversification benefit (reduction when capital is spread across multiple protocols and chains).' },
+        ],
+      },
+      { id: 'scan/capital-productivity', label: 'Capital Productivity', content: `
+        <p>Capital productivity measures how much of your crypto is actually <strong>working</strong> (earning yield) versus sitting idle.</p>
+        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:16px 0">
+          <div class="donut-container">
+            <svg viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r="70" fill="none" stroke="#21262d" stroke-width="20"/>
+              <circle cx="90" cy="90" r="70" fill="none" stroke="#3fb950" stroke-width="20" stroke-dasharray="131.9 307.9" stroke-dashoffset="110" stroke-linecap="round"/>
+            </svg>
+            <div class="donut-center"><div class="pct">30%</div><div class="pct-label">Productive</div></div>
+          </div>
+          <div>
+            <div class="donut-legend" style="flex-direction:column;gap:8px">
+              <div class="donut-legend-item"><div class="weight-legend-dot" style="background:#3fb950"></div><strong style="color:var(--green)">30%</strong> earning yield in DeFi</div>
+              <div class="donut-legend-item"><div class="weight-legend-dot" style="background:#21262d"></div><strong style="color:var(--dim)">70%</strong> idle - earning nothing</div>
+            </div>
+          </div>
+        </div>
+        <h3>The Metric</h3>
+        <p><strong>Capital Productivity = Analyzed DeFi Value ÷ Total Portfolio Value × 100%</strong> (positions that pass our risk-scoring coverage count as productive; idle wallet tokens and unsupported positions do not)</p>
+        <p>A wallet with $100K total but only $30K in DeFi has 30% capital productivity - meaning 70% of the portfolio is earning nothing.</p>
+        <h3>Why It Matters</h3>
+        <p>Idle crypto is a silent cost. In DeFi, even conservative strategies can earn 2-5% APY on stablecoins. The platform highlights idle assets and suggests <a data-nav="strategies">yield opportunities</a> to improve productivity.</p>
+      `},
+    ],
+  },
+
+  lyra: {
+    id: 'lyra', icon: '📊', label: 'LYRA Risk Scoring', desc: 'The risk engine', section: 'Core Features',
+    tagline: 'Layered Yields and Risks Assessment - the platform\'s core analytical engine.',
+    content: `
+      <p>Every DeFi position is scored on a <strong>1 to 5 scale</strong> using a proprietary multi-factor model. LYRA grades risk across <strong>five segments</strong> - four position-level dimensions plus a holistic portfolio view - the same lenses an investment committee already applies to traditional assets:</p>
+      <table class="risk-table">
+        <tr><th>Segment</th><th>What It Evaluates</th></tr>
+        <tr><td><strong><a data-nav="lyra/asset-risk">Asset</a></strong></td><td>Fundamental characteristics of the underlying asset - price behavior, liquidity, and market structure</td></tr>
+        <tr><td><strong><a data-nav="lyra/pool-risk">Pool</a></strong></td><td>Characteristics of the specific DeFi pool - yield stability, depth, and structural risk</td></tr>
+        <tr><td><strong><a data-nav="lyra/protocol-risk">Protocol</a></strong></td><td>Overall health and sustainability of the DeFi protocol</td></tr>
+        <tr><td><strong><a data-nav="lyra/chain-risk">Chain</a></strong></td><td>Risk inherent to the blockchain where the position lives</td></tr>
+        <tr><td><strong><a data-nav="lyra/portfolio-risk">Portfolio</a></strong></td><td>Holistic, portfolio-level score - the four dimensions rolled up and adjusted for concentration and diversification across your full exposure</td></tr>
+      </table>
+      <p>The four position-level dimensions are weighted using a proprietary model developed by our quant team, then rolled up into the holistic Portfolio score with concentration and diversification adjustments. Risk data refreshes <strong>daily</strong>.</p>
+      <h3>Proprietary Weighting</h3>
+      <div class="weight-bar">
+        <div class="weight-bar-seg" style="flex:6;background:#f85149">Asset</div>
+        <div class="weight-bar-seg" style="flex:1.5;background:#58a6ff">Pool</div>
+        <div class="weight-bar-seg" style="flex:1.5;background:#d29922">Protocol</div>
+        <div class="weight-bar-seg" style="flex:1;background:#bc8cff">Chain</div>
+      </div>
+      <div class="weight-legend">
+        <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#f85149"></div>Asset Risk - Largest factor</div>
+        <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#58a6ff"></div>Pool Risk</div>
+        <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#d29922"></div>Protocol Risk</div>
+        <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#bc8cff"></div>Chain Risk</div>
+      </div>
+      <p class="diagram-label">Exact weights are proprietary to our quant model</p>
+    `,
+    children: [
+      { id: 'lyra/asset-risk', label: 'Asset Risk', content: `
+        <p>The asset risk dimension evaluates the fundamental risk characteristics of the underlying asset(s) in a position. This is typically the most significant factor in overall position risk.</p>
+        <h3>What We Evaluate</h3>
+        <p>Our proprietary model analyzes multiple asset-level signals including price behavior, market structure, and liquidity characteristics to produce a comprehensive risk assessment.</p>
+        `,
+        expandables: [
+          { icon: '📉', title: 'Price Behavior Analysis', detail: 'We analyze historical price patterns including volatility, drawdowns, and trend direction to assess how the asset has performed under various market conditions.' },
+          { icon: '💧', title: 'Liquidity & Market Structure', detail: 'We evaluate the depth and quality of the asset\'s market - including trading volume, market capitalization, and the ability to exit positions under stress conditions.' },
+        ],
+      },
+      { id: 'lyra/pool-risk', label: 'Pool Risk', content: `
+        <p>The pool risk dimension assesses the specific DeFi pool or vault where capital is deployed.</p>
+        <h3>What We Evaluate</h3>
+        <p>Pool characteristics like yield consistency, depth, and structural risks (such as impermanent loss for liquidity pools) are analyzed to determine how stable and reliable the pool is as an investment vehicle.</p>
+        `,
+        expandables: [
+          { icon: '📊', title: 'Yield Stability', detail: 'We analyze how consistently the pool delivers its advertised yield. Pools with highly variable returns carry more risk than those with stable, predictable yields.' },
+          { icon: '💰', title: 'Pool Depth & Health', detail: 'We assess the total capital in the pool, its trend over time, and other indicators of pool health and sustainability.' },
+        ],
+      },
+      { id: 'lyra/protocol-risk', label: 'Protocol Risk', content: `
+        <p>The protocol risk dimension evaluates the overall health and sustainability of the DeFi protocol.</p>
+        <h3>What We Evaluate</h3>
+        <p>Protocol-level signals including overall adoption, economic sustainability, and track record are analyzed to assess whether the protocol itself is a risk factor.</p>
+        `,
+        expandables: [
+          { icon: '🏗️', title: 'Protocol Health', detail: 'We evaluate overall protocol adoption, usage trends, and maturity. Larger, more established protocols with growing usage generally score lower risk.' },
+          { icon: '💵', title: 'Economic Sustainability', detail: 'We assess whether the protocol has a sustainable economic model - protocols relying heavily on token incentives rather than real revenue carry additional risk.' },
+        ],
+      },
+      { id: 'lyra/chain-risk', label: 'Chain Risk', content: `
+        <p>The chain risk dimension evaluates the blockchain itself where the position lives.</p>
+        <h3>What We Evaluate</h3>
+        <p>Chain-level characteristics including maturity, adoption, and stability are factored into the overall risk score. More established chains with deeper liquidity generally carry lower risk.</p>
+      `},
+      { id: 'lyra/portfolio-risk', label: 'Portfolio (Holistic)', content: `
+        <p>The portfolio segment is the holistic roll-up of the four position-level dimensions across your full exposure - one number for the whole book.</p>
+        <h3>What We Evaluate</h3>
+        <p>Individual position scores are value-weighted into a single portfolio risk score, then adjusted for <strong>concentration</strong> (a penalty when one position exceeds 25% of the portfolio) and <strong>diversification</strong> (a benefit when capital is spread across multiple protocols and chains). This is the same lens an investment committee already applies to traditional assets.</p>
+      `},
+      { id: 'lyra/score-scale', label: 'Score Scale', content: `
+        <h3>The 1-5 Scale</h3>
+        <div class="gauge-container">
+          <svg viewBox="0 0 320 200">
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3fb950"/>
+                <stop offset="12.5%" stop-color="#3fb950"/>
+                <stop offset="12.5%" stop-color="#58a6ff"/>
+                <stop offset="37.5%" stop-color="#58a6ff"/>
+                <stop offset="37.5%" stop-color="#d29922"/>
+                <stop offset="50%" stop-color="#d29922"/>
+                <stop offset="50%" stop-color="#f85149"/>
+                <stop offset="75%" stop-color="#f85149"/>
+                <stop offset="75%" stop-color="#bc8cff"/>
+                <stop offset="100%" stop-color="#bc8cff"/>
+              </linearGradient>
+            </defs>
+            <!-- Arc: center (160,170) r=130 -->
+            <path d="M30 170 A130 130 0 0 1 290 170" fill="none" stroke="url(#gaugeGrad)" stroke-width="22" stroke-linecap="round"/>
+            <text x="18" y="192" fill="#8b949e" font-size="11" text-anchor="middle">1.0</text>
+            <text x="42" y="60" fill="#8b949e" font-size="11" text-anchor="middle">2.0</text>
+            <text x="160" y="18" fill="#8b949e" font-size="11" text-anchor="middle">3.0</text>
+            <text x="278" y="60" fill="#8b949e" font-size="11" text-anchor="middle">4.0</text>
+            <text x="302" y="192" fill="#8b949e" font-size="11" text-anchor="middle">5.0</text>
+            <g transform="rotate(-31.5, 160, 170)">
+              <line x1="160" y1="170" x2="160" y2="60" stroke="#e6edf3" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+            <circle cx="160" cy="170" r="6" fill="#e6edf3"/>
+          </svg>
+          <div class="gauge-value">2.3<span>Example Score</span></div>
+        </div>
+        <div class="score-bar">
+          <div class="score-segment" style="flex:1;background:#3fb950">1.0</div>
+          <div class="score-segment" style="flex:1;background:#58a6ff">1.5</div>
+          <div class="score-segment" style="flex:1;background:#d29922">2.5</div>
+          <div class="score-segment" style="flex:1;background:#f85149">3.5</div>
+          <div class="score-segment" style="flex:1;background:#bc8cff">5.0</div>
+        </div>
+        <div class="score-labels">
+          <span>Very Low Risk</span><span>Low Risk</span><span>Moderate</span><span>High Risk</span><span>Very High</span>
+        </div>
+        <h3>What Each Range Means</h3>
+        `,
+        expandables: [
+          { icon: '🟢', title: '1.0 - 1.5: Very Low Risk', detail: 'Blue-chip assets on established protocols. Examples: major stablecoins and ETH staking on the largest, most battle-tested protocols.' },
+          { icon: '🔵', title: '1.5 - 2.5: Low Risk', detail: 'Established protocols with stable assets. Solid track records with some yield variability but fundamentally sound.' },
+          { icon: '🟡', title: '2.5 - 3.0: Moderate Risk', detail: 'Some volatility or newer protocols. Worth monitoring but not alarming for experienced DeFi participants.' },
+          { icon: '🔴', title: '3.0 - 4.0: High Risk', detail: 'Volatile assets, smaller protocols, or concentrated positions. Requires active management and risk awareness.' },
+          { icon: '🟣', title: '4.0 - 5.0: Very High Risk', detail: 'Experimental protocols, extreme volatility, or critical warning signals. Proceed with extreme caution.' },
+        ],
+      },
+    ],
+  },
+
+  strategies: {
+    id: 'strategies', icon: '💡', label: 'Yield Opportunities', desc: 'Find better returns', section: 'Core Features',
+    tagline: 'Find better returns within your risk comfort zone.',
+    content: `
+      <h3>What You See for Each Opportunity</h3>
+      <ul>
+        <li><strong>Current APY</strong> - what it's earning right now</li>
+        <li><strong>30-day APY</strong> - recent average (more stable indicator)</li>
+        <li><strong><a data-nav="lyra">LYRA Risk Score</a></strong> - composite risk score</li>
+        <li><strong>TVL</strong> - Total Value Locked (larger = generally more battle-tested)</li>
+        <li><strong>Risk breakdown</strong> - multi-dimension sub-scores</li>
+      </ul>
+      <h3>Risk Tolerance Filter</h3>
+      <div class="score-bar" style="max-width:400px">
+        <div class="score-segment" style="flex:1;background:#3fb950;font-size:10px">Very<br>Conservative</div>
+        <div class="score-segment" style="flex:1;background:#58a6ff;font-size:10px">Conservative</div>
+        <div class="score-segment" style="flex:1;background:#d29922;font-size:10px">Moderate</div>
+        <div class="score-segment" style="flex:1;background:#f85149;font-size:10px">Aggressive</div>
+        <div class="score-segment" style="flex:1;background:#bc8cff;font-size:10px">Very<br>Aggressive</div>
+      </div>
+      <p style="margin-top:8px">Set your comfort level, and the platform only shows opportunities at or below that risk threshold.</p>
+    `,
+    children: [
+      { id: 'strategies/ydo', label: 'YD Optimization', content: `
+        <div class="card" style="border-color:var(--green);margin-bottom:20px;max-width:500px">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">Yields Digital Optimization (YDO)</div>
+          <div class="card-desc">Automatic yield improvement for assets you already hold</div>
+        </div>
+        <p>The platform automatically identifies which of your held assets have better yield opportunities available.</p>
+        <h3>How It Works</h3>
+        <ul>
+          <li><strong>Scans your portfolio</strong> - identifies idle assets and suboptimal positions</li>
+          <li><strong>Matches your risk tolerance</strong> - only suggests opportunities at or below your setting</li>
+          <li><strong>Side-by-side comparison</strong> - current APY vs. suggested APY with risk scores</li>
+          <li><strong>Prepare and sign</strong> - <a data-nav="execute">review the prepared transaction</a> and sign it in your wallet</li>
+        </ul>
+        <h3>Example</h3>
+        <p>"Your idle ETH ($45,000) could earn <strong>5.2% APY</strong> on Morpho (risk score 1.8) instead of sitting at 0%."</p>
+      `},
+      { id: 'strategies/byo', label: 'Build Your Own', content: `
+        <div class="card" style="border-color:var(--accent);margin-bottom:20px;max-width:500px">
+          <div class="card-icon">🛠️</div>
+          <div class="card-title">Build Your Own Strategy</div>
+          <div class="card-desc">Full access to all yield opportunities with filtering</div>
+        </div>
+        <p>Browse all available strategies with full risk data. Filter by chain, protocol, asset, and risk tolerance. Pick what fits your portfolio thesis.</p>
+        <h3>Filters Available</h3>
+        <ul>
+          <li><strong>Chain</strong> - Ethereum, Polygon, Arbitrum, Base</li>
+          <li><strong>Protocol</strong> - Aave, Uniswap, Lido, Compound, Morpho, Ethena</li>
+          <li><strong>Asset type</strong> - Stablecoins, ETH/BTC, altcoins, LP tokens</li>
+          <li><strong>Risk tolerance</strong> - Very Conservative to Very Aggressive</li>
+          <li><strong>Minimum APY</strong> - floor for displayed opportunities</li>
+        </ul>
+      `},
+    ],
+  },
+
+  reports: {
+    id: 'reports', icon: '📄', label: 'Portfolio Reports', desc: 'Institutional-grade output', section: 'Core Features',
+    tagline: 'Institutional-grade documentation you can hand to compliance.',
+    content: `
+      <p>Reports include risk methodology disclosure, score breakdowns, historical performance, and portfolio-level risk adjustments - the kind of documentation institutional compliance teams expect.</p>
+      <p><strong>Live NAV reconciliation</strong> against on-chain truth gives front-office, risk, and compliance teams a real-time portfolio valuation. And every report is an <strong>exportable risk history from execution to exit</strong> - the post-trade "why we held this" record that auditors and regulators expect.</p>
+      <p>Generation takes about <strong>30 seconds</strong> with cached data, up to 60-70 seconds for a first-time <a data-nav="scan">scan</a>.</p>
+      <p>Every report includes a verifiable footer with unique <strong>report ID</strong>, ISO-8601 <strong>generation timestamp</strong>, and <strong>schema version</strong> - supporting audit trail and reproducibility for compliance use cases.</p>
+    `,
+    children: [
+      { id: 'reports/sections', label: 'Report Sections', content: `
+        <p>Each report renders multiple analytical sections covering executive summary, performance, risk decomposition, optimization, and per-position detail.</p>
+        `,
+        expandables: [
+          { icon: '📊', title: 'Executive Summary', detail: 'Total value, DeFi value, <a data-nav="scan/capital-productivity">capital productivity</a>, blended APY, composite <a data-nav="lyra">risk score</a>. The executive summary for anyone reviewing the portfolio.' },
+          { icon: '📈', title: 'Performance & Diversification', detail: '12-month balance history chart and diversification scoring over time.' },
+          { icon: '📊', title: 'Portfolio Analytics', detail: 'Asset allocation pie chart, protocol allocation breakdown, chain coverage analysis, and score distribution charts.' },
+          { icon: '⚖️', title: 'Risk Component Breakdown', detail: 'Multi-dimensional <a data-nav="lyra">LYRA breakdown</a> with portfolio-level adjustments (concentration penalty, diversification benefit).' },
+          { icon: '💡', title: 'Yield Optimization', detail: 'Top <a data-nav="strategies">opportunities</a> filtered by risk tolerance. Current vs. optimized annual income projection showing potential improvement.' },
+          { icon: '🥧', title: 'Portfolio Distribution', detail: 'Asset, protocol, and chain distribution charts that decompose where capital sits.' },
+          { icon: '📋', title: 'Active DeFi Positions', detail: 'Per-position table for every analyzed position with LYRA score, current APY, and risk dimensions.' },
+          { icon: '📦', title: 'Other DeFi Positions', detail: 'Positions outside current asset / protocol coverage - tracked but not LYRA-scored.' },
+          { icon: '📎', title: 'Appendix', detail: 'Methodology disclosures, schema version, report ID, generation timestamp - the audit-trail footer.' },
+        ],
+      },
+      { id: 'reports/formats', label: 'Export Formats', content: `
+        <h3>Available Formats</h3>
+        `,
+        expandables: [
+          { icon: '🌐', title: 'Interactive HTML', detail: 'Full-featured report viewable in any browser. Includes interactive charts, expandable sections, and responsive design. Optimized for printing to PDF.' },
+          { icon: '📗', title: 'Excel (.xlsx)', detail: 'Structured spreadsheet with five tabs: Summary, Positions, Risk Analysis, Yield Opportunities, Other DeFi Positions. Ready for further analysis.' },
+          { icon: '📋', title: 'CSV', detail: 'Raw tabular data export. One row per position with all metrics. Ideal for importing into databases or BI tools.' },
+          { icon: '🔧', title: 'JSON', detail: 'Machine-readable format for API integration. Contains the complete data model behind the report.' },
+        ],
+      },
+    ],
+  },
+
+  stress: {
+    id: 'stress', icon: '🔥', label: 'Stress Testing', desc: 'Historical crash scenarios (planned)', section: 'Core Features',
+    tagline: 'Planned: see how your portfolio would survive real historical crashes.',
+    content: `
+      <p style="background:rgba(210,153,34,0.1);border-left:3px solid var(--orange);padding:12px 16px;border-radius:4px"><strong>Status: Planned for Q3 2026.</strong> The stress-testing capability described below is on the public roadmap. The historical event pages that follow describe the market events used to design the scenario library; the per-portfolio simulation engine is not yet live.</p>
+      <h3>What Stress Testing Will Output</h3>
+      <ul>
+        <li><strong>Position-level drawdown</strong> - how much each holding would have lost</li>
+        <li><strong>Portfolio drawdown</strong> - total portfolio impact</li>
+        <li><strong>Concentration analysis</strong> - how exposed you are to single points of failure</li>
+        <li><strong>Liquidity stress</strong> - estimated difficulty of exiting positions under panic conditions</li>
+        <li><strong>Recovery assessment</strong> - likelihood of bouncing back</li>
+      </ul>
+      <h3>Planned Overall Assessment</h3>
+      <div class="flow">
+        <div class="flow-step" style="border-color:var(--green)"><span class="badge badge-green">RESILIENT</span><br>Portfolio can weather the storm</div>
+        <div class="flow-step" style="border-color:var(--orange)"><span class="badge badge-orange">VULNERABLE</span><br>Significant losses expected</div>
+        <div class="flow-step" style="border-color:var(--red)"><span class="badge badge-red">CRITICAL</span><br>Severe risk of major loss</div>
+      </div>
+    `,
+    children: [
+      { id: 'stress/luna', label: 'Luna/UST Collapse', content: `
+        <div class="card" style="border-color:var(--red);margin-bottom:20px;max-width:500px">
+          <div class="card-icon">🌑</div>
+          <div class="card-title">Luna/UST Collapse - May 2022</div>
+          <div class="card-desc">Algorithmic stablecoin death spiral</div>
+        </div>
+        <h3>What Happened</h3>
+        <p>UST, an algorithmic stablecoin backed by LUNA, lost its dollar peg. As UST depegged, LUNA hyperinflated attempting to restore the peg. Both went to effectively zero. <strong>$40 billion</strong> in market value evaporated in less than a week.</p>
+        <h3>Impact by Asset Class</h3>
+        <div class="drawdown-bars">
+          <div class="drawdown-row"><div class="drawdown-label">BTC</div><div class="drawdown-track"><div class="drawdown-fill" style="width:35%;background:#d29922">Moderate</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">ETH</div><div class="drawdown-track"><div class="drawdown-fill" style="width:50%;background:#f85149">High</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">Stables</div><div class="drawdown-track"><div class="drawdown-fill" style="width:20%;background:#d29922">Moderate</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">DeFi TVL</div><div class="drawdown-track"><div class="drawdown-fill" style="width:75%;background:#f85149">Severe</div></div></div>
+        </div>
+        <h3>Why This Scenario Matters</h3>
+        <p>This scenario will test how your portfolio handles algorithmic stablecoin failure and the contagion effects across the broader DeFi ecosystem. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from May 2022 shown for context, not platform-computed outputs.</p>
+      `},
+      { id: 'stress/ftx', label: 'FTX Collapse', content: `
+        <div class="card" style="border-color:var(--orange);margin-bottom:20px;max-width:500px">
+          <div class="card-icon">💥</div>
+          <div class="card-title">FTX Collapse - November 2022</div>
+          <div class="card-desc">Centralized exchange fraud exposed</div>
+        </div>
+        <h3>What Happened</h3>
+        <p>FTX, the second-largest crypto exchange, was revealed to have misappropriated customer funds. The exchange collapsed in days, taking billions in customer deposits with it. Market-wide panic ensued.</p>
+        <h3>Impact by Asset Class</h3>
+        <div class="drawdown-bars">
+          <div class="drawdown-row"><div class="drawdown-label">BTC</div><div class="drawdown-track"><div class="drawdown-fill" style="width:50%;background:#f85149">High</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">ETH</div><div class="drawdown-track"><div class="drawdown-fill" style="width:55%;background:#f85149">High</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">SOL</div><div class="drawdown-track"><div class="drawdown-fill" style="width:100%;background:#bc8cff">Severe</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">DeFi TVL</div><div class="drawdown-track"><div class="drawdown-fill" style="width:40%;background:#d29922">Moderate</div></div></div>
+        </div>
+        <h3>Why This Scenario Matters</h3>
+        <p>This scenario will test how your portfolio handles a sudden market-wide confidence crisis - broad drawdowns across asset classes and whether you can exit when everyone else is trying to exit simultaneously. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from November 2022 shown for context, not platform-computed outputs.</p>
+      `},
+      { id: 'stress/svb', label: 'SVB Crisis', content: `
+        <div class="card" style="border-color:var(--purple);margin-bottom:20px;max-width:500px">
+          <div class="card-icon">🏦</div>
+          <div class="card-title">SVB / Stablecoin Crisis - March 2023</div>
+          <div class="card-desc">Banking failure hits stablecoin confidence</div>
+        </div>
+        <h3>What Happened</h3>
+        <p>Silicon Valley Bank failed, and it was revealed that Circle (USDC issuer) held $3.3B of reserves there. USDC briefly depegged to <strong>$0.88</strong>. Stablecoin-heavy DeFi portfolios faced unexpected losses.</p>
+        <h3>Impact by Asset Class</h3>
+        <div class="drawdown-bars">
+          <div class="drawdown-row"><div class="drawdown-label">USDC</div><div class="drawdown-track"><div class="drawdown-fill" style="width:80%;background:#f85149">Severe depeg</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">DAI</div><div class="drawdown-track"><div class="drawdown-fill" style="width:65%;background:#f85149">Significant depeg</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">USDT</div><div class="drawdown-track"><div class="drawdown-fill" style="width:20%;background:#3fb950">Low</div></div></div>
+          <div class="drawdown-row"><div class="drawdown-label">Pools</div><div class="drawdown-track"><div class="drawdown-fill" style="width:60%;background:#d29922">High withdrawals</div></div></div>
+        </div>
+        <h3>Why This Scenario Matters</h3>
+        <p>This scenario primarily affects stablecoin-heavy portfolios. It will test stablecoin depeg risk and cascading effects on DeFi yields when stablecoin confidence is shaken. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from March 2023 shown for context, not platform-computed outputs.</p>
+      `},
+    ],
+  },
+
+  execute: {
+    id: 'execute', icon: '⚡', label: 'Execution', desc: 'Move funds on-chain', section: 'Core Features',
+    tagline: 'From recommendation to wallet-signable transaction.',
+    content: `
+      <p>The transaction layer is built API-first. Route discovery, gas estimation, simulation, and token-approval payloads are live; the platform prepares the exact transaction your wallet will sign. <strong>Wallet signing is live in the Execute Tab today</strong>: each opportunity walks through approve-then-execute, with each step signed via your connected wallet (MetaMask, WalletConnect, etc.). Batched one-step signing for compatible wallets is on the roadmap.</p>
+      <div class="flow">
+        <div class="flow-step">Select<br>opportunity</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Platform builds<br>tx payload</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Simulate<br>& review</div><span class="flow-arrow">→</span>
+        <div class="flow-step">Sign in<br>your wallet</div>
+      </div>
+    `,
+    expandables: [
+      { icon: '🔐', title: 'Non-Custodial by Design', detail: 'Yields Digital <strong>never touches your private keys</strong>. Every transaction requires your explicit wallet signature. Nothing executes without your approval.' },
+      { icon: '👁️', title: 'Pre-Flight Simulation', detail: 'Before you sign, the platform simulates the transaction and shows expected gas, swap path, and resulting position. No hidden fees, no surprises.' },
+      { icon: '🛣️', title: 'Optimal Routing', detail: 'Route discovery surfaces the most efficient swap and deposit path - handling token approvals, swaps, and protocol deposits in the right order.' },
+    ],
+  },
+
+  developers: {
+    id: 'developers', icon: '🧩', label: 'Developer API', desc: 'Integrate Yields Digital', section: 'Core Features',
+    tagline: 'Risk scores, yields, and execution - programmatically.',
+    content: `
+      <p>Everything the web app does is available through the same documented API that powers it. Build risk-aware tools, embed LYRA scores in your own dashboards, or wire portfolio analytics into your existing investment workflow. Browse the live API documentation at <code>/developers</code> - the developer portal renders the full OpenAPI specification with example requests for every endpoint.</p>
+      <h3>What You Can Access</h3>
+      <ul>
+        <li><strong>Risk scoring</strong> - LYRA scores per asset, pool, protocol, and chain (<a data-nav="lyra">methodology</a>)</li>
+        <li><strong>Yield data</strong> - filter live yields by chain, protocol, or asset</li>
+        <li><strong>Portfolio analytics</strong> - wallet scan results, position-level breakdowns, capital-productivity metrics</li>
+        <li><strong>Reports</strong> - generate the same institutional-grade <a data-nav="reports">reports</a> via API (HTML / CSV / XLSX / JSON)</li>
+        <li><strong>Yield optimization</strong> - the same recommendations the platform surfaces to its UI users</li>
+        <li><strong>Execution prep</strong> - route, simulate, gas-estimate, and approval payloads for your wallet to sign (<a data-nav="execute">execution model</a>)</li>
+      </ul>
+    `,
+    expandables: [
+      { icon: '📖', title: 'Live OpenAPI Documentation', detail: 'The full API specification is rendered at <code>/developers</code> with grouped endpoints, request/response shapes, example payloads, and inline "try it" support. The portal reflects the current production deployment - if a field changes, the docs reflect it immediately on next release.' },
+      { icon: '🔑', title: 'API Key Management', detail: 'Provision and rotate API keys from your account dashboard. Keys are shown once at creation and stored hashed on the platform - if you lose a key, rotate it; we cannot recover the plaintext. Each key is scoped to your user identity and respects the same access controls as cookie-authenticated sessions.' },
+      { icon: '🚦', title: 'Rate Limits', detail: 'Both cookie sessions and API keys share the same rate-limit budgets. Standard limits are tuned to support normal application usage; higher-volume integration patterns can be negotiated per account. Limits return as HTTP 429 with a <code>Retry-After</code> header when exceeded.' },
+      { icon: '🤝', title: 'B2B & White-Label', detail: 'The Developer API is the integration surface for partners embedding Yields Digital risk scores into their own products. Roadmap track for Q3 2026: <strong>Oracle Product</strong> - a dedicated risk-as-a-service tier with SLA-backed availability for embedded use.' },
+      { icon: '🛎️', title: 'Webhook API (Q3 2026)', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation - so your systems are notified the moment a position changes risk classification, not when you next poll.' },
+      { icon: '🔒', title: 'Authentication', detail: 'API keys travel via the <code>Authorization</code> header. All endpoints are HTTPS-only. The same <a data-nav="security">security posture</a> that protects the web app - httpOnly cookies, bcrypt, modern security headers - applies to API traffic.' },
+    ],
+  },
+
+  coverage: {
+    id: 'coverage', icon: '🌐', label: 'Chains & Protocols', desc: 'What\'s supported', section: 'Details',
+    tagline: 'Focused coverage of institutional-grade DeFi.',
+    content: `
+      <p style="font-size:13px;color:var(--dim)">Active asset, chain, and protocol coverage is configured per environment at deploy time. The lists below reflect today\'s production configuration; coverage expands with each release as new whitelists are activated. Positions outside the active list still appear in your scan as unanalyzed. Across these protocols, the platform continuously monitors the active pool universe and risk-scores eligible positions.</p>
+      <h3>Blockchains</h3>
+      <div class="chain-row">
+        <div class="chain-tag">⟠ Ethereum</div>
+        <div class="chain-tag">🟣 Polygon</div>
+        <div class="chain-tag">🔵 Arbitrum</div>
+        <div class="chain-tag">🔷 Base</div>
+      </div>
+      <h3>Supported Assets</h3>
+      <div class="chain-row">
+        <div class="chain-tag">ETH</div><div class="chain-tag">WETH</div><div class="chain-tag">STETH</div><div class="chain-tag">WSTETH</div>
+        <div class="chain-tag">WBTC</div><div class="chain-tag">USDC</div><div class="chain-tag">USDT</div><div class="chain-tag">UNI</div>
+        <div class="chain-tag">POL</div><div class="chain-tag">ARB</div><div class="chain-tag">USDE</div><div class="chain-tag">SUSDE</div>
+      </div>
+      <p>Positions in assets or protocols outside the active list will appear in your <a data-nav="scan">wallet scan</a> but won\'t receive a <a data-nav="lyra">LYRA risk score</a>. The <a data-nav="reports">report</a> clearly marks analyzed vs. unanalyzed coverage.</p>
+      <p style="font-size:13px;color:var(--dim)">Coverage expanding - additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) are on the roadmap. A config-driven <a data-nav="roadmap">coverage management console</a> (in development) will let the team onboard new protocols, chains, assets, and risk definitions without code changes - accelerating how quickly coverage grows.</p>
+    `,
+    expandables: [
+      { icon: '🏦', title: 'Aave V3', detail: 'Lending & borrowing. Largest DeFi lending protocol by TVL. Available on all four supported chains.' },
+      { icon: '🦄', title: 'Uniswap V3', detail: 'Decentralized exchange with concentrated liquidity positions. Largest DEX by volume.' },
+      { icon: '🔷', title: 'Lido', detail: 'ETH liquid staking. Largest staking protocol. stETH and wstETH positions are tracked.' },
+      { icon: '🏗️', title: 'Compound V3', detail: 'Lending & borrowing. Battle-tested since 2018. Available on Ethereum and Base.' },
+      { icon: '🔵', title: 'Morpho Blue', detail: 'Optimized lending across isolated markets and curated vaults. Strong TVL growth.' },
+      { icon: '⬛', title: 'Ethena', detail: 'Synthetic dollar protocol. USDe and sUSDe yield products.' },
+    ],
+  },
+
+  security: {
+    id: 'security', icon: '🔒', label: 'Security & Auth', desc: 'How accounts are protected', section: 'Details',
+    tagline: 'How your account and data are protected.',
+    content: `
+      <p>The platform completed an internal penetration test in April 2026 covering OWASP Top 10 and DeFi-specific attack surfaces. The test surfaced no critical issues, and all findings have been remediated and shipped to production. <strong>Independent external pen-test scheduling is in progress.</strong> The web tier ships modern security headers (Content-Security-Policy in report-only mode with enforcement pending allowlist-gap closure, Cross-Origin-Opener-Policy and Cross-Origin-Resource-Policy enforced), authentication uses httpOnly cookies with refresh-token rotation, and credentials are hashed with bcrypt. Two-factor authentication (TOTP) is available in account settings today.</p>
+    `,
+    expandables: [
+      { icon: '🔑', title: 'Email + Password', detail: 'Standard registration with email verification. Passwords are hashed using bcrypt with configurable rounds (default 12).' },
+      { icon: '📱', title: 'Two-Factor Authentication (TOTP)', detail: 'Scan a QR code into Google Authenticator, Authy, 1Password, or any TOTP-compatible app to enable 2FA. Recovery codes are issued at setup in case you lose your authenticator device. Disabling 2FA requires both password and current code.' },
+      { icon: '🦊', title: 'Wallet Authentication', detail: 'Sign in with MetaMask, WalletConnect, or other popular wallets. No password needed - your crypto wallet is your identity.' },
+      { icon: '🛡️', title: 'Web Security Headers', detail: 'Content-Security-Policy in report-only mode (enforcement pending closure of the remaining allowlist gaps surfaced by report-only telemetry), Cross-Origin-Opener-Policy same-origin (enforced), Cross-Origin-Resource-Policy same-origin (enforced), and modern transport-layer hardening. An internal pen-test in April 2026 surfaced the gaps that drove this work; all findings are remediated and on production, with no critical issues. Independent external pen-test scheduling in progress.' },
+      { icon: '🍪', title: 'Session Management', detail: 'Authentication is via httpOnly cookies with refresh-token rotation - tokens are not accessible to JavaScript, mitigating XSS-based exfiltration. View all active sessions with device info; revoke any session individually or sign out everywhere.' },
+      { icon: '🔐', title: 'Non-Custodial Architecture', detail: 'The platform <strong>never has access to your private keys or funds</strong>. All on-chain actions require your wallet signature.' },
+    ],
+  },
+
+  compliance: {
+    id: 'compliance', icon: '🏛️', label: 'Compliance & Reporting', desc: 'MiCA-ready trajectory', section: 'Details',
+    tagline: 'Built for the MiCA era.',
+    content: `
+      <p>Yields Digital is built for institutional compliance from the ground up. Every <a data-nav="reports">portfolio report</a> generated today already carries the risk-methodology disclosure, dimension breakdowns, and portfolio-level adjustments (concentration + diversification) that compliance teams expect to see. The work below extends that foundation into the regulator-facing reporting formats, historical-scenario stress testing, and retention guarantees mandated by MiCA.</p>
+      <p>Our risk frameworks are mapped to the MiCA articles institutional teams are held to - <strong>Art. 19</strong> (white-paper content), <strong>Art. 23</strong> (transaction thresholds for non-EUR-pegged ARTs/EMTs), <strong>Art. 36/38</strong> (reserves and reserve-investment policy), <strong>Art. 43</strong> (significance criteria), and <strong>Art. 68</strong> (CASP governance) - alongside the supervisory-reporting articles (22, 30, 68(9)) tracked below.</p>
+      <h3>Where We Are</h3>
+      <table class="compare-table">
+        <tr><th>Capability</th><th>Today</th><th>Coming</th></tr>
+        <tr><td>Institutional report formats (HTML / CSV / XLSX / JSON)</td><td class="yes">✓ Live</td><td>-</td></tr>
+        <tr><td>Risk methodology disclosure in every report</td><td class="yes">✓ Live</td><td>-</td></tr>
+        <tr><td>Historical stress-test results</td><td class="partial">~ Roadmap</td><td>Q3 2026</td></tr>
+        <tr><td>Verifiable report footer (ID + timestamp + schema version)</td><td class="yes">✓ Live</td><td>-</td></tr>
+        <tr><td>iXBRL output for ESMA filings</td><td class="partial">~ Roadmap</td><td>Q3 2026</td></tr>
+        <tr><td>MiCA Art. 22 quarterly supervisory report</td><td class="partial">~ Data ready</td><td>Q3 2026</td></tr>
+        <tr><td>MiCA Art. 30 monthly disclosure</td><td class="partial">~ Data ready</td><td>Q3 2026</td></tr>
+        <tr><td>MiCA Art. 68(9) immutable evidence trail</td><td class="partial">~ Scores stored</td><td>Q3 2026</td></tr>
+        <tr><td>Scheduled portfolio snapshots with raw-data retention</td><td class="partial">~ Rolling out</td><td>Q3 2026</td></tr>
+      </table>
+      <h3>Public Commitments</h3>
+      <p>The marketing site footnotes iXBRL output and expanded asset coverage (DAI + USDS) as Q3 2026 deliverables - these are externally committed dates, not internal targets. Customers and regulators can hold us to them. Our public <a href="https://yieldsdigital.github.io/research/" target="_blank" rel="noopener">research and compliance hub</a> documents the methodology behind these commitments.</p>
+    `,
+    expandables: [
+      { icon: '📑', title: 'iXBRL Output (Q3 2026)', detail: 'MiCA Regulation 2024/2984 has made iXBRL mandatory for ESMA filings since 23 December 2025. Yields Digital is building in-house iXBRL output for the <a data-nav="reports">report generator</a> so institutional issuers and CASPs can produce ESMA-validator-compliant filings directly from the platform - Annex I (token white paper) and Annex II (ART white paper) auto-populated from LYRA scores and reserve data. Target Q3 2026.' },
+      { icon: '📊', title: 'Art. 22 Quarterly Supervisory Report', detail: 'EBA-template quarterly report covering token holders, reserve composition, transaction volumes, and issuer exposure - delivered within 15 business days of quarter-end with a manual review gate before NCA submission. The underlying data is already aggregated by the platform; the template-mapping layer is in flight.' },
+      { icon: '📅', title: 'Art. 30 Monthly Disclosure', detail: 'Monthly publication of circulation, reserve value, and composition by asset class to a public URL within 5 business days of month-end. MiCA Art. 30 is live today; the platform\'s aggregation layer is in place and the publication pipeline is the remaining work.' },
+      { icon: '🔏', title: 'Art. 68(9) Immutable Evidence Trail', detail: 'Every LYRA score computation and every client communication referencing a score will write an append-only, tamper-evident record - actor, value, input/output hashes, timestamp. Retention meets the MiCA Art. 68(9) <strong>5-year minimum</strong> with a 7-year internal target. Today timestamped scores are in the database; the immutable-ledger layer ships in Q3 2026.' },
+      { icon: '🧾', title: 'Audit Trail (Live Today)', detail: 'Every <a data-nav="reports">report</a> already carries a verifiable footer with unique report ID, ISO-8601 generation timestamp, and schema version. Combined with the immutable evidence trail (Q3 2026), this gives compliance teams a complete chain-of-custody for any score cited in client communications - including the data inputs that produced it.' },
+      { icon: '🛡️', title: 'Pen-Test Status', detail: 'An internal penetration test completed April 2026 covering OWASP Top 10 and DeFi-specific attack surfaces; all findings are remediated and shipped to production, with no critical issues. <strong>Independent external pen-test scheduling is in progress</strong> - the internal test is gap-finding work, not external attestation. See the <a data-nav="security">Security &amp; Auth</a> section for full detail.' },
+      { icon: '🌍', title: 'Regulatory Scope', detail: 'Initial focus is MiCA / ESMA (the EU framework). The platform\'s reporting architecture is designed to extend to other jurisdictions - additional taxonomies and templates can be added without re-engineering the underlying data pipeline. Multi-jurisdiction iXBRL variants are out of scope for the Q3 2026 ship but on the longer horizon.' },
+    ],
+  },
+
+  'data-integrity': {
+    id: 'data-integrity', icon: '🧮', label: 'Data Integrity', desc: 'How we prove our numbers', section: 'Details',
+    tagline: 'Every number traceable to its source.',
+    content: `
+      <p>Institutional reporting is only as good as the data behind it. Yields Digital runs an internal <strong>data-integrity program</strong> that keeps every reported figure traceable to the exact code and data source that produced it - so any number in a report can be tied back to its origin.</p>
+      <p>The platform maintains <strong>documented inventories</strong> of every data surface that feeds a score - the API contracts, screens, and data routes behind the numbers - each pinned to a verified baseline. <strong>Automated drift detection</strong> then flags whenever the code behind a reported figure diverges from that baseline, so the documentation and the live system never quietly fall out of step.</p>
+      <p>This is the engineering discipline beneath the <a data-nav="compliance">audit-trail and immutable-evidence commitments</a>. The public <a href="https://yieldsdigital.github.io/research/" target="_blank" rel="noopener">"How We Prove Our Numbers"</a> explainer is the detailed, outward-facing account of how it works.</p>
+    `,
+    expandables: [
+      { icon: '📋', title: 'Documented Surface Inventories', detail: 'The data surfaces that feed a score - API contracts, screens, and data routes - are catalogued in living inventory documents, each pinned to a verified code baseline. The inventory is the reference of record for what the platform reports and how it is produced.' },
+      { icon: '🔁', title: 'Automated Drift Detection', detail: 'A scheduled check runs against production and flags when the code behind a reported figure diverges from its documented baseline. Documentation and the live system are kept in lock-step, so reported numbers cannot silently drift from their definitions.' },
+      { icon: '🛡️', title: 'Change-Time Guardrails', detail: 'Changes that touch an inventoried surface are flagged at review time, so a code change that would affect a reported number prompts a matching documentation update in the same change set.' },
+      { icon: '🔗', title: 'Traceable to Source', detail: 'The net effect: any figure in a report can be traced back to the data inputs and the code path that produced it - the foundation for the audit trail and immutable-evidence commitments in <a data-nav="compliance">Compliance &amp; Reporting</a>.' },
+    ],
+  },
+
+  compare: {
+    id: 'compare', icon: '📈', label: 'How We Compare', desc: 'Competitive landscape', section: 'Details',
+    tagline: 'Where Yields Digital fits in the ecosystem.',
+    content: `
+      <table class="compare-table">
+        <tr>
+          <th>Feature</th>
+          <th>Yields Digital</th>
+          <th>DeFiLlama</th>
+          <th>DeBank / Zapper</th>
+          <th>Gauntlet</th>
+        </tr>
+        <tr>
+          <td><strong>Portfolio tracking</strong></td>
+          <td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td>
+        </tr>
+        <tr>
+          <td><strong>Risk scoring</strong></td>
+          <td class="yes">✓ (<a data-nav="lyra">LYRA</a>)</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓ (enterprise)</td>
+        </tr>
+        <tr>
+          <td><strong>Yield data</strong></td>
+          <td class="yes">✓</td><td class="yes">✓</td><td class="partial">~ limited</td><td class="no">✗</td>
+        </tr>
+        <tr>
+          <td><strong>Optimization recommendations</strong></td>
+          <td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td>
+        </tr>
+        <tr>
+          <td><strong><a data-nav="stress">Stress testing</a></strong></td>
+          <td class="partial">~ Q3 2026 planned</td><td class="no">✗</td><td class="no">✗</td><td class="partial">~ custom only</td>
+        </tr>
+        <tr>
+          <td><strong>Compliance-ready <a data-nav="reports">reports</a></strong></td>
+          <td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="partial">~ enterprise</td>
+        </tr>
+        <tr>
+          <td><strong>On-chain <a data-nav="execute">execution</a></strong></td>
+          <td class="yes">✓ (signing wired)</td><td class="no">✗</td><td class="partial">~ swaps only</td><td class="no">✗</td>
+        </tr>
+        <tr>
+          <td><strong><a data-nav="developers">Developer API</a></strong></td>
+          <td class="yes">✓</td><td class="partial">~ data only</td><td class="no">✗</td><td class="no">✗</td>
+        </tr>
+        <tr>
+          <td><strong>Self-service access</strong></td>
+          <td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗ (enterprise only)</td>
+        </tr>
+      </table>
+      <p>Yields Digital uniquely combines <strong>portfolio analytics + risk scoring + yield optimization + institutional reporting</strong> in a single self-service platform.</p>
+      <div class="radar-container" style="max-width:480px">
+        <svg viewBox="0 0 480 340">
+          <!-- Pentagon grid: center (240,190), radius 130 -->
+          <polygon points="240,60 364,144 340,280 140,280 116,144" fill="none" stroke="#30363d" stroke-width="1"/>
+          <polygon points="240,93 327,162 312,252 168,252 153,162" fill="none" stroke="#21262d" stroke-width="1"/>
+          <polygon points="240,126 290,180 284,224 196,224 190,180" fill="none" stroke="#21262d" stroke-width="0.5"/>
+          <line x1="240" y1="60" x2="240" y2="190" stroke="#21262d" stroke-width="0.5"/>
+          <line x1="364" y1="144" x2="240" y2="190" stroke="#21262d" stroke-width="0.5"/>
+          <line x1="340" y1="280" x2="240" y2="190" stroke="#21262d" stroke-width="0.5"/>
+          <line x1="140" y1="280" x2="240" y2="190" stroke="#21262d" stroke-width="0.5"/>
+          <line x1="116" y1="144" x2="240" y2="190" stroke="#21262d" stroke-width="0.5"/>
+          <text x="240" y="44" fill="#e6edf3" font-size="11" text-anchor="middle" font-weight="500">Risk Scoring</text>
+          <text x="380" y="140" fill="#e6edf3" font-size="11" text-anchor="start" font-weight="500">Portfolio Analysis</text>
+          <text x="352" y="300" fill="#e6edf3" font-size="11" text-anchor="start" font-weight="500">Yield Data</text>
+          <text x="128" y="300" fill="#e6edf3" font-size="11" text-anchor="end" font-weight="500">Reports</text>
+          <text x="100" y="140" fill="#e6edf3" font-size="11" text-anchor="end" font-weight="500">Execution</text>
+          <polygon points="240,68 356,150 336,272 144,272 124,150" fill="rgba(88,166,255,0.15)" stroke="#58a6ff" stroke-width="2"/>
+          <polygon points="240,140 290,172 280,230 200,230 190,172" fill="rgba(139,148,158,0.1)" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <circle cx="240" cy="68" r="4" fill="#58a6ff"/><circle cx="356" cy="150" r="4" fill="#58a6ff"/><circle cx="336" cy="272" r="4" fill="#58a6ff"/><circle cx="144" cy="272" r="4" fill="#58a6ff"/><circle cx="124" cy="150" r="4" fill="#58a6ff"/>
+        </svg>
+        <div class="radar-legend">
+          <div class="radar-legend-item"><div class="radar-legend-swatch" style="background:#58a6ff"></div>Yields Digital</div>
+          <div class="radar-legend-item"><div class="radar-legend-swatch" style="background:#6e7681"></div>Competitor Average</div>
+        </div>
+      </div>
+    `,
+    expandables: [
+      { icon: '📊', title: 'vs DeFiLlama', detail: 'DeFiLlama shows raw yield and TVL data. Yields Digital adds risk scoring, portfolio analysis, optimization recommendations, and institutional reports on top of the data. Historical-scenario stress testing is on the Q3 2026 roadmap.' },
+      { icon: '👛', title: 'vs DeBank / Zapper', detail: 'DeBank and Zapper are portfolio trackers - they show what you hold. They don\'t assess risk, score positions, or generate compliance-grade reports.' },
+      { icon: '🏛️', title: 'vs Gauntlet / Chaos Labs', detail: 'Enterprise risk consulting firms with six-figure engagements. Yields Digital is <strong>self-service</strong> - institutional-grade analysis accessible to anyone without a consulting contract.' },
+    ],
+  },
+
+  roadmap: {
+    id: 'roadmap', icon: '🗺️', label: 'What\'s Coming', desc: 'Recent ships and planned features', section: 'Details',
+    tagline: 'Recent ships and what is coming next.',
+    content: '',
+    expandables: [
+      { icon: '✅', title: 'Shipped: External Risk API (v1)', detail: 'Programmatic access to LYRA risk scores via REST API. Developers can integrate risk-adjusted yield data into their own dashboards, alerting systems, and portfolio tools. Full surface documented under <a data-nav="developers">Developer API</a>.' },
+      { icon: '✅', title: 'Shipped: Two-Factor Authentication (TOTP)', detail: 'Google Authenticator, Authy, 1Password supported. Available in account settings under the <a data-nav="security">Security</a> tab.' },
+      { icon: '✅', title: 'Shipped: Pentest Remediation', detail: 'All findings from the April 2026 internal penetration test remediated and shipped to production, with no critical issues - authentication hardening, token validation, security headers, and adjacent surfaces. See <a data-nav="security">Security &amp; Auth</a> for the active posture. Independent external pen-test scheduling in progress.' },
+      { icon: '✅', title: 'Shipped: Modern Security Headers', detail: 'CSP in report-only mode (enforcement pending allowlist-gap closure), COOP same-origin enforced, CORP same-origin enforced, plus the deprecated X-Powered-By and X-XSS-Protection headers removed. Part of the broader pen-test remediation work shipped to production.' },
+      { icon: '✅', title: 'Shipped: Wallet Report Quality', detail: 'Multiple improvements to portfolio reports shipped together: removed unreliable historical comparison columns, deduplicated cross-chain positions, strengthened spam-token filtering (impersonation detection, third-party spam-flag integration, and value-anomaly checks), and added verifiable report footers with unique IDs and ISO timestamps. See <a data-nav="reports">Portfolio Reports</a>.' },
+      { icon: '🟢', title: 'In Progress: Portfolio Compliance Capture', detail: 'A portfolio layer that groups multiple wallets into a named portfolio and records scheduled point-in-time snapshots - each one persisting the raw source data alongside the computed <a data-nav="lyra">LYRA</a> scores. This is the foundation for the historic retention, immutable evidence trail, and cross-portfolio (parent / child) views committed under <a data-nav="compliance">Compliance &amp; Reporting</a> for Q3 2026. Backend and admin controls are live in the platform; the first scheduled captures are rolling out.' },
+      { icon: '🟢', title: 'In Progress: Coverage Management Console', detail: 'An admin console for onboarding new protocols, chains, assets, and risk definitions through configuration alone - no code changes or redeploys. It moves coverage management to a managed, audited workflow. Fully specified; build starting. The near-term outcome is faster, more reliable expansion of the <a data-nav="coverage">supported asset and protocol coverage</a>.' },
+      { icon: '🔵', title: 'Q3 2026: Webhook API', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation. Part of the <a data-nav="developers">Developer API</a> surface.' },
+      { icon: '🟢', title: 'Q2 2026: Risk Attribution', detail: 'Period-over-period analysis showing what is driving changes in your risk score over time. Quantify how much each position contributes to portfolio risk.' },
+      { icon: '🟢', title: 'Q2 2026: Flow Anomaly Detection', detail: 'On-chain transaction flow anomaly detection - the first phase of the broader On-Chain Risk Intelligence (OCRI) initiative. Surfaces unusual transaction patterns and protocol-level flow anomalies that traditional risk scoring misses.' },
+      { icon: '🔵', title: 'Q3 2026: MiCA Regulatory Reporting', detail: 'Consolidated regulatory reporting bundle: iXBRL output for ESMA filings (MiCA Reg 2024/2984), Art. 22 quarterly supervisory report, Art. 30 monthly disclosure, and Art. 68(9) immutable evidence trail with 5-year retention. Publicly committed dates - see <a data-nav="compliance">Compliance &amp; Reporting</a> for the full trajectory.' },
+      { icon: '🔵', title: 'Q3 2026: Oracle Product', detail: 'External risk-as-a-service API for B2B integrations. Other platforms can embed Yields Digital risk scores directly in their own products. Dedicated tier on the <a data-nav="developers">Developer API</a> surface.' },
+      { icon: '🔵', title: 'Q3 2026: Unified Risk View', detail: 'Cross-portfolio risk consolidation for users managing multiple wallets or institutional sub-accounts. Single dashboard view across treasury structures with parent / child accounting.' },
+      { icon: '🔵', title: 'Q3 2026: LYRA v2.1', detail: 'Incremental refinements to the <a data-nav="lyra">LYRA risk model</a> - scoring-accuracy improvements and edge-case handling. The 4-dimension framework (Asset / Pool / Protocol / Chain) and the 60 / 15 / 15 / 10 dimension weights are unchanged; this is model tuning, not a new dimension.' },
+      { icon: '🔵', title: 'Q3 2026: Narrative Intelligence', detail: 'AI-generated <strong>plain-English explanations</strong> of risk scores. Go beyond numbers to understand exactly what is driving your portfolio risk.' },
+      { icon: '🔵', title: 'Q3 2026: Historical Stress Testing', detail: 'Per-portfolio simulation against the three historical scenarios documented under <a data-nav="stress">Stress Testing</a> (Luna/UST, FTX, SVB / stablecoin crisis). Outputs position-level and portfolio drawdowns, concentration analysis, liquidity stress, and an overall RESILIENT / VULNERABLE / CRITICAL rating.' },
+      { icon: '🔵', title: 'Q3 2026: Portfolio Digital Twin', detail: 'Simulate portfolio changes <strong>before executing them</strong>. See exactly how changes would affect your <a data-nav="lyra">risk score</a>, yield, and <a data-nav="stress">stress resilience</a> - without moving any real funds.' },
+      { icon: '🟣', title: 'Future: Expanded Coverage', detail: 'Additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) rolling out to increase wallet coverage.' },
+      { icon: '🟣', title: 'Future: Additional 2FA Methods', detail: 'Google federation (Sign in with Google) and Apple federation (Sign in with Apple) joining the existing TOTP-based <a data-nav="security">two-factor authentication</a>.' },
+      { icon: '🟣', title: 'Future: Monitoring & Alerts', detail: 'Real-time portfolio monitoring with notifications when risk scores change or yields drop below thresholds.' },
+      { icon: '🟣', title: 'Future: PDF Export & Email Delivery', detail: 'Direct PDF generation and scheduled email delivery of portfolio <a data-nav="reports">reports</a>.' },
+      { icon: '🟣', title: 'Future: KYC Verification', detail: 'Identity verification infrastructure is built and ready for activation when an institutional engagement requires it.' },
+    ],
+  },
+};
+
+// ── FAQ data per page ──
+const faqs = {
+  overview: [
+    { q:'Is this a crypto exchange?', a:'<strong>No.</strong> Yields Digital never holds your funds or crypto. It\'s an analytics and optimization platform. Your money stays in your own wallet at all times.' },
+    { q:'Do I need to be technical to use it?', a:'Not at all. You enter a wallet address, and the platform does the analysis. Reports are generated in plain English with visual charts.' },
+    { q:'Is it free?', a:'The platform is currently in early access. Pricing details will be announced as the product matures toward general availability.' },
+  ],
+  problem: [
+    { q:'What do people do without this?', a:'Most DeFi investors use spreadsheets, gut feeling, or chase the highest APY without understanding risk. Institutional investors often <strong>can\'t participate at all</strong> because they have no way to document risk for compliance.' },
+    { q:'Why can\'t institutions just use DeFi directly?', a:'Regulated entities need documented risk assessments before deploying capital. DeFi platforms just show APY - they don\'t provide the risk documentation that compliance officers require.' },
+  ],
+  who: [
+    { q:'Who is the platform for?', a:'Built for <strong>professional and institutional allocators</strong> - regulated asset managers and MiCA CASPs, ETP and structured-product issuers, TradFi allocators entering DeFi, crypto-native hedge funds, and DAO / stablecoin treasuries. It is also API-first for agentic and downstream consumers. (Historical-scenario stress testing is on the Q3 2026 roadmap.)' },
+    { q:'Can financial advisors use this for their clients?', a:'Yes - that\'s a core use case. An RIA or family office can generate portfolio reports for client accounts, complete with risk scores and optimization recommendations.' },
+  ],
+  scan: [
+    { q:'What wallets are supported?', a:'Any Ethereum-compatible wallet address. You can also enter an <strong>ENS name</strong> (like "vitalik.eth"). The scan covers Ethereum, Polygon, Arbitrum, and Base.' },
+    { q:'Do I need to connect my wallet?', a:'<strong>For scanning: no.</strong> You just paste an address. Wallet connection is only needed to execute transactions.' },
+  ],
+  lyra: [
+    { q:'What does the 1-5 score mean?', a:'<strong>1.0-1.5</strong> = Very Low Risk<br><strong>1.5-2.5</strong> = Low Risk<br><strong>2.5-3.0</strong> = Moderate<br><strong>3.0-4.0</strong> = High Risk<br><strong>4.0-5.0</strong> = Very High Risk' },
+    { q:'How often are scores updated?', a:'Risk data refreshes <strong>daily</strong>, including price data, TVL changes, volume metrics, and APY history.' },
+    { q:'Can a score change suddenly?', a:'Yes. Significant market events will be reflected at the next daily refresh. Once historical-scenario stress testing ships (planned Q3 2026), it will help you preview what extreme scenarios would look like for your current holdings.' },
+  ],
+  strategies: [
+    { q:'Does the platform pick strategies for me?', a:'Two modes: <strong>YD Optimization</strong> automatically identifies better yields for your assets. <strong>Build Your Own</strong> lets you browse and choose manually.' },
+    { q:'What\'s the risk tolerance slider?', a:'Set a comfort level from Very Conservative to Very Aggressive. The platform only shows opportunities at or below that threshold.' },
+  ],
+  reports: [
+    { q:'What formats are available?', a:'<strong>Interactive HTML</strong>, <strong>Excel (.xlsx)</strong>, <strong>CSV</strong>, and <strong>JSON</strong>.' },
+    { q:'Can I share reports with my compliance team?', a:'That\'s exactly what they\'re designed for. Reports include risk methodology, score breakdowns, portfolio-level adjustments (concentration penalty and diversification benefit), and a verifiable footer with report ID, ISO timestamp, and schema version for audit trail.' },
+  ],
+  stress: [
+    { q:'Is stress testing live today?', a:'<strong>No - planned for Q3 2026.</strong> The scenario library and historical reference data are documented in the Stress Testing topic, but the per-portfolio simulation engine has not yet shipped. Today\'s coverage of crash-style risk is concentrated in the <a data-nav="lyra">LYRA risk score</a> (volatility, max drawdown, VaR / CVaR per asset) and the portfolio-level concentration / diversification adjustments.' },
+    { q:'What crash scenarios will be covered?', a:'Three historical events: <strong>Luna/UST collapse</strong> (May 2022), <strong>FTX collapse</strong> (Nov 2022), and <strong>SVB/stablecoin crisis</strong> (March 2023).' },
+    { q:'What will the output tell me?', a:'Position-level and portfolio drawdowns, concentration analysis, liquidity stress, and recovery assessment. Overall rating: <strong>RESILIENT</strong>, <strong>VULNERABLE</strong>, or <strong>CRITICAL</strong>.' },
+  ],
+  execute: [
+    { q:'Does Yields Digital hold my funds?', a:'<strong>Never.</strong> Fully non-custodial. You sign every transaction yourself.' },
+  ],
+  developers: [
+    { q:'How do I get an API key?', a:'API keys are provisioned from your account dashboard. Each key is shown once at creation - copy it then; we store only the hash, so a lost key has to be rotated rather than recovered.' },
+    { q:'Is the API the same one the web app uses?', a:'Yes - the endpoints, data shape, and authentication surface are identical. API key responses omit a small set of internal methodology fields (LYRA per-component breakdowns) to protect proprietary scoring detail; everything else is identical to what the web UI consumes.' },
+    { q:'What about rate limits?', a:'Standard limits cover normal application usage; higher-volume integration patterns can be negotiated per account. Limit exceeded responses return HTTP 429 with a <code>Retry-After</code> header.' },
+  ],
+  coverage: [
+    { q:'Why only these chains?', a:'Launched with the four largest EVM chains by institutional DeFi TVL. Additional chains added based on demand.' },
+  ],
+  security: [
+    { q:'Can I use a crypto wallet to sign in?', a:'Yes - MetaMask, WalletConnect, and other popular wallets are supported.' },
+  ],
+  compliance: [
+    { q:'When will iXBRL output be available?', a:'Q3 2026. MiCA Regulation 2024/2984 made iXBRL mandatory for ESMA filings from 23 December 2025. Yields Digital is building this in-house so issuers and CASPs can produce ESMA-validator-compliant Annex I / Annex II filings directly from <a data-nav="reports">portfolio reports</a>.' },
+    { q:'How does the evidence trail satisfy MiCA Art. 68(9)?', a:'Every LYRA score and every client communication referencing a score will be written to an append-only, tamper-evident store with the actor, value, input hashes, output hash, and timestamp. Retention meets the Art. 68(9) 5-year minimum with a 7-year internal target. Today scores are timestamped in the database; the immutable-ledger layer ships Q3 2026.' },
+    { q:'Is the platform externally pen-tested?', a:'Not yet. An <strong>internal</strong> pen-test in April 2026 surfaced the gaps that drove current hardening work; all Tier 1 (high-severity) findings are remediated and shipped to production. <strong>Independent external pen-test scheduling is in progress</strong> - we frame the internal test as gap-finding, not external attestation.' },
+  ],
+  compare: [
+    { q:'Why not just use DeFiLlama?', a:'DeFiLlama shows raw numbers. Yields Digital scores risk, analyzes your portfolio, generates reports, and recommends safer alternatives.' },
+  ],
+  roadmap: [
+    { q:'What is the Portfolio Digital Twin?', a:'A planned feature that lets you simulate portfolio changes before executing them - see the impact on risk and yield without moving real funds.' },
+  ],
+};
+
+// ── Ordered list for sidebar ──
+const topicOrder = [
+  { id:'overview', section:'Start Here' },
+  { id:'problem', section:'Start Here' },
+  { id:'who', section:'Start Here' },
+  { id:'scan', section:'Core Features' },
+  { id:'lyra', section:'Core Features' },
+  { id:'strategies', section:'Core Features' },
+  { id:'reports', section:'Core Features' },
+  { id:'stress', section:'Core Features' },
+  { id:'execute', section:'Core Features' },
+  { id:'developers', section:'Core Features' },
+  { id:'coverage', section:'Details' },
+  { id:'security', section:'Details' },
+  { id:'compliance', section:'Details' },
+  { id:'data-integrity', section:'Details' },
+  { id:'compare', section:'Details' },
+  { id:'roadmap', section:'Details' },
+];
+
+// ─────────────────────────────────────────────────
+// ROUTER
+// ─────────────────────────────────────────────────
+let currentPath = 'overview';
+let navHistory = [];
+
+function navigateTo(path, pushHistory = true) {
+  if (pushHistory && currentPath !== path) navHistory.push(currentPath);
+  currentPath = path;
+  window.location.hash = path;
+  renderSidebar(); renderBreadcrumbs(); renderContent(); renderFAQ();
+}
+
+function goBack() {
+  if (navHistory.length > 0) navigateTo(navHistory.pop(), false);
+}
+
+function getParentPath(path) {
+  const parts = path.split('/');
+  return parts.length > 1 ? parts[0] : null;
+}
+
+function getTopLevelId(path) { return path.split('/')[0]; }
+
+function getPageData(path) {
+  const parts = path.split('/');
+  const topLevel = pages[parts[0]];
+  if (!topLevel) return null;
+  if (parts.length === 1) return topLevel;
+  if (topLevel.children) {
+    const child = topLevel.children.find(c => c.id === path);
+    if (child) return child;
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────
+// RENDER: Sidebar
+// ─────────────────────────────────────────────────
+function renderSidebar() {
+  const el = document.getElementById('sidebar');
+  let html = '', lastSection = '';
+  const activeTopLevel = getTopLevelId(currentPath);
+  topicOrder.forEach(t => {
+    const page = pages[t.id];
+    if (!page) return;
+    if (t.section !== lastSection) {
+      html += `<div class="sidebar-section">${t.section}</div>`;
+      lastSection = t.section;
+    }
+    const isActive = activeTopLevel === t.id;
+    html += `<div class="topic-item ${isActive ? 'active' : ''}" data-nav="${t.id}">
+      <span class="icon">${page.icon}</span>
+      <div><div class="label">${page.label}</div><div class="desc">${page.desc}</div></div>
+    </div>`;
+    if (isActive && page.children) {
+      page.children.forEach(child => {
+        html += `<div class="topic-child ${currentPath === child.id ? 'active' : ''}" data-nav="${child.id}">${child.label}</div>`;
+      });
+    }
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('[data-nav]').forEach(item => {
+    item.addEventListener('click', () => navigateTo(item.dataset.nav));
+  });
+}
+
+// ─────────────────────────────────────────────────
+// RENDER: Breadcrumbs
+// ─────────────────────────────────────────────────
+function renderBreadcrumbs() {
+  const el = document.getElementById('breadcrumbs');
+  const parts = currentPath.split('/');
+  let crumbs = [{label: 'Home', path: 'overview'}];
+  if (parts[0] !== 'overview') {
+    const topPage = pages[parts[0]];
+    if (topPage) crumbs.push({label: topPage.label, path: parts[0]});
+  }
+  if (parts.length > 1) {
+    const pageData = getPageData(currentPath);
+    if (pageData) crumbs.push({label: pageData.label, path: currentPath});
+  }
+  el.innerHTML = crumbs.map((c, i) => {
+    if (i === crumbs.length - 1) return `<span>${c.label}</span>`;
+    return `<a data-nav="${c.path}">${c.label}</a><span class="sep">›</span>`;
+  }).join('');
+  el.querySelectorAll('[data-nav]').forEach(a => {
+    a.addEventListener('click', e => { e.preventDefault(); navigateTo(a.dataset.nav); });
+  });
+}
+
+// ─────────────────────────────────────────────────
+// RENDER: Content
+// ─────────────────────────────────────────────────
+function renderContent() {
+  const panel = document.getElementById('visualPanel');
+  const pageData = getPageData(currentPath);
+  if (!pageData) { panel.innerHTML = '<p>Page not found.</p>'; panel.scrollTop = 0; return; }
+
+  let html = `<h2>${pageData.label || pageData.title}</h2>`;
+  if (pageData.tagline) html += `<p class="tagline">${pageData.tagline}</p>`;
+  html += pageData.content || '';
+  if (pageData.expandables && pageData.expandables.length > 0) html += renderExpandables(pageData.expandables);
+  if (pageData.children && pageData.children.length > 0) {
+    html += '<div class="cards">';
+    pageData.children.forEach(child => {
+      html += `<div class="card nav-card" data-nav="${child.id}"><div class="card-title">${child.label}</div><div class="card-desc" style="color:var(--dim)">Click to explore</div></div>`;
+    });
+    html += '</div>';
+  }
+  panel.innerHTML = html;
+  panel.scrollTop = 0;
+  panel.querySelectorAll('.expand-header').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('expanded')));
+  panel.querySelectorAll('.nav-card[data-nav]').forEach(c => c.addEventListener('click', () => navigateTo(c.dataset.nav)));
+  panel.querySelectorAll('a[data-nav]').forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigateTo(l.dataset.nav); }));
+}
+
+function renderExpandables(items) {
+  return items.map(item => `
+    <div class="expand-card">
+      <div class="expand-header">
+        <span class="chevron">▸</span>
+        <span class="card-icon">${item.icon}</span>
+        <span class="card-title">${item.title}</span>
+      </div>
+      <div class="expand-body">
+        <div class="expand-body-inner">${item.detail}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────
+// RENDER: FAQ
+// ─────────────────────────────────────────────────
+function renderFAQ() {
+  const chips = document.getElementById('faqChips');
+  const answer = document.getElementById('faqAnswer');
+  let topicFaqs = faqs[currentPath] || faqs[getTopLevelId(currentPath)] || [];
+  chips.innerHTML = topicFaqs.map((f,i) => `<div class="faq-chip" data-idx="${i}">${f.q}</div>`).join('');
+  answer.classList.remove('visible'); answer.innerHTML = '';
+  chips.querySelectorAll('.faq-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const f = topicFaqs[parseInt(chip.dataset.idx)];
+      answer.innerHTML = `<strong style="color:var(--text);display:block;margin-bottom:6px">${f.q}</strong>${f.a}`;
+      answer.classList.add('visible');
+      chips.querySelectorAll('.faq-chip').forEach(c => c.style.borderColor = '');
+      chip.style.borderColor = 'var(--accent)';
+      answer.querySelectorAll('a[data-nav]').forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigateTo(l.dataset.nav); }));
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────
+// Free-text search
+// ─────────────────────────────────────────────────
+document.getElementById('faqInput').addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) return;
+  let bestMatch = null, bestScore = 0;
+  Object.entries(faqs).forEach(([topic, list]) => {
+    list.forEach(f => {
+      const words = q.split(/\s+/);
+      const target = (f.q + ' ' + f.a).toLowerCase();
+      let score = 0;
+      words.forEach(w => { if (w.length > 2 && target.includes(w)) score++; });
+      if (score > bestScore) { bestScore = score; bestMatch = {...f, topic}; }
+    });
+  });
+  const answer = document.getElementById('faqAnswer');
+  if (bestMatch && bestScore >= 1) {
+    if (bestMatch.topic !== currentPath && getTopLevelId(bestMatch.topic) !== getTopLevelId(currentPath)) navigateTo(bestMatch.topic);
+    answer.innerHTML = `<strong style="color:var(--text);display:block;margin-bottom:6px">${bestMatch.q}</strong>${bestMatch.a}`;
+    answer.classList.add('visible');
+  } else {
+    answer.innerHTML = `<strong style="color:var(--text);display:block;margin-bottom:6px">No exact match found</strong>Try browsing the topics on the left, or rephrase your question.`;
+    answer.classList.add('visible');
+  }
+  e.target.value = '';
+});
+
+// ─────────────────────────────────────────────────
+// Resize handle
+// ─────────────────────────────────────────────────
+const rh = document.getElementById('resizeHandle');
+let resizing = false, resizeY = 0, startH = 0;
+rh.addEventListener('mousedown', e => { resizing = true; resizeY = e.clientY; startH = document.getElementById('faqPanel').offsetHeight; e.preventDefault(); });
+window.addEventListener('mousemove', e => { if (!resizing) return; document.getElementById('faqPanel').style.height = Math.max(100, startH + (resizeY - e.clientY)) + 'px'; });
+window.addEventListener('mouseup', () => { resizing = false; });
+
+// ─────────────────────────────────────────────────
+// Keyboard navigation
+// ─────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (document.activeElement === document.getElementById('faqInput')) return;
+  if (e.key === '/') { e.preventDefault(); document.getElementById('faqInput').focus(); return; }
+  if (e.key === 'Backspace' || (e.altKey && e.key === 'ArrowLeft')) {
+    e.preventDefault();
+    const parent = getParentPath(currentPath);
+    if (parent) navigateTo(parent); else goBack();
+    return;
+  }
+  const topLevelId = getTopLevelId(currentPath);
+  const parts = currentPath.split('/');
+  if (parts.length === 1) {
+    const idx = topicOrder.findIndex(t => t.id === currentPath);
+    if ((e.key === 'ArrowDown' || e.key === 'j') && idx < topicOrder.length - 1) { e.preventDefault(); navigateTo(topicOrder[idx + 1].id); }
+    if ((e.key === 'ArrowUp' || e.key === 'k') && idx > 0) { e.preventDefault(); navigateTo(topicOrder[idx - 1].id); }
+  } else {
+    const parentPage = pages[topLevelId];
+    if (parentPage && parentPage.children) {
+      const idx = parentPage.children.findIndex(c => c.id === currentPath);
+      if ((e.key === 'ArrowDown' || e.key === 'j') && idx < parentPage.children.length - 1) { e.preventDefault(); navigateTo(parentPage.children[idx + 1].id); }
+      if ((e.key === 'ArrowUp' || e.key === 'k') && idx > 0) { e.preventDefault(); navigateTo(parentPage.children[idx - 1].id); }
+    }
+  }
+});
+
+// ─────────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────────
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash && hash !== currentPath) navigateTo(hash, true);
+});
+const initHash = window.location.hash.replace('#', '');
+if (initHash && getPageData(initHash)) currentPath = initHash;
+renderSidebar(); renderBreadcrumbs(); renderContent(); renderFAQ();
+</script>
+</body>
+</html>
