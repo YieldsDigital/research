@@ -233,8 +233,8 @@ a[data-nav]::after{content:' →';font-size:11px}
 </div>
 
 <div class="footer">
-  <span><span class="version">v1.1.2</span> &middot; Platform Guide</span>
-  <span class="updated">Last updated <time datetime="2026-06-08">2026-06-08</time></span>
+  <span><span class="version">v1.2.1</span> &middot; Platform Guide</span>
+  <span class="updated">Last updated <time datetime="2026-10-05">2026-10-05</time></span>
 </div>
 
 <script>
@@ -287,7 +287,7 @@ const pages = {
     `,
     expandables: [
       { icon: '🔍', title: 'Scan', detail: 'Enter any wallet address to see all holdings, positions, and DeFi allocations across multiple blockchains. Supports ENS names, covers Ethereum, Polygon, Arbitrum, and Base. No wallet connection needed for read-only scanning. <a data-nav="scan">Learn more →</a>' },
-      { icon: '📊', title: 'Score', detail: 'Every position gets a proprietary risk score from the <a data-nav="lyra">LYRA engine</a>, covering multiple risk dimensions. Scores update daily and reflect real market conditions.' },
+      { icon: '📊', title: 'Score', detail: 'Every position gets a proprietary risk score from the <a data-nav="lyra">LYRA engine</a>, covering multiple risk dimensions. Scores are built on pool data refreshed every 2 hours and reflect real market conditions.' },
       { icon: '💡', title: 'Optimize', detail: 'Find higher-yielding opportunities that match your risk tolerance, with side-by-side comparisons. Two modes: automatic optimization or build-your-own. <a data-nav="strategies">Explore strategies →</a>' },
       { icon: '📄', title: 'Report', detail: 'Generate institutional-grade portfolio reports with risk breakdowns, performance history, and optimization recommendations. Export as HTML, Excel, CSV, or JSON. <a data-nav="reports">See report details →</a>' },
     ],
@@ -310,14 +310,15 @@ const pages = {
     `,
     expandables: [
       { icon: '🏛️', title: 'Regulated Asset Managers & CASPs', detail: 'Want onchain exposure but need risk frameworks their compliance teams and regulators recognize - documented methodology, MiCA-aligned vocabulary, and audit-grade records. Need <a data-nav="reports">regulator-grade reports</a> and a defensible risk history before deploying capital.' },
-      { icon: '📦', title: 'ETP & Structured-Product Issuers', detail: 'Need per-product risk dossiers, live NAV reconciliation against on-chain truth, and concentration mapping across underlying protocols to defend a wrapper to a prospectus committee with quantitative evidence.' },
+      { icon: '📦', title: 'ETP & Structured-Product Issuers', detail: 'Need per-product risk dossiers, portfolio valuations reconciled across independent data sources, and concentration mapping across underlying protocols to defend a wrapper to a prospectus committee with quantitative evidence.' },
       { icon: '🏦', title: 'Funds & Treasuries', detail: 'Crypto-native hedge funds, DAO and stablecoin treasuries managing onchain capital without a systematic, API-driven risk edge or institutional-grade reporting. Need <a data-nav="lyra">risk scoring</a> and <a data-nav="strategies">risk-adjusted optimization</a> against a stated mandate.' },
+      { icon: '🔌', title: 'Service Providers', detail: 'Custodians and technology / infrastructure providers (e.g. trading-and-treasury platforms) that want to offer an independent risk and reporting layer to the asset managers on their platform - without building a risk desk in-house. Need wallet scans and portfolio reports they can integrate via the <a data-nav="developers">API</a>.' },
     ],
   },
 
   who: {
     id: 'who', icon: '👥', label: 'Who Is It For?', desc: 'Target users', section: 'Start Here',
-    tagline: 'Built for professional onchain allocators.',
+    tagline: 'Two buyer types: asset managers, and the service providers who serve them.',
     content: '',
     children: [
       { id: 'who/asset-managers', label: 'Regulated Asset Managers (MiCA CASPs)', content: `
@@ -330,9 +331,9 @@ const pages = {
         <ul>
           <li><strong>MiCA-aligned risk frameworks</strong> - built around Articles 19, 23, 36/38, 43 and 68 (white-paper content, transaction thresholds, reserves, significance criteria, CASP governance)</li>
           <li><strong>Independent portfolio-level risk view</strong> across every strategy in the book - not just protocol headlines</li>
-          <li><strong>Intra-day NAV reconciliation</strong> and portfolio oversight against on-chain truth</li>
+          <li><strong>Portfolio valuations reconciled</strong> across two independent data sources, with scheduled snapshots for oversight</li>
           <li><strong>Pre-trade due diligence and a post-trade "why we held this" record</strong> - an audit-grade record that defends you in an audit</li>
-          <li><strong>iXBRL- and XML-ready reporting</strong> for ESMA submissions (iXBRL Q3 2026), plus PDF / HTML / JSON</li>
+          <li><strong>iXBRL- and XML-ready reporting</strong> for ESMA submissions (iXBRL planned), plus PDF / HTML / JSON</li>
         </ul>
       `},
       { id: 'who/etp-issuers', label: 'ETP & Structured-Product Issuers', content: `
@@ -344,7 +345,7 @@ const pages = {
         <h3>What They Get</h3>
         <ul>
           <li><strong>Per-product risk dossiers</strong> for every wrapper - graded by multi-factor models your CRO recognizes</li>
-          <li><strong>Live NAV reconciliation</strong> against on-chain truth</li>
+          <li><strong>Portfolio valuations reconciled</strong> across two independent data sources</li>
           <li><strong>Concentration mapping</strong> across underlying protocols - defend a single-protocol ETP with evidence</li>
           <li><strong>Stablecoin exposure mapping</strong> - surface USDe / USDC / USDT holdings before your investors do</li>
           <li><strong>Historical risk track records</strong> that drop straight into a prospectus update</li>
@@ -372,7 +373,7 @@ const pages = {
         </div>
         <h3>What They Get</h3>
         <ul>
-          <li><strong>Real-time LYRA scores</strong> on every wallet, position and protocol in the book - in the UI and via the <a data-nav="developers">API</a></li>
+          <li><strong>LYRA scores</strong> on every wallet, position and protocol in the book, with wallet scans and reports also available via the <a data-nav="developers">API</a></li>
           <li><strong>Risk-adjusted yield optimization</strong> across your full DeFi universe</li>
           <li><strong>On-demand reporting</strong> that stands up to internal and external scrutiny</li>
         </ul>
@@ -391,6 +392,20 @@ const pages = {
           <li><strong>Investor reporting</strong> with institutional-grade robustness</li>
         </ul>
       `},
+      { id: 'who/service-providers', label: 'Service Providers (Custodians & Platforms)', content: `
+        <div class="card" style="border-color:var(--cyan);margin-bottom:20px;max-width:560px">
+          <div class="card-icon">🔌</div>
+          <div class="card-title">Custodians & Technology Platforms</div>
+          <div class="card-desc">Embed an independent DeFi risk layer in the product your clients already use</div>
+        </div>
+        <h3>What They Get</h3>
+        <ul>
+          <li><strong>Wallet scans and portfolio reports, programmatically</strong> - behind your own UI, via the <a data-nav="developers">Developer API</a></li>
+          <li><strong>Independent, audit-grade risk records</strong> to offer the asset managers and treasuries on your platform - without building a risk desk in-house</li>
+          <li><strong>Portfolio reports</strong> (HTML / CSV / XLSX / JSON) with a verifiable, tamper-evident <a data-nav="reports">audit trail</a></li>
+          <li><strong>MiCA-aligned vocabulary</strong> your regulated clients' compliance teams already recognize</li>
+        </ul>
+      `},
       { id: 'who/agentic', label: 'Agentic & API Consumers', content: `
         <div class="card" style="border-color:var(--purple);margin-bottom:20px;max-width:560px">
           <div class="card-icon">🤖</div>
@@ -400,7 +415,7 @@ const pages = {
         <h3>What They Get</h3>
         <ul>
           <li><strong>Programmatic LYRA scores</strong> via the <a data-nav="developers">Developer API</a> - risk-adjusted data for agents, dashboards and automation</li>
-          <li><strong>Push-driven events</strong> (webhooks planned Q3 2026) so systems react the moment a position changes risk classification</li>
+          <li><strong>Push-driven events</strong> (webhooks planned) so systems react the moment a position changes risk classification</li>
         </ul>
       `},
     ],
@@ -465,7 +480,7 @@ const pages = {
           { icon: '💰', title: 'Total Portfolio Value', detail: 'Sum of all token balances and DeFi positions across all scanned chains, converted to USD at current market prices.' },
           { icon: '📊', title: 'DeFi Value', detail: 'Subset of total value that is actively deployed in DeFi protocols (lending, LPing, staking). Excludes idle tokens sitting in the wallet.' },
           { icon: '📈', title: 'Weighted Average APY', detail: 'The portfolio\'s blended yield rate, calculated as the value-weighted average of all position APYs.' },
-          { icon: '⚖️', title: 'Composite Risk Score', detail: 'Portfolio-level <a data-nav="lyra">LYRA score</a> calculated as the value-weighted average of individual position scores across the four position-level dimensions (Asset, Pool, Protocol, Chain), then adjusted for concentration risk (penalty when one position exceeds 25% of the portfolio) and diversification benefit (reduction when capital is spread across multiple protocols and chains).' },
+          { icon: '⚖️', title: 'Composite Risk Score', detail: 'Portfolio-level <a data-nav="lyra">LYRA score</a> calculated from each position\'s Asset and Protocol risk, weighted by position value, then adjusted for concentration risk (penalty when one position exceeds 25% of the portfolio) and diversification benefit (reduction when capital is spread across multiple protocols and chains).' },
         ],
       },
       { id: 'scan/capital-productivity', label: 'Capital Productivity', content: `
@@ -498,23 +513,17 @@ const pages = {
     id: 'lyra', icon: '📊', label: 'LYRA Risk Scoring', desc: 'The risk engine', section: 'Core Features',
     tagline: 'Layered Yields and Risks Assessment - the platform\'s core analytical engine.',
     content: `
-      <p>Every DeFi position is scored on a <strong>1 to 5 scale</strong> using a proprietary multi-factor model. LYRA grades risk across <strong>five segments</strong> - four position-level dimensions plus a holistic portfolio view - the same lenses an investment committee already applies to traditional assets:</p>
+      <p>Every DeFi position is scored on a <strong>1 to 5 scale</strong> using a proprietary multi-factor model. LYRA grades risk across <strong>five segments</strong> - four position-level dimensions plus a portfolio score - the same lenses an investment committee already applies to traditional assets:</p>
       <table class="risk-table">
         <tr><th>Segment</th><th>What It Evaluates</th></tr>
         <tr><td><strong><a data-nav="lyra/asset-risk">Asset</a></strong></td><td>Fundamental characteristics of the underlying asset - price behavior, liquidity, and market structure</td></tr>
-        <tr><td><strong><a data-nav="lyra/pool-risk">Pool</a></strong></td><td>Characteristics of the specific DeFi pool - yield stability, depth, and structural risk</td></tr>
+        <tr><td><strong><a data-nav="lyra/pool-risk">Pool</a></strong></td><td>Characteristics of the specific DeFi pool - depth and structural risk</td></tr>
         <tr><td><strong><a data-nav="lyra/protocol-risk">Protocol</a></strong></td><td>Overall health and sustainability of the DeFi protocol</td></tr>
         <tr><td><strong><a data-nav="lyra/chain-risk">Chain</a></strong></td><td>Risk inherent to the blockchain where the position lives</td></tr>
-        <tr><td><strong><a data-nav="lyra/portfolio-risk">Portfolio</a></strong></td><td>Holistic, portfolio-level score - the four dimensions rolled up and adjusted for concentration and diversification across your full exposure</td></tr>
+        <tr><td><strong><a data-nav="lyra/portfolio-risk">Portfolio</a></strong></td><td>Portfolio-level score - each position's Asset and Protocol risk, weighted by position value and adjusted for concentration and diversification across your full exposure</td></tr>
       </table>
-      <p>The four position-level dimensions are weighted using a proprietary model developed by our quant team, then rolled up into the holistic Portfolio score with concentration and diversification adjustments. Risk data refreshes <strong>daily</strong>.</p>
+      <p>The four position-level dimensions are weighted using a proprietary model developed by our quant team into each position's score. The Portfolio score aggregates each position's Asset and Protocol risk by value, with concentration and diversification adjustments. Pool data refreshes <strong>every 2 hours</strong>.</p>
       <h3>Proprietary Weighting</h3>
-      <div class="weight-bar">
-        <div class="weight-bar-seg" style="flex:6;background:#f85149">Asset</div>
-        <div class="weight-bar-seg" style="flex:1.5;background:#58a6ff">Pool</div>
-        <div class="weight-bar-seg" style="flex:1.5;background:#d29922">Protocol</div>
-        <div class="weight-bar-seg" style="flex:1;background:#bc8cff">Chain</div>
-      </div>
       <div class="weight-legend">
         <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#f85149"></div>Asset Risk - Largest factor</div>
         <div class="weight-legend-item"><div class="weight-legend-dot" style="background:#58a6ff"></div>Pool Risk</div>
@@ -540,7 +549,7 @@ const pages = {
         <p>Pool characteristics like yield consistency, depth, and structural risks (such as impermanent loss for liquidity pools) are analyzed to determine how stable and reliable the pool is as an investment vehicle.</p>
         `,
         expandables: [
-          { icon: '📊', title: 'Yield Stability', detail: 'We analyze how consistently the pool delivers its advertised yield. Pools with highly variable returns carry more risk than those with stable, predictable yields.' },
+          { icon: '📊', title: 'Yield History', detail: 'We track how consistently the pool delivers its advertised yield and show its yield history alongside the score. Yield variability is shown, not scored: it does not currently feed the pool risk score.' },
           { icon: '💰', title: 'Pool Depth & Health', detail: 'We assess the total capital in the pool, its trend over time, and other indicators of pool health and sustainability.' },
         ],
       },
@@ -559,10 +568,10 @@ const pages = {
         <h3>What We Evaluate</h3>
         <p>Chain-level characteristics including maturity, adoption, and stability are factored into the overall risk score. More established chains with deeper liquidity generally carry lower risk.</p>
       `},
-      { id: 'lyra/portfolio-risk', label: 'Portfolio (Holistic)', content: `
-        <p>The portfolio segment is the holistic roll-up of the four position-level dimensions across your full exposure - one number for the whole book.</p>
+      { id: 'lyra/portfolio-risk', label: 'Portfolio', content: `
+        <p>The portfolio segment gives one number for the whole book. It is built from each position's Asset and Protocol risk; Pool and Chain risk are scored and reported per position but do not enter the portfolio score.</p>
         <h3>What We Evaluate</h3>
-        <p>Individual position scores are value-weighted into a single portfolio risk score, then adjusted for <strong>concentration</strong> (a penalty when one position exceeds 25% of the portfolio) and <strong>diversification</strong> (a benefit when capital is spread across multiple protocols and chains). This is the same lens an investment committee already applies to traditional assets.</p>
+        <p>Each position's blended Asset and Protocol risk is value-weighted into a single portfolio risk score, then adjusted for <strong>concentration</strong> (a penalty when one position exceeds 25% of the portfolio) and <strong>diversification</strong> (a benefit when capital is spread across multiple protocols and chains). This is the same lens an investment committee already applies to traditional assets.</p>
       `},
       { id: 'lyra/score-scale', label: 'Score Scale', content: `
         <h3>The 1-5 Scale</h3>
@@ -633,13 +642,12 @@ const pages = {
       </ul>
       <h3>Risk Tolerance Filter</h3>
       <div class="score-bar" style="max-width:400px">
-        <div class="score-segment" style="flex:1;background:#3fb950;font-size:10px">Very<br>Conservative</div>
-        <div class="score-segment" style="flex:1;background:#58a6ff;font-size:10px">Conservative</div>
-        <div class="score-segment" style="flex:1;background:#d29922;font-size:10px">Moderate</div>
-        <div class="score-segment" style="flex:1;background:#f85149;font-size:10px">Aggressive</div>
-        <div class="score-segment" style="flex:1;background:#bc8cff;font-size:10px">Very<br>Aggressive</div>
+        <div class="score-segment" style="flex:1;background:#3fb950;font-size:10px">Conservative</div>
+        <div class="score-segment" style="flex:1;background:#58a6ff;font-size:10px">Moderate</div>
+        <div class="score-segment" style="flex:1;background:#d29922;font-size:10px">Risk-seeker</div>
+        <div class="score-segment" style="flex:1;background:#f85149;font-size:10px">Degen</div>
       </div>
-      <p style="margin-top:8px">Set your comfort level, and the platform only shows opportunities at or below that risk threshold.</p>
+      <p style="margin-top:8px">Choose one of four levels, and the platform only shows opportunities whose risk score is at or below that level's maximum.</p>
     `,
     children: [
       { id: 'strategies/ydo', label: 'YD Optimization', content: `
@@ -671,7 +679,7 @@ const pages = {
           <li><strong>Chain</strong> - Ethereum, Polygon, Arbitrum, Base</li>
           <li><strong>Protocol</strong> - Aave, Uniswap, Lido, Compound, Morpho, Ethena</li>
           <li><strong>Asset type</strong> - Stablecoins, ETH/BTC, altcoins, LP tokens</li>
-          <li><strong>Risk tolerance</strong> - Very Conservative to Very Aggressive</li>
+          <li><strong>Risk tolerance</strong> - four levels, Conservative to Degen</li>
           <li><strong>Minimum APY</strong> - floor for displayed opportunities</li>
         </ul>
       `},
@@ -683,7 +691,7 @@ const pages = {
     tagline: 'Institutional-grade documentation you can hand to compliance.',
     content: `
       <p>Reports include risk methodology disclosure, score breakdowns, historical performance, and portfolio-level risk adjustments - the kind of documentation institutional compliance teams expect.</p>
-      <p><strong>Live NAV reconciliation</strong> against on-chain truth gives front-office, risk, and compliance teams a real-time portfolio valuation. And every report is an <strong>exportable risk history from execution to exit</strong> - the post-trade "why we held this" record that auditors and regulators expect.</p>
+      <p><strong>Portfolio valuations reconciled</strong> across two independent data sources give front-office, risk, and compliance teams a cross-checked view of the book. And every report is an <strong>exportable risk history from execution to exit</strong> - the post-trade "why we held this" record that auditors and regulators expect.</p>
       <p>Generation takes about <strong>30 seconds</strong> with cached data, up to 60-70 seconds for a first-time <a data-nav="scan">scan</a>.</p>
       <p>Every report includes a verifiable footer with unique <strong>report ID</strong>, ISO-8601 <strong>generation timestamp</strong>, and <strong>schema version</strong> - supporting audit trail and reproducibility for compliance use cases.</p>
     `,
@@ -720,7 +728,7 @@ const pages = {
     id: 'stress', icon: '🔥', label: 'Stress Testing', desc: 'Historical crash scenarios (planned)', section: 'Core Features',
     tagline: 'Planned: see how your portfolio would survive real historical crashes.',
     content: `
-      <p style="background:rgba(210,153,34,0.1);border-left:3px solid var(--orange);padding:12px 16px;border-radius:4px"><strong>Status: Planned for Q3 2026.</strong> The stress-testing capability described below is on the public roadmap. The historical event pages that follow describe the market events used to design the scenario library; the per-portfolio simulation engine is not yet live.</p>
+      <p style="background:rgba(210,153,34,0.1);border-left:3px solid var(--orange);padding:12px 16px;border-radius:4px"><strong>Status: Planned.</strong> The stress-testing capability described below is on the public roadmap. The historical event pages that follow describe the market events used to design the scenario library; the per-portfolio simulation engine is not yet live.</p>
       <h3>What Stress Testing Will Output</h3>
       <ul>
         <li><strong>Position-level drawdown</strong> - how much each holding would have lost</li>
@@ -753,7 +761,7 @@ const pages = {
           <div class="drawdown-row"><div class="drawdown-label">DeFi TVL</div><div class="drawdown-track"><div class="drawdown-fill" style="width:75%;background:#f85149">Severe</div></div></div>
         </div>
         <h3>Why This Scenario Matters</h3>
-        <p>This scenario will test how your portfolio handles algorithmic stablecoin failure and the contagion effects across the broader DeFi ecosystem. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from May 2022 shown for context, not platform-computed outputs.</p>
+        <p>This scenario will test how your portfolio handles algorithmic stablecoin failure and the contagion effects across the broader DeFi ecosystem. <em>Status: planned.</em> The drawdown bars above are reference historical-market values from May 2022 shown for context, not platform-computed outputs.</p>
       `},
       { id: 'stress/ftx', label: 'FTX Collapse', content: `
         <div class="card" style="border-color:var(--orange);margin-bottom:20px;max-width:500px">
@@ -771,7 +779,7 @@ const pages = {
           <div class="drawdown-row"><div class="drawdown-label">DeFi TVL</div><div class="drawdown-track"><div class="drawdown-fill" style="width:40%;background:#d29922">Moderate</div></div></div>
         </div>
         <h3>Why This Scenario Matters</h3>
-        <p>This scenario will test how your portfolio handles a sudden market-wide confidence crisis - broad drawdowns across asset classes and whether you can exit when everyone else is trying to exit simultaneously. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from November 2022 shown for context, not platform-computed outputs.</p>
+        <p>This scenario will test how your portfolio handles a sudden market-wide confidence crisis - broad drawdowns across asset classes and whether you can exit when everyone else is trying to exit simultaneously. <em>Status: planned.</em> The drawdown bars above are reference historical-market values from November 2022 shown for context, not platform-computed outputs.</p>
       `},
       { id: 'stress/svb', label: 'SVB Crisis', content: `
         <div class="card" style="border-color:var(--purple);margin-bottom:20px;max-width:500px">
@@ -789,7 +797,7 @@ const pages = {
           <div class="drawdown-row"><div class="drawdown-label">Pools</div><div class="drawdown-track"><div class="drawdown-fill" style="width:60%;background:#d29922">High withdrawals</div></div></div>
         </div>
         <h3>Why This Scenario Matters</h3>
-        <p>This scenario primarily affects stablecoin-heavy portfolios. It will test stablecoin depeg risk and cascading effects on DeFi yields when stablecoin confidence is shaken. <em>Status: planned Q3 2026.</em> The drawdown bars above are reference historical-market values from March 2023 shown for context, not platform-computed outputs.</p>
+        <p>This scenario primarily affects stablecoin-heavy portfolios. It will test stablecoin depeg risk and cascading effects on DeFi yields when stablecoin confidence is shaken. <em>Status: planned.</em> The drawdown bars above are reference historical-market values from March 2023 shown for context, not platform-computed outputs.</p>
       `},
     ],
   },
@@ -832,8 +840,8 @@ const pages = {
       { icon: '📖', title: 'Live OpenAPI Documentation', detail: 'The full API specification is rendered at <code>/developers</code> with grouped endpoints, request/response shapes, example payloads, and inline "try it" support. The portal reflects the current production deployment - if a field changes, the docs reflect it immediately on next release.' },
       { icon: '🔑', title: 'API Key Management', detail: 'Provision and rotate API keys from your account dashboard. Keys are shown once at creation and stored hashed on the platform - if you lose a key, rotate it; we cannot recover the plaintext. Each key is scoped to your user identity and respects the same access controls as cookie-authenticated sessions.' },
       { icon: '🚦', title: 'Rate Limits', detail: 'Both cookie sessions and API keys share the same rate-limit budgets. Standard limits are tuned to support normal application usage; higher-volume integration patterns can be negotiated per account. Limits return as HTTP 429 with a <code>Retry-After</code> header when exceeded.' },
-      { icon: '🤝', title: 'B2B & White-Label', detail: 'The Developer API is the integration surface for partners embedding Yields Digital risk scores into their own products. Roadmap track for Q3 2026: <strong>Oracle Product</strong> - a dedicated risk-as-a-service tier with SLA-backed availability for embedded use.' },
-      { icon: '🛎️', title: 'Webhook API (Q3 2026)', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation - so your systems are notified the moment a position changes risk classification, not when you next poll.' },
+      { icon: '🤝', title: 'B2B Integration', detail: 'The Developer API is the integration surface for partners: wallet scans and portfolio reports, programmatically, inside their own products. Planned: <strong>Oracle Product</strong> - a dedicated risk-as-a-service tier with SLA-backed availability for embedded use.' },
+      { icon: '🛎️', title: 'Webhook API (planned)', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation - so your systems are notified the moment a position changes risk classification, not when you next poll.' },
       { icon: '🔒', title: 'Authentication', detail: 'API keys travel via the <code>Authorization</code> header. All endpoints are HTTPS-only. The same <a data-nav="security">security posture</a> that protects the web app - httpOnly cookies, bcrypt, modern security headers - applies to API traffic.' },
     ],
   },
@@ -842,7 +850,7 @@ const pages = {
     id: 'coverage', icon: '🌐', label: 'Chains & Protocols', desc: 'What\'s supported', section: 'Details',
     tagline: 'Focused coverage of institutional-grade DeFi.',
     content: `
-      <p style="font-size:13px;color:var(--dim)">Active asset, chain, and protocol coverage is configured per environment at deploy time. The lists below reflect today\'s production configuration; coverage expands with each release as new whitelists are activated. Positions outside the active list still appear in your scan as unanalyzed. Across these protocols, the platform continuously monitors the active pool universe and risk-scores eligible positions.</p>
+      <p style="font-size:13px;color:var(--dim)">Active asset, chain, and protocol coverage is configured per environment at deploy time. The lists below reflect today\'s production configuration; coverage expands with each release as new whitelists are activated. Positions outside the active list still appear in your scan as unanalyzed. Across these protocols, the platform refreshes pool data for the active universe every 2 hours and risk-scores eligible positions.</p>
       <h3>Blockchains</h3>
       <div class="chain-row">
         <div class="chain-tag">⟠ Ethereum</div>
@@ -857,7 +865,7 @@ const pages = {
         <div class="chain-tag">POL</div><div class="chain-tag">ARB</div><div class="chain-tag">USDE</div><div class="chain-tag">SUSDE</div>
       </div>
       <p>Positions in assets or protocols outside the active list will appear in your <a data-nav="scan">wallet scan</a> but won\'t receive a <a data-nav="lyra">LYRA risk score</a>. The <a data-nav="reports">report</a> clearly marks analyzed vs. unanalyzed coverage.</p>
-      <p style="font-size:13px;color:var(--dim)">Coverage expanding - additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) are on the roadmap. A config-driven <a data-nav="roadmap">coverage management console</a> (in development) will let the team onboard new protocols, chains, assets, and risk definitions without code changes - accelerating how quickly coverage grows.</p>
+      <p style="font-size:13px;color:var(--dim)">Coverage expanding - additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) are on the roadmap. A config-driven <a data-nav="roadmap">coverage management console</a> lets the team onboard new protocols, chains, assets, and risk definitions without code changes - accelerating how quickly coverage grows.</p>
     `,
     expandables: [
       { icon: '🏦', title: 'Aave V3', detail: 'Lending & borrowing. Largest DeFi lending protocol by TVL. Available on all four supported chains.' },
@@ -896,25 +904,27 @@ const pages = {
         <tr><th>Capability</th><th>Today</th><th>Coming</th></tr>
         <tr><td>Institutional report formats (HTML / CSV / XLSX / JSON)</td><td class="yes">✓ Live</td><td>-</td></tr>
         <tr><td>Risk methodology disclosure in every report</td><td class="yes">✓ Live</td><td>-</td></tr>
-        <tr><td>Historical stress-test results</td><td class="partial">~ Roadmap</td><td>Q3 2026</td></tr>
+        <tr><td>Historical stress-test results</td><td class="partial">~ Roadmap</td><td>Planned</td></tr>
         <tr><td>Verifiable report footer (ID + timestamp + schema version)</td><td class="yes">✓ Live</td><td>-</td></tr>
-        <tr><td>iXBRL output for ESMA filings</td><td class="partial">~ Roadmap</td><td>Q3 2026</td></tr>
-        <tr><td>MiCA Art. 22 quarterly supervisory report</td><td class="partial">~ Data ready</td><td>Q3 2026</td></tr>
-        <tr><td>MiCA Art. 30 monthly disclosure</td><td class="partial">~ Data ready</td><td>Q3 2026</td></tr>
-        <tr><td>MiCA Art. 68(9) immutable evidence trail</td><td class="partial">~ Scores stored</td><td>Q3 2026</td></tr>
-        <tr><td>Scheduled portfolio snapshots with raw-data retention</td><td class="partial">~ Rolling out</td><td>Q3 2026</td></tr>
+        <tr><td>Report integrity manifest + reconciliation (tamper-evident, reproducible)</td><td class="yes">✓ Live</td><td>-</td></tr>
+        <tr><td>Scheduled portfolio snapshots with raw-data retention</td><td class="yes">✓ Live</td><td>-</td></tr>
+        <tr><td>iXBRL output for ESMA filings</td><td class="partial">~ Roadmap</td><td>Planned</td></tr>
+        <tr><td>MiCA Art. 22 quarterly supervisory report</td><td class="partial">~ Roadmap</td><td>Planned</td></tr>
+        <tr><td>MiCA Art. 30 monthly disclosure</td><td class="partial">~ Roadmap</td><td>Planned</td></tr>
+        <tr><td>MiCA Art. 68(9) append-only immutable ledger</td><td class="partial">~ Tamper-evidence live</td><td>Planned</td></tr>
       </table>
-      <h3>Public Commitments</h3>
-      <p>The marketing site footnotes iXBRL output and expanded asset coverage (DAI + USDS) as Q3 2026 deliverables - these are externally committed dates, not internal targets. Customers and regulators can hold us to them. Our public <a href="https://yieldsdigital.github.io/research/" target="_blank" rel="noopener">research and compliance hub</a> documents the methodology behind these commitments.</p>
+      <h3>Roadmap</h3>
+      <p>iXBRL output and expanded asset coverage (DAI + USDS) are on our roadmap; we publish a delivery date only once it is committed. Our public <a href="https://yieldsdigital.github.io/research/" target="_blank" rel="noopener">research and compliance hub</a> documents the methodology behind this work.</p>
     `,
     expandables: [
-      { icon: '📑', title: 'iXBRL Output (Q3 2026)', detail: 'MiCA Regulation 2024/2984 has made iXBRL mandatory for ESMA filings since 23 December 2025. Yields Digital is building in-house iXBRL output for the <a data-nav="reports">report generator</a> so institutional issuers and CASPs can produce ESMA-validator-compliant filings directly from the platform - Annex I (token white paper) and Annex II (ART white paper) auto-populated from LYRA scores and reserve data. Target Q3 2026.' },
-      { icon: '📊', title: 'Art. 22 Quarterly Supervisory Report', detail: 'EBA-template quarterly report covering token holders, reserve composition, transaction volumes, and issuer exposure - delivered within 15 business days of quarter-end with a manual review gate before NCA submission. The underlying data is already aggregated by the platform; the template-mapping layer is in flight.' },
-      { icon: '📅', title: 'Art. 30 Monthly Disclosure', detail: 'Monthly publication of circulation, reserve value, and composition by asset class to a public URL within 5 business days of month-end. MiCA Art. 30 is live today; the platform\'s aggregation layer is in place and the publication pipeline is the remaining work.' },
-      { icon: '🔏', title: 'Art. 68(9) Immutable Evidence Trail', detail: 'Every LYRA score computation and every client communication referencing a score will write an append-only, tamper-evident record - actor, value, input/output hashes, timestamp. Retention meets the MiCA Art. 68(9) <strong>5-year minimum</strong> with a 7-year internal target. Today timestamped scores are in the database; the immutable-ledger layer ships in Q3 2026.' },
-      { icon: '🧾', title: 'Audit Trail (Live Today)', detail: 'Every <a data-nav="reports">report</a> already carries a verifiable footer with unique report ID, ISO-8601 generation timestamp, and schema version. Combined with the immutable evidence trail (Q3 2026), this gives compliance teams a complete chain-of-custody for any score cited in client communications - including the data inputs that produced it.' },
+      { icon: '📑', title: 'iXBRL Output (planned)', detail: 'MiCA Regulation 2024/2984 has made iXBRL mandatory for ESMA filings since 23 December 2025. Yields Digital plans in-house iXBRL output for the <a data-nav="reports">report generator</a> so institutional issuers and CASPs can produce ESMA-validator-compliant filings directly from the platform - Annex I (token white paper) and Annex II (ART white paper) auto-populated from LYRA scores and reserve data.' },
+      { icon: '📊', title: 'Art. 22 Quarterly Supervisory Report', detail: 'EBA-template quarterly report covering token holders, reserve composition, transaction volumes, and issuer exposure - delivered within 15 business days of quarter-end with a manual review gate before NCA submission. Planned.' },
+      { icon: '📅', title: 'Art. 30 Monthly Disclosure', detail: 'Monthly publication of circulation, reserve value, and composition by asset class to a public URL within 5 business days of month-end. MiCA Art. 30 applies today; this disclosure support is planned.' },
+      { icon: '🔏', title: 'Art. 68(9) Immutable Evidence Trail', detail: 'Every LYRA score computation and every client communication referencing a score will write an append-only record - actor, value, input/output hashes, timestamp. Retention meets the MiCA Art. 68(9) <strong>5-year minimum</strong> with a 7-year internal target. Today, report verifiability (SHA-256 integrity manifest + reconciliation, above) is live and captures with raw-data retention are running; the append-only immutable-ledger layer that completes Art. 68(9) is planned.' },
+      { icon: '🧾', title: 'Audit Trail (Live Today)', detail: 'Every <a data-nav="reports">report</a> carries a verifiable footer with a unique report ID, ISO-8601 generation timestamp, schema version, the model and reference-data versions used, and the engine build that produced it. Combined with the report-verifiability layer below, this gives compliance teams a complete chain-of-custody for any score cited in client communications - including the data inputs that produced it.' },
+      { icon: '🔐', title: 'Report Verifiability (Live Today)', detail: 'Audit-grade report verifiability shipped to production. Each captured report carries a <strong>SHA-256 integrity manifest</strong> that binds the raw source-data payloads to the processed figures, so any later alteration of inputs or outputs is detectable. A <strong>reconciliation endpoint</strong> lets an auditor independently re-derive and cross-check a stored report against its retained raw data, and a <strong>reference-data version</strong> stamp records exactly which dataset produced each score. This is <strong>tamper-evident and reproducible</strong> - distinct from the append-only immutable ledger (MiCA Art. 68(9)), which is planned.' },
       { icon: '🛡️', title: 'Pen-Test Status', detail: 'An internal penetration test completed April 2026 covering OWASP Top 10 and DeFi-specific attack surfaces; all findings are remediated and shipped to production, with no critical issues. <strong>Independent external pen-test scheduling is in progress</strong> - the internal test is gap-finding work, not external attestation. See the <a data-nav="security">Security &amp; Auth</a> section for full detail.' },
-      { icon: '🌍', title: 'Regulatory Scope', detail: 'Initial focus is MiCA / ESMA (the EU framework). The platform\'s reporting architecture is designed to extend to other jurisdictions - additional taxonomies and templates can be added without re-engineering the underlying data pipeline. Multi-jurisdiction iXBRL variants are out of scope for the Q3 2026 ship but on the longer horizon.' },
+      { icon: '🌍', title: 'Regulatory Scope', detail: 'Initial focus is MiCA / ESMA (the EU framework). The platform\'s reporting architecture is designed to extend to other jurisdictions - additional taxonomies and templates can be added without re-engineering the underlying data pipeline. Multi-jurisdiction iXBRL variants are on the longer horizon.' },
     ],
   },
 
@@ -927,7 +937,7 @@ const pages = {
       <p>This is the engineering discipline beneath the <a data-nav="compliance">audit-trail and immutable-evidence commitments</a>. The public <a href="https://yieldsdigital.github.io/research/" target="_blank" rel="noopener">"How We Prove Our Numbers"</a> explainer is the detailed, outward-facing account of how it works.</p>
     `,
     expandables: [
-      { icon: '📋', title: 'Documented Surface Inventories', detail: 'The data surfaces that feed a score - API contracts, screens, and data routes - are catalogued in living inventory documents, each pinned to a verified code baseline. The inventory is the reference of record for what the platform reports and how it is produced.' },
+      { icon: '📋', title: 'Documented Surface Inventories', detail: 'The data surfaces that feed a score - API contracts, screens, and data routes - are cataloged in living inventory documents, each pinned to a verified code baseline. The inventory is the reference of record for what the platform reports and how it is produced.' },
       { icon: '🔁', title: 'Automated Drift Detection', detail: 'A scheduled check runs against production and flags when the code behind a reported figure diverges from its documented baseline. Documentation and the live system are kept in lock-step, so reported numbers cannot silently drift from their definitions.' },
       { icon: '🛡️', title: 'Change-Time Guardrails', detail: 'Changes that touch an inventoried surface are flagged at review time, so a code change that would affect a reported number prompts a matching documentation update in the same change set.' },
       { icon: '🔗', title: 'Traceable to Source', detail: 'The net effect: any figure in a report can be traced back to the data inputs and the code path that produced it - the foundation for the audit trail and immutable-evidence commitments in <a data-nav="compliance">Compliance &amp; Reporting</a>.' },
@@ -942,8 +952,8 @@ const pages = {
         <tr>
           <th>Feature</th>
           <th>Yields Digital</th>
-          <th>DeFiLlama</th>
-          <th>DeBank / Zapper</th>
+          <th>Yield aggregators</th>
+          <th>Portfolio trackers</th>
           <th>Gauntlet</th>
         </tr>
         <tr>
@@ -964,7 +974,7 @@ const pages = {
         </tr>
         <tr>
           <td><strong><a data-nav="stress">Stress testing</a></strong></td>
-          <td class="partial">~ Q3 2026 planned</td><td class="no">✗</td><td class="no">✗</td><td class="partial">~ custom only</td>
+          <td class="partial">~ Planned</td><td class="no">✗</td><td class="no">✗</td><td class="partial">~ custom only</td>
         </tr>
         <tr>
           <td><strong>Compliance-ready <a data-nav="reports">reports</a></strong></td>
@@ -1011,8 +1021,8 @@ const pages = {
       </div>
     `,
     expandables: [
-      { icon: '📊', title: 'vs DeFiLlama', detail: 'DeFiLlama shows raw yield and TVL data. Yields Digital adds risk scoring, portfolio analysis, optimization recommendations, and institutional reports on top of the data. Historical-scenario stress testing is on the Q3 2026 roadmap.' },
-      { icon: '👛', title: 'vs DeBank / Zapper', detail: 'DeBank and Zapper are portfolio trackers - they show what you hold. They don\'t assess risk, score positions, or generate compliance-grade reports.' },
+      { icon: '📊', title: 'vs Yield Aggregators', detail: 'Yield aggregators show raw yield and TVL data. Yields Digital adds risk scoring, portfolio analysis, optimization recommendations, and institutional reports on top of the data. Historical-scenario stress testing is on the roadmap.' },
+      { icon: '👛', title: 'vs Portfolio Trackers', detail: 'Portfolio trackers (e.g. Zapper) show what you hold - they don\'t assess risk, score positions, or generate compliance-grade reports.' },
       { icon: '🏛️', title: 'vs Gauntlet / Chaos Labs', detail: 'Enterprise risk consulting firms with six-figure engagements. Yields Digital is <strong>self-service</strong> - institutional-grade analysis accessible to anyone without a consulting contract.' },
     ],
   },
@@ -1026,20 +1036,20 @@ const pages = {
       { icon: '✅', title: 'Shipped: Two-Factor Authentication (TOTP)', detail: 'Google Authenticator, Authy, 1Password supported. Available in account settings under the <a data-nav="security">Security</a> tab.' },
       { icon: '✅', title: 'Shipped: Pentest Remediation', detail: 'All findings from the April 2026 internal penetration test remediated and shipped to production, with no critical issues - authentication hardening, token validation, security headers, and adjacent surfaces. See <a data-nav="security">Security &amp; Auth</a> for the active posture. Independent external pen-test scheduling in progress.' },
       { icon: '✅', title: 'Shipped: Modern Security Headers', detail: 'CSP in report-only mode (enforcement pending allowlist-gap closure), COOP same-origin enforced, CORP same-origin enforced, plus the deprecated X-Powered-By and X-XSS-Protection headers removed. Part of the broader pen-test remediation work shipped to production.' },
-      { icon: '✅', title: 'Shipped: Wallet Report Quality', detail: 'Multiple improvements to portfolio reports shipped together: removed unreliable historical comparison columns, deduplicated cross-chain positions, strengthened spam-token filtering (impersonation detection, third-party spam-flag integration, and value-anomaly checks), and added verifiable report footers with unique IDs and ISO timestamps. See <a data-nav="reports">Portfolio Reports</a>.' },
-      { icon: '🟢', title: 'In Progress: Portfolio Compliance Capture', detail: 'A portfolio layer that groups multiple wallets into a named portfolio and records scheduled point-in-time snapshots - each one persisting the raw source data alongside the computed <a data-nav="lyra">LYRA</a> scores. This is the foundation for the historic retention, immutable evidence trail, and cross-portfolio (parent / child) views committed under <a data-nav="compliance">Compliance &amp; Reporting</a> for Q3 2026. Backend and admin controls are live in the platform; the first scheduled captures are rolling out.' },
-      { icon: '🟢', title: 'In Progress: Coverage Management Console', detail: 'An admin console for onboarding new protocols, chains, assets, and risk definitions through configuration alone - no code changes or redeploys. It moves coverage management to a managed, audited workflow. Fully specified; build starting. The near-term outcome is faster, more reliable expansion of the <a data-nav="coverage">supported asset and protocol coverage</a>.' },
-      { icon: '🔵', title: 'Q3 2026: Webhook API', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation. Part of the <a data-nav="developers">Developer API</a> surface.' },
-      { icon: '🟢', title: 'Q2 2026: Risk Attribution', detail: 'Period-over-period analysis showing what is driving changes in your risk score over time. Quantify how much each position contributes to portfolio risk.' },
-      { icon: '🟢', title: 'Q2 2026: Flow Anomaly Detection', detail: 'On-chain transaction flow anomaly detection - the first phase of the broader On-Chain Risk Intelligence (OCRI) initiative. Surfaces unusual transaction patterns and protocol-level flow anomalies that traditional risk scoring misses.' },
-      { icon: '🔵', title: 'Q3 2026: MiCA Regulatory Reporting', detail: 'Consolidated regulatory reporting bundle: iXBRL output for ESMA filings (MiCA Reg 2024/2984), Art. 22 quarterly supervisory report, Art. 30 monthly disclosure, and Art. 68(9) immutable evidence trail with 5-year retention. Publicly committed dates - see <a data-nav="compliance">Compliance &amp; Reporting</a> for the full trajectory.' },
-      { icon: '🔵', title: 'Q3 2026: Oracle Product', detail: 'External risk-as-a-service API for B2B integrations. Other platforms can embed Yields Digital risk scores directly in their own products. Dedicated tier on the <a data-nav="developers">Developer API</a> surface.' },
-      { icon: '🔵', title: 'Q3 2026: Unified Risk View', detail: 'Cross-portfolio risk consolidation for users managing multiple wallets or institutional sub-accounts. Single dashboard view across treasury structures with parent / child accounting.' },
-      { icon: '🔵', title: 'Q3 2026: LYRA v2.1', detail: 'Incremental refinements to the <a data-nav="lyra">LYRA risk model</a> - scoring-accuracy improvements and edge-case handling. The five-segment framework - four weighted dimensions (Asset / Pool / Protocol / Chain at 60 / 15 / 15 / 10) plus the holistic Portfolio roll-up - is unchanged; this is model tuning, not a new segment.' },
-      { icon: '🔵', title: 'Q3 2026: Narrative Intelligence', detail: 'AI-generated <strong>plain-English explanations</strong> of risk scores. Go beyond numbers to understand exactly what is driving your portfolio risk.' },
-      { icon: '🔵', title: 'Q3 2026: Historical Stress Testing', detail: 'Per-portfolio simulation against the three historical scenarios documented under <a data-nav="stress">Stress Testing</a> (Luna/UST, FTX, SVB / stablecoin crisis). Outputs position-level and portfolio drawdowns, concentration analysis, liquidity stress, and an overall RESILIENT / VULNERABLE / CRITICAL rating.' },
-      { icon: '🔵', title: 'Q3 2026: Portfolio Digital Twin', detail: 'Simulate portfolio changes <strong>before executing them</strong>. See exactly how changes would affect your <a data-nav="lyra">risk score</a>, yield, and <a data-nav="stress">stress resilience</a> - without moving any real funds.' },
-      { icon: '🟣', title: 'Future: Expanded Coverage', detail: 'Additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) rolling out to increase wallet coverage.' },
+      { icon: '✅', title: 'Shipped: Wallet Report Quality', detail: 'Multiple improvements to portfolio reports shipped together: removed unreliable historical comparison columns, deduplicated cross-chain positions, strengthened spam-token filtering (impersonation detection, third-party spam-flag integration, and value-anomaly checks) - now backed by a curated, operator-managed asset blocklist for durable brand safety - and added verifiable report footers with unique IDs and ISO timestamps. See <a data-nav="reports">Portfolio Reports</a>.' },
+      { icon: '✅', title: 'Shipped: Portfolio Compliance Capture', detail: 'A portfolio layer that groups multiple wallets into a named portfolio and records scheduled point-in-time snapshots - each one persisting the raw source data alongside the computed <a data-nav="lyra">LYRA</a> scores. Snapshots run daily, monthly or quarterly at a valuation point set per portfolio, and are reconciled across two independent data sources. This is the foundation for the planned immutable evidence trail and cross-portfolio (parent / child) views described under <a data-nav="compliance">Compliance &amp; Reporting</a>.' },
+      { icon: '✅', title: 'Shipped: Coverage Management Console', detail: 'An admin console for onboarding new protocols, chains, assets, and risk definitions through configuration alone - no code changes or redeploys. It moves coverage management to a managed, audited workflow, operated by our team; a newly added protocol becomes eligible for optimization only when our team enables it. The outcome is faster, more reliable expansion of the <a data-nav="coverage">supported asset and protocol coverage</a>.' },
+      { icon: '🔵', title: 'Planned: Webhook API', detail: 'Subscribe to risk-score changes, threshold crossings, and portfolio events. Push-driven integration for monitoring and downstream automation. Part of the <a data-nav="developers">Developer API</a> surface.' },
+      { icon: '🔵', title: 'Planned: Risk Attribution', detail: 'Period-over-period analysis showing what is driving changes in your risk score over time. Quantify how much each position contributes to portfolio risk.' },
+      { icon: '🔵', title: 'Planned: Flow Anomaly Detection', detail: 'On-chain transaction flow anomaly detection - the first phase of the broader On-Chain Risk Intelligence (OCRI) initiative. Surfaces unusual transaction patterns and protocol-level flow anomalies that traditional risk scoring misses.' },
+      { icon: '🔵', title: 'Planned: MiCA Regulatory Reporting', detail: 'Consolidated regulatory reporting bundle: iXBRL output for ESMA filings (MiCA Reg 2024/2984), Art. 22 quarterly supervisory report, Art. 30 monthly disclosure, and Art. 68(9) immutable evidence trail with 5-year retention. See <a data-nav="compliance">Compliance &amp; Reporting</a> for detail.' },
+      { icon: '🔵', title: 'Planned: Oracle Product', detail: 'External risk-as-a-service API for B2B integrations. Other platforms can embed Yields Digital risk scores directly in their own products. Dedicated tier on the <a data-nav="developers">Developer API</a> surface.' },
+      { icon: '🔵', title: 'Planned: Unified Risk View', detail: 'Cross-portfolio risk consolidation for users managing multiple wallets or institutional sub-accounts. Single dashboard view across treasury structures with parent / child accounting.' },
+      { icon: '🔵', title: 'Planned: LYRA v2.1', detail: 'Incremental refinements to the <a data-nav="lyra">LYRA risk model</a> - scoring-accuracy improvements and edge-case handling. The five-segment framework - four weighted dimensions (Asset / Pool / Protocol / Chain) plus the Portfolio score - is unchanged; this is model tuning, not a new segment.' },
+      { icon: '🔵', title: 'Planned: Narrative Intelligence', detail: 'AI-generated <strong>plain-English explanations</strong> of risk scores. Go beyond numbers to understand exactly what is driving your portfolio risk.' },
+      { icon: '🔵', title: 'Planned: Historical Stress Testing', detail: 'Per-portfolio simulation against the three historical scenarios documented under <a data-nav="stress">Stress Testing</a> (Luna/UST, FTX, SVB / stablecoin crisis). Outputs position-level and portfolio drawdowns, concentration analysis, liquidity stress, and an overall RESILIENT / VULNERABLE / CRITICAL rating.' },
+      { icon: '🔵', title: 'Planned: Portfolio Digital Twin', detail: 'Simulate portfolio changes <strong>before executing them</strong>. See exactly how changes would affect your <a data-nav="lyra">risk score</a>, yield, and <a data-nav="stress">stress resilience</a> - without moving any real funds.' },
+      { icon: '🟣', title: 'Future: Expanded Coverage', detail: 'Additional DeFi blue chips (DAI, AAVE, MKR, LINK, CRV, LDO, PENDLE) and protocols (Maker, Balancer, Uniswap V2/V4) planned to increase wallet coverage.' },
       { icon: '🟣', title: 'Future: Additional 2FA Methods', detail: 'Google federation (Sign in with Google) and Apple federation (Sign in with Apple) joining the existing TOTP-based <a data-nav="security">two-factor authentication</a>.' },
       { icon: '🟣', title: 'Future: Monitoring & Alerts', detail: 'Real-time portfolio monitoring with notifications when risk scores change or yields drop below thresholds.' },
       { icon: '🟣', title: 'Future: PDF Export & Email Delivery', detail: 'Direct PDF generation and scheduled email delivery of portfolio <a data-nav="reports">reports</a>.' },
@@ -1053,14 +1063,14 @@ const faqs = {
   overview: [
     { q:'Is this a crypto exchange?', a:'<strong>No.</strong> Yields Digital never holds your funds or crypto. It\'s an analytics and optimization platform. Your money stays in your own wallet at all times.' },
     { q:'Do I need to be technical to use it?', a:'Not at all. You enter a wallet address, and the platform does the analysis. Reports are generated in plain English with visual charts.' },
-    { q:'Is it free?', a:'The platform is currently in early access. Pricing details will be announced as the product matures toward general availability.' },
+    { q:'Is it free?', a:'Every account starts on a free tier with daily limits. Paid plans unlock more - see the subscription page in the app for current plans.' },
   ],
   problem: [
     { q:'What do people do without this?', a:'Most DeFi investors use spreadsheets, gut feeling, or chase the highest APY without understanding risk. Institutional investors often <strong>can\'t participate at all</strong> because they have no way to document risk for compliance.' },
     { q:'Why can\'t institutions just use DeFi directly?', a:'Regulated entities need documented risk assessments before deploying capital. DeFi platforms just show APY - they don\'t provide the risk documentation that compliance officers require.' },
   ],
   who: [
-    { q:'Who is the platform for?', a:'Built for <strong>professional and institutional allocators</strong> - regulated asset managers and MiCA CASPs, ETP and structured-product issuers, TradFi allocators entering DeFi, crypto-native hedge funds, and DAO / stablecoin treasuries. It is also API-first for agentic and downstream consumers. (Historical-scenario stress testing is on the Q3 2026 roadmap.)' },
+    { q:'Who is the platform for?', a:'Built for <strong>professional and institutional allocators</strong> - regulated asset managers and MiCA CASPs, ETP and structured-product issuers, TradFi allocators entering DeFi, crypto-native hedge funds, and DAO / stablecoin treasuries. It is also API-first for agentic and downstream consumers. (Historical-scenario stress testing is on the roadmap.)' },
     { q:'Can financial advisors use this for their clients?', a:'Yes - that\'s a core use case. An RIA or family office can generate portfolio reports for client accounts, complete with risk scores and optimization recommendations.' },
   ],
   scan: [
@@ -1069,19 +1079,19 @@ const faqs = {
   ],
   lyra: [
     { q:'What does the 1-5 score mean?', a:'<strong>1.0-1.5</strong> = Very Low Risk<br><strong>1.5-2.5</strong> = Low Risk<br><strong>2.5-3.0</strong> = Moderate<br><strong>3.0-4.0</strong> = High Risk<br><strong>4.0-5.0</strong> = Very High Risk' },
-    { q:'How often are scores updated?', a:'Risk data refreshes <strong>daily</strong>, including price data, TVL changes, volume metrics, and APY history.' },
-    { q:'Can a score change suddenly?', a:'Yes. Significant market events will be reflected at the next daily refresh. Once historical-scenario stress testing ships (planned Q3 2026), it will help you preview what extreme scenarios would look like for your current holdings.' },
+    { q:'How often are scores updated?', a:'Pool data, including TVL and APY, refreshes <strong>every 2 hours</strong>. Scores reflect the latest data the platform holds.' },
+    { q:'Can a score change suddenly?', a:'Yes. Significant market events reach the platform with the next pool-data refresh, which runs every 2 hours. Once historical-scenario stress testing ships (planned), it will help you preview what extreme scenarios would look like for your current holdings.' },
   ],
   strategies: [
     { q:'Does the platform pick strategies for me?', a:'Two modes: <strong>YD Optimization</strong> automatically identifies better yields for your assets. <strong>Build Your Own</strong> lets you browse and choose manually.' },
-    { q:'What\'s the risk tolerance slider?', a:'Set a comfort level from Very Conservative to Very Aggressive. The platform only shows opportunities at or below that threshold.' },
+    { q:'What\'s the risk tolerance slider?', a:'Choose one of four levels: Conservative, Moderate, Risk-seeker or Degen. Each level sets a maximum risk score, and the platform only shows opportunities at or below it.' },
   ],
   reports: [
     { q:'What formats are available?', a:'<strong>Interactive HTML</strong>, <strong>Excel (.xlsx)</strong>, <strong>CSV</strong>, and <strong>JSON</strong>.' },
     { q:'Can I share reports with my compliance team?', a:'That\'s exactly what they\'re designed for. Reports include risk methodology, score breakdowns, portfolio-level adjustments (concentration penalty and diversification benefit), and a verifiable footer with report ID, ISO timestamp, and schema version for audit trail.' },
   ],
   stress: [
-    { q:'Is stress testing live today?', a:'<strong>No - planned for Q3 2026.</strong> The scenario library and historical reference data are documented in the Stress Testing topic, but the per-portfolio simulation engine has not yet shipped. Today\'s coverage of crash-style risk is concentrated in the <a data-nav="lyra">LYRA risk score</a> (volatility, max drawdown, VaR / CVaR per asset) and the portfolio-level concentration / diversification adjustments.' },
+    { q:'Is stress testing live today?', a:'<strong>No - it is planned.</strong> The scenario library and historical reference data are documented in the Stress Testing topic, but the per-portfolio simulation engine has not yet shipped. Today\'s coverage of crash-style risk is concentrated in the <a data-nav="lyra">LYRA risk score</a> (volatility, max drawdown, VaR / CVaR per asset) and the portfolio-level concentration / diversification adjustments.' },
     { q:'What crash scenarios will be covered?', a:'Three historical events: <strong>Luna/UST collapse</strong> (May 2022), <strong>FTX collapse</strong> (Nov 2022), and <strong>SVB/stablecoin crisis</strong> (March 2023).' },
     { q:'What will the output tell me?', a:'Position-level and portfolio drawdowns, concentration analysis, liquidity stress, and recovery assessment. Overall rating: <strong>RESILIENT</strong>, <strong>VULNERABLE</strong>, or <strong>CRITICAL</strong>.' },
   ],
@@ -1100,12 +1110,12 @@ const faqs = {
     { q:'Can I use a crypto wallet to sign in?', a:'Yes - MetaMask, WalletConnect, and other popular wallets are supported.' },
   ],
   compliance: [
-    { q:'When will iXBRL output be available?', a:'Q3 2026. MiCA Regulation 2024/2984 made iXBRL mandatory for ESMA filings from 23 December 2025. Yields Digital is building this in-house so issuers and CASPs can produce ESMA-validator-compliant Annex I / Annex II filings directly from <a data-nav="reports">portfolio reports</a>.' },
-    { q:'How does the evidence trail satisfy MiCA Art. 68(9)?', a:'Every LYRA score and every client communication referencing a score will be written to an append-only, tamper-evident store with the actor, value, input hashes, output hash, and timestamp. Retention meets the Art. 68(9) 5-year minimum with a 7-year internal target. Today scores are timestamped in the database; the immutable-ledger layer ships Q3 2026.' },
+    { q:'When will iXBRL output be available?', a:'It is planned; we will publish a date once it is committed. MiCA Regulation 2024/2984 made iXBRL mandatory for ESMA filings from 23 December 2025. Yields Digital plans to build this in-house so issuers and CASPs can produce ESMA-validator-compliant Annex I / Annex II filings directly from <a data-nav="reports">portfolio reports</a>.' },
+    { q:'How does the evidence trail satisfy MiCA Art. 68(9)?', a:'Every LYRA score and every client communication referencing a score will be written to an append-only, tamper-evident store with the actor, value, input hashes, output hash, and timestamp. Retention meets the Art. 68(9) 5-year minimum with a 7-year internal target. Today scores are timestamped in the database and reports are stored with their source data; the immutable-ledger layer is planned.' },
     { q:'Is the platform externally pen-tested?', a:'Not yet. An <strong>internal</strong> pen-test in April 2026 surfaced the gaps that drove current hardening work; all Tier 1 (high-severity) findings are remediated and shipped to production. <strong>Independent external pen-test scheduling is in progress</strong> - we frame the internal test as gap-finding, not external attestation.' },
   ],
   compare: [
-    { q:'Why not just use DeFiLlama?', a:'DeFiLlama shows raw numbers. Yields Digital scores risk, analyzes your portfolio, generates reports, and recommends safer alternatives.' },
+    { q:'Why not just use a yield aggregator?', a:'Yield aggregators show raw numbers. Yields Digital scores risk, analyzes your portfolio, generates reports, and recommends safer alternatives.' },
   ],
   roadmap: [
     { q:'What is the Portfolio Digital Twin?', a:'A planned feature that lets you simulate portfolio changes before executing them - see the impact on risk and yield without moving real funds.' },

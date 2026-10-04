@@ -338,7 +338,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
     </div>
     <div class="flow-step flow-step-gate" style="margin-left:12px">
       <div class="flow-step-title">2. Pre-Trade Risk Gate</div>
-      <div class="flow-step-sub">yields.digital risk scores validate: asset MiCA status, concentration limits, protocol risk score, and mandate boundary. Execution blocked if any threshold breached.</div>
+      <div class="flow-step-sub">The client's gate checks yields.digital risk scores - asset and protocol risk, concentration, provisional MiCA classification - against its own mandate thresholds. Execution blocked if any threshold is breached.</div>
     </div>
     <div class="flow-step flow-step-approve" style="margin-left:12px">
       <div class="flow-step-title">3. Four-Eyes Approval</div>
@@ -656,10 +656,10 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
 
     <div class="card card-left-green">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Continuous Risk Scoring &amp; Art. 68 Evidence Trail</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Ongoing Risk Scoring &amp; Art. 68 Evidence Trail</div>
         <span class="badge badge-green" style="font-size:9px">REGULATORY</span>
       </div>
-      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores updated continuously across every asset, protocol, pool, and chain under management. Each score is timestamped and immutably logged, forming the auditable evidence trail Art. 68 demands. Available to NCA on request without requiring asset manager intermediation.</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores across every asset, protocol, pool, and chain under management, on pool data refreshed every 2 hours. Each score is timestamped, and portfolio reports are stored with their source data and a tamper-evident integrity manifest - the basis of the evidence trail Art. 68 demands. An append-only immutable ledger is planned.</div>
       <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
         <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span></div>
         <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span></div>
@@ -671,7 +671,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
         <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Pre-Trade Risk Gate Intelligence</div>
         <span class="badge badge-green" style="font-size:9px">RISK CONTROLS</span>
       </div>
-      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Real-time risk scores feed directly into the pre-trade compliance gate before any execution is permitted. Validates asset MiCA eligibility, protocol risk score, concentration limits, and mandate boundary - giving the Portfolio Manager and Risk Manager a single, evidenced risk signal at the point of decision.</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">yields.digital risk scores, available through the API, can feed the client's pre-trade compliance gate before any execution is permitted - asset and protocol risk, concentration, and provisional MiCA classification, checked against the client's own mandate thresholds - giving the Portfolio Manager and Risk Manager a single, evidenced risk signal at the point of decision.</div>
       <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
         <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span></div>
         <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span></div>
@@ -683,7 +683,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
         <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">MiCA Asset &amp; Protocol Eligibility</div>
         <span class="badge badge-green" style="font-size:9px">COMPLIANCE</span>
       </div>
-      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Every asset and protocol in scope is assessed against MiCA Arts. 4–6 (white paper obligation and content) and Art. 16(1) (ART authorisation). Eligibility status is continuously monitored and updated - including when protocol governance changes affect compliance standing. Provides the documented asset-level matrix FIN-FSA and other NCAs request in supervisory reviews.</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Each asset carries a provisional MiCA classification (ART, EMT, other) in yields.digital reports, as an input to the client's own assessment against MiCA Arts. 4-6 (white paper obligation and content) and Art. 16(1) (ART authorisation). Continuous eligibility monitoring is planned. Supports the documented asset-level matrix FIN-FSA and other NCAs request in supervisory reviews.</div>
       <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
         <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 4</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 5</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 6</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 16(1)</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span></div>
         <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span></div>
@@ -692,10 +692,10 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
 
     <div class="card card-left-green">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Real-Time Alerts &amp; Circuit Breaker</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Alerts &amp; Circuit Breaker (planned)</div>
         <span class="badge badge-green" style="font-size:9px">RISK OVERSIGHT</span>
       </div>
-      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Threshold-based alerts trigger automatically on protocol risk events, liquidity deterioration, smart contract anomalies, or compliance breaches. Defined critical scenarios route directly to the vault circuit breaker via the Risk Manager role - with sub-block latency - without requiring human intervention. Protects client capital faster than any manual process.</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Planned: threshold-based alerts on protocol risk events, liquidity deterioration, smart contract anomalies, or compliance breaches, delivered to the client's systems. The vault's own circuit breaker, operated through the Risk Manager role, could then act on defined critical scenarios without waiting on a manual process.</div>
       <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
         <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 10</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 17</span></div>
         <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Board / Owner</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span></div>
@@ -707,7 +707,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
         <div style="font-size:12px;font-weight:700;color:var(--navy);padding-right:6px">Protocol &amp; Chain Risk Intelligence</div>
         <span class="badge badge-green" style="font-size:9px">RISK INTELLIGENCE</span>
       </div>
-      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores across every integrated protocol and chain - covering smart contract risk, liquidity depth, counterparty concentration, governance activity, and cross-chain bridge exposure. Scores are segmented by protocol category (lending, AMM, liquid staking, structured yield) reflecting the distinct risk profile of each. Enables the Risk Manager and Portfolio Manager to make and evidence decisions with a consistent, independent risk methodology.</div>
+      <div style="font-size:12px;color:var(--dark-grey);line-height:1.5">Proprietary risk scores across every integrated asset, pool, protocol and chain - covering market risk, liquidity depth and stability, fee generation, holder concentration, and chain activity. Enables the Risk Manager and Portfolio Manager to make and evidence decisions with a consistent, independent risk methodology.</div>
       <div style="margin-top:8px;border-top:1px solid var(--mid-grey);padding-top:7px">
         <div style="margin-bottom:4px"><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 68</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 66</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">MiCA Art. 81</span><span style="background:#d0ead8;color:var(--green);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:700;margin-right:3px">DORA Art. 6</span></div>
         <div><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Portfolio Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Risk Manager</span><span style="background:#e8eef5;color:var(--navy);font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;margin-right:3px">Compliance Team</span></div>
@@ -732,7 +732,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
       <div style="font-size:11px;color:#b0c8e0;margin-bottom:10px">All lines direct - NOT via investment team</div>
       <div style="margin-bottom:8px">
         <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">yields.digital</span><span style="color:var(--gold);font-size:11px">→ Risk Manager</span></div>
-        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Art. 68 evidence trail + circuit breaker</div>
+        <div style="color:#9ab8d8;font-size:11px;margin-top:2px">Risk reports and evidence trail; circuit-breaker alerts planned</div>
       </div>
       <div style="margin-bottom:8px">
         <div style="display:flex;gap:4px;align-items:center"><span style="color:#e8f0f8;font-size:12px;font-weight:600">yields.digital</span><span style="color:var(--gold);font-size:11px">→ Allocator</span></div>
@@ -766,7 +766,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
     </div>
     <div class="q-card">
       <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">3 - Who can pause activity?</div>
-      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Risk Manager (circuit breaker - automatic on defined triggers) and Owner (multi-sig). Portfolio Manager cannot pause. yields.digital critical alerts feed directly into circuit breaker.</div>
+      <div style="font-size:11px;color:#c8d8e8;line-height:1.6">Risk Manager (circuit breaker - automatic on defined triggers) and Owner (multi-sig). Portfolio Manager cannot pause. Feeding yields.digital alerts into the circuit breaker is planned.</div>
     </div>
     <div class="q-card">
       <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px">4 - Who can upgrade contracts?</div>
@@ -806,7 +806,7 @@ body{font-family:'Inter','Helvetica Neue',Arial,sans-serif;background:var(--grey
 <!-- FOOTER -->
 <div style="display:flex;justify-content:space-between;margin-top:4px;padding:0 2px">
   <div style="font-size:10px;color:var(--footer-text)">yields.digital · Institutional DeFi Risk Infrastructure</div>
-  <div style="font-size:10px;color:var(--footer-text)">v2.3 · 20 April 2026 · Audit-verified (S52)</div>
+  <div style="font-size:10px;color:var(--footer-text)">v2.4 · 5 October 2026</div>
 </div>
 
 </div><!-- /wrap -->
